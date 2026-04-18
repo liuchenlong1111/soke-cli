@@ -26,18 +26,24 @@ func newInitCmd() *cobra.Command {
             // 交互式配置                                                                                                                                                                                                                      
             var cfg core.CliConfig                                                                                                                                                                                                             
                                                                                                                                                                                                                                                
-            fmt.Print("请输入App ID: ")                                                                                                                                                                                                        
+            fmt.Print("请输入app_key: ")                                                                                                                                                                                                        
             fmt.Scanln(&cfg.AppID)                                                                                                                                                                                                             
                                                                                                                                                                                                                                                
-            fmt.Print("请输入App Secret: ")                                                                                                                                                                                                    
+            fmt.Print("请输入app_secret: ")                                                                                                                                                                                                    
             fmt.Scanln(&cfg.AppSecret)                                                                                                                                                                                                         
                                                                                                                                                                                                                                                
-            fmt.Print("请输入API地址 (默认: https://api.shouke.ai): ")                                                                                                                                                                         
-            fmt.Scanln(&cfg.APIBaseURL)                                                                                                                                                                                                        
-            if cfg.APIBaseURL == "" {                                                                                                                                                                                                          
-                cfg.APIBaseURL = "https://api.shouke.ai"                                                                                                                                                                                       
-            }                                                                                                                                                                                                                                  
-                                                                                                                                                                                                                                               
+            fmt.Print("请输入API地址 (默认: https://opendev.soke.cn): ")
+            fmt.Scanln(&cfg.APIBaseURL)
+            if cfg.APIBaseURL == "" {
+                cfg.APIBaseURL = "https://opendev.soke.cn"
+            }
+
+            fmt.Print("请输入corpid: ")
+            fmt.Scanln(&cfg.CorpID)
+
+            fmt.Print("请输入dept_user_id: ")
+            fmt.Scanln(&cfg.DeptUserID)
+
             if err := core.SaveConfig(&cfg); err != nil {                                                                                                                                                                                      
                 return err
             }                                                                                                                                                                                                                                  
@@ -58,9 +64,10 @@ func newShowCmd() *cobra.Command {
                 return err                                                                                                                                                                                                                     
             }                                                                                                                                                                                                                                  
                                                                                                                                                                                                                                                
-            fmt.Printf("App ID: %s\n", cfg.AppID)                                                                                                                                                                                              
+            fmt.Printf("app_key: %s\n", cfg.AppID)
             fmt.Printf("API地址: %s\n", cfg.APIBaseURL)
-            fmt.Printf("用户Token: %s\n", maskToken(cfg.UserToken))                                                                                                                                                                            
+            fmt.Printf("corpid: %s\n", cfg.CorpID)
+            fmt.Printf("dept_user_id: %s\n", cfg.DeptUserID)                                                                                                                                                                            
                                                                                                                                                                                                                                                
             return nil                                                                                                                                                                                                                         
         },                                                                                                                                                                                                                                     

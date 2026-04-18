@@ -14,7 +14,9 @@ type CliConfig struct {
     AppSecret  string
     APIBaseURL string
     UserToken  string
-    BotToken   string                                                                                                                                                                                                                          
+    BotToken   string
+    CorpID     string
+    DeptUserID string
 }
                                                                                                                                                                                                                                                  
 // APIRequest 通用请求结构
