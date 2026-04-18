@@ -7,18 +7,23 @@ import (
     "fmt"
     "io"
     "net/http"
+    "net/url"
     "time"
+    "codeup.aliyun.com/5edbc121d1d1abe63b55f1c7/soke/soke-cli/internal/auth"
     "codeup.aliyun.com/5edbc121d1d1abe63b55f1c7/soke/soke-cli/internal/core"
 )
 
 type Client struct {
-    Config     *core.CliConfig
-    HTTPClient *http.Client
+    Config       *core.CliConfig
+    HTTPClient   *http.Client
+    TokenManager *auth.TokenManager
 }
 
 func NewClient(cfg *core.CliConfig) *Client {
+  tokenManager := auth.NewTokenManager(cfg.AppID, cfg.AppSecret, cfg.CorpID, cfg.APIBaseURL)
   return &Client{
-      Config: cfg,
+      Config:       cfg,
+      TokenManager: tokenManager,
       HTTPClient: &http.Client{
           Timeout: 30 * time.Second,
       },
@@ -27,12 +32,30 @@ func NewClient(cfg *core.CliConfig) *Client {
 
 // DoRequest 执行API请求
 func (c *Client) DoRequest(ctx context.Context, req *core.APIRequest) (interface{}, error) {
-  // 构建完整URL
-  url := c.Config.APIBaseURL + req.Path
+  // 获取access_token
+  token, err := c.TokenManager.GetAccessToken(ctx)
+  if err != nil {
+      return nil, fmt.Errorf("get access token failed: %w", err)
+  }
 
-  // 添加query参数
-  if len(req.Query) > 0 {
-      // ... URL编码逻辑
+  // 构建完整URL
+  baseURL := c.Config.APIBaseURL + req.Path
+
+  // 添加access_token到query参数
+  if req.Query == nil {
+      req.Query = make(map[string]interface{})
+  }
+  req.Query["access_token"] = token
+
+  // 构建URL参数
+  params := url.Values{}
+  for key, value := range req.Query {
+      params.Add(key, fmt.Sprintf("%v", value))
+  }
+
+  fullURL := baseURL
+  if len(params) > 0 {
+      fullURL = baseURL + "?" + params.Encode()
   }
 
   // 构建HTTP请求
@@ -45,14 +68,11 @@ func (c *Client) DoRequest(ctx context.Context, req *core.APIRequest) (interface
       bodyReader = bytes.NewReader(data)
   }
 
-  httpReq, err := http.NewRequestWithContext(ctx, req.Method, url, bodyReader)
+  httpReq, err := http.NewRequestWithContext(ctx, req.Method, fullURL, bodyReader)
   if err != nil {
       return nil, err
   }
 
-  // 设置认证头
-  token := c.getToken(req.As)
-  httpReq.Header.Set("Authorization", "Bearer "+token)
   httpReq.Header.Set("Content-Type", "application/json")
 
   // 发送请求
@@ -78,12 +98,4 @@ func (c *Client) DoRequest(ctx context.Context, req *core.APIRequest) (interface
   }
 
   return result, nil
-}
-
-
-func (c *Client) getToken(as core.Identity) string {
-    if as == core.AsBot {
-        return c.Config.BotToken
-    }
-    return c.Config.UserToken
 }

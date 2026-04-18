@@ -27,7 +27,7 @@ var ContactListDepartments = common.Shortcut{
 		page := runtime.Int("page")
 		pageSize := runtime.Int("page-size")
 		return common.NewDryRunAPI().
-			GET("https://oapi.soke.cn/oa/department/list").
+			GET(runtime.Config.APIBaseURL + "/oa/department/list").
 			Desc("List departments under parent department").
 			Params(map[string]interface{}{
 				"parent_id": parentID,
@@ -46,7 +46,7 @@ var ContactListDepartments = common.Shortcut{
 			"page_size": pageSize,
 		}
 
-		data, err := runtime.CallAPI("GET", "https://oapi.soke.cn/oa/department/list", params, nil)
+		data, err := runtime.CallAPI("GET", runtime.Config.APIBaseURL+"/oa/department/list", params, nil)
 		if err != nil {
 			return err
 		}
