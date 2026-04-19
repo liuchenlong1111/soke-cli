@@ -7,6 +7,7 @@ import (
 	"codeup.aliyun.com/5edbc121d1d1abe63b55f1c7/soke/soke-cli/cmd/api"
 	"codeup.aliyun.com/5edbc121d1d1abe63b55f1c7/soke/soke-cli/cmd/auth"
 	"codeup.aliyun.com/5edbc121d1d1abe63b55f1c7/soke/soke-cli/cmd/config"
+	"codeup.aliyun.com/5edbc121d1d1abe63b55f1c7/soke/soke-cli/cmd/course"
 	"github.com/spf13/cobra"
 )
 
@@ -31,4 +32,5 @@ func init() {
 	rootCmd.AddCommand(auth.NewAuthCmd())
 	rootCmd.AddCommand(api.NewAPICmd())
 	rootCmd.AddCommand(config.NewConfigCmd())
+	rootCmd.AddCommand(course.NewCourseCmd())
 }

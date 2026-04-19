@@ -8,8 +8,11 @@ func Shortcuts() []common.Shortcut {
 		ContactGetUser,
 		ContactListDepartments,
 		ContactGetDepartment,
+		ContactSearchDepartment,
 		ContactListDepartmentUsers,
 		ContactGetDepartmentUser,
 		ContactListLectors,
+		ContactListGroups,
+		ContactListGroupUsers,
 	}
 }

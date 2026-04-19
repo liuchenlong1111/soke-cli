@@ -4,7 +4,10 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"os"
 
+	"github.com/spf13/cobra"
+	"codeup.aliyun.com/5edbc121d1d1abe63b55f1c7/soke/soke-cli/internal/client"
 	"codeup.aliyun.com/5edbc121d1d1abe63b55f1c7/soke/soke-cli/internal/core"
 )
 
@@ -55,15 +58,31 @@ type RuntimeContext struct {
 	JqExpr string
 }
 
+func (r *RuntimeContext) SetContext(ctx context.Context) {
+	r.ctx = ctx
+}
+
 func (r *RuntimeContext) Str(name string) string {
+	if cobraCmd, ok := r.Cmd.(*cobra.Command); ok {
+		val, _ := cobraCmd.Flags().GetString(name)
+		return val
+	}
 	return ""
 }
 
 func (r *RuntimeContext) Int(name string) int {
+	if cobraCmd, ok := r.Cmd.(*cobra.Command); ok {
+		val, _ := cobraCmd.Flags().GetInt(name)
+		return val
+	}
 	return 0
 }
 
 func (r *RuntimeContext) Bool(name string) bool {
+	if cobraCmd, ok := r.Cmd.(*cobra.Command); ok {
+		val, _ := cobraCmd.Flags().GetBool(name)
+		return val
+	}
 	return false
 }
 
@@ -72,12 +91,40 @@ func (r *RuntimeContext) IsBot() bool {
 }
 
 func (r *RuntimeContext) CallAPI(method, path string, params, body interface{}) (map[string]interface{}, error) {
-	return nil, nil
+	var queryParams map[string]interface{}
+	if params != nil {
+		if p, ok := params.(map[string]interface{}); ok {
+			queryParams = p
+		}
+	}
+
+	req := &core.APIRequest{
+		Method: method,
+		Path:   path,
+		Query:  queryParams,
+		Body:   body,
+	}
+
+	c := client.NewClient(r.Config)
+	result, err := c.DoRequest(r.ctx, req)
+	if err != nil {
+		return nil, err
+	}
+
+	if resultMap, ok := result.(map[string]interface{}); ok {
+		return resultMap, nil
+	}
+
+	return nil, fmt.Errorf("unexpected result type")
 }
 
 func (r *RuntimeContext) OutFormat(data map[string]interface{}, err error, fn func(io.Writer)) {
+	if err != nil {
+		fmt.Fprintf(io.Discard, "Error: %v\n", err)
+		return
+	}
 	if fn != nil {
-		fn(io.Discard)
+		fn(os.Stdout)
 	}
 }
 
