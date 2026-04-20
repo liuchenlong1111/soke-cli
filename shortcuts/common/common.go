@@ -120,7 +120,7 @@ func (r *RuntimeContext) CallAPI(method, path string, params, body interface{}) 
 
 func (r *RuntimeContext) OutFormat(data map[string]interface{}, err error, fn func(io.Writer)) {
 	if err != nil {
-		fmt.Fprintf(io.Discard, "Error: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
 		return
 	}
 	if fn != nil {

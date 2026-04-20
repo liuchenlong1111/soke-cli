@@ -14,5 +14,10 @@ func Shortcuts() []common.Shortcut {
 		ContactListLectors,
 		ContactListGroups,
 		ContactListGroupUsers,
+		PositionList,
+		PositionGetInfo,
+		PositionCreate,
+		PositionUpdate,
+		PositionDelete,
 	}
 }

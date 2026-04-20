@@ -6,8 +6,16 @@ import (
 
 	"codeup.aliyun.com/5edbc121d1d1abe63b55f1c7/soke/soke-cli/cmd/api"
 	"codeup.aliyun.com/5edbc121d1d1abe63b55f1c7/soke/soke-cli/cmd/auth"
+	"codeup.aliyun.com/5edbc121d1d1abe63b55f1c7/soke/soke-cli/cmd/certificate"
 	"codeup.aliyun.com/5edbc121d1d1abe63b55f1c7/soke/soke-cli/cmd/config"
+	"codeup.aliyun.com/5edbc121d1d1abe63b55f1c7/soke/soke-cli/cmd/contact"
 	"codeup.aliyun.com/5edbc121d1d1abe63b55f1c7/soke/soke-cli/cmd/course"
+	"codeup.aliyun.com/5edbc121d1d1abe63b55f1c7/soke/soke-cli/cmd/credit"
+	"codeup.aliyun.com/5edbc121d1d1abe63b55f1c7/soke/soke-cli/cmd/exam"
+	"codeup.aliyun.com/5edbc121d1d1abe63b55f1c7/soke/soke-cli/cmd/learning_map"
+	"codeup.aliyun.com/5edbc121d1d1abe63b55f1c7/soke/soke-cli/cmd/news"
+	"codeup.aliyun.com/5edbc121d1d1abe63b55f1c7/soke/soke-cli/cmd/point"
+	"codeup.aliyun.com/5edbc121d1d1abe63b55f1c7/soke/soke-cli/cmd/training"
 	"github.com/spf13/cobra"
 )
 
@@ -32,5 +40,13 @@ func init() {
 	rootCmd.AddCommand(auth.NewAuthCmd())
 	rootCmd.AddCommand(api.NewAPICmd())
 	rootCmd.AddCommand(config.NewConfigCmd())
+	rootCmd.AddCommand(contact.NewContactCmd())
 	rootCmd.AddCommand(course.NewCourseCmd())
+	rootCmd.AddCommand(exam.NewExamCmd())
+	rootCmd.AddCommand(certificate.NewCertificateCmd())
+	rootCmd.AddCommand(credit.NewCreditCmd())
+	rootCmd.AddCommand(point.NewPointCmd())
+	rootCmd.AddCommand(learning_map.NewLearningMapCmd())
+	rootCmd.AddCommand(training.NewTrainingCmd())
+	rootCmd.AddCommand(news.NewNewsCmd())
 }
