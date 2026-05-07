@@ -1,0 +1,32 @@
+{
+    "name": "@sokeai/cli",
+    "version": "1.0.0",
+    "description": "授客AI官方CLI工具",
+    "bin": {
+        "soke-cli": "scripts/run.js"
+    },
+    "scripts": {
+        "postinstall": "node scripts/install.js",
+        "build": "./scripts/build-binaries.sh",
+        "release": "./scripts/release.sh"
+    },
+    "files": [
+        "scripts/"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://codeup.aliyun.com/5edbc121d1d1abe63b55f1c7/soke/soke-cli.git"
+    },
+    "keywords": [
+        "soke",
+        "cli",
+        "授客AI",
+        "shouke",
+        "command-line"
+    ],
+    "author": "授客AI",
+    "license": "MIT",
+    "engines": {
+        "node": ">=14.0.0"
+    }
+}      
