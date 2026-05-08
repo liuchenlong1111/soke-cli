@@ -104,7 +104,7 @@ create_tag() {
     echo -e "${YELLOW}创建 Git 标签 v${VERSION}...${NC}"
 
     git tag -a "v${VERSION}" -m "Release v${VERSION}"
-    git push origin "v${VERSION}"
+    git push github "v${VERSION}"
 
     echo -e "${GREEN}✓ 标签已创建并推送${NC}"
     echo ""
