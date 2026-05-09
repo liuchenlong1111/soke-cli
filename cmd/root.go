@@ -38,6 +38,7 @@ func Execute() {
 
 func init() {
 	rootCmd.AddCommand(auth.NewAuthCmd())
+	rootCmd.AddCommand(auth.NewUserAuthCommand())
 	rootCmd.AddCommand(api.NewAPICmd())
 	rootCmd.AddCommand(config.NewConfigCmd())
 	rootCmd.AddCommand(contact.NewContactCmd())
