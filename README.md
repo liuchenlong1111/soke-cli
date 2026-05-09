@@ -42,9 +42,52 @@ cd soke-cli
 make install
 ```
 
+## AI Agent Skills
+
+`soke-cli` 提供了 AI Agent 技能（Skills），使 AI 助手能够自动发现和调用 CLI 功能，无需记忆复杂的命令参数。
+
+### 安装 Skills
+
+```bash
+# 安装 CLI 后，安装 AI Agent Skills
+npx skills add liuchenlong1111/soke-cli -y -g
+```
+
+### 使用方式
+
+安装 Skills 后，在支持 Skills 的 AI Agent（如 Claude Code）中，可以直接用自然语言描述需求：
+
+- **"查询考试成绩"** - AI 会自动调用 `soke-cli exam +get-exam-user`
+- **"列出最近的考试"** - AI 会自动调用 `soke-cli exam +list-exams`
+- **"查看考试分类"** - AI 会自动调用 `soke-cli exam +list-categories`
+
+AI Agent 会自动：
+1. 识别你的意图
+2. 选择合适的命令
+3. 提示你提供必要的参数
+4. 执行命令并展示结果
+
+### 可用的 Skills
+
+- **soke-shared**: 配置初始化、用户认证、权限处理等基础功能
+- **soke-exam**: 考试管理（查询考试、考试成绩、考试分类）
+- 更多业务模块的 Skills 正在开发中...
+
+详细文档：[skills/README.md](skills/README.md)
+
 ## 快速开始
 
-### 1. 初始化配置
+### 1. 安装 CLI 和 Skills
+
+```bash
+# 安装 CLI
+npm install -g @sokeai/cli
+
+# 安装 AI Agent Skills（可选，推荐）
+npx skills add liuchenlong1111/soke-cli -y -g
+```
+
+### 2. 初始化配置
 首次使用前，需要配置你的开放平台凭证：
 ```bash
 soke-cli config init
@@ -53,13 +96,33 @@ soke-cli config init
 
 可以使用 `soke-cli config show` 来查看当前配置。
 
-### 2. 用户登录授权
+### 3. 用户登录授权
 配置完成后，进行设备授权登录：
 ```bash
 soke-cli auth login
 ```
 命令会返回一个设备码和链接，请在浏览器中打开链接并输入设备码完成授权。成功后即可调用需要用户授权的接口。
 如果需要退出登录，可以执行 `soke-cli auth logout`。
+
+### 4. 开始使用
+
+**方式一：通过 AI Agent（推荐）**
+
+如果已安装 Skills，在 AI Agent 中直接用自然语言：
+```
+"查询考试成绩"
+"列出最近的考试"
+```
+
+**方式二：直接使用命令行**
+
+```bash
+# 查看课程列表
+soke-cli course +list-courses --start-time 1672502400000 --end-time 1704038400000
+
+# 查询考试成绩
+soke-cli exam +get-exam-user --exam-id exam123 --dept-user-id user456
+```
 
 ## 使用示例
 

@@ -81,7 +81,11 @@ npm install -g /path/to/sokeai-cli-1.0.0.tgz
 ### 安装
 
 ```bash
+# 1. 安装 CLI
 npm install -g @sokeai/cli
+
+# 2. 安装 AI Agent Skills（可选，推荐）
+npx skills add liuchenlong1111/soke-cli -y -g
 ```
 
 ### 初始化配置
@@ -97,6 +101,24 @@ soke-cli auth login
 ```
 
 ### 使用示例
+
+**方式一：通过 AI Agent（推荐）**
+
+如果已安装 Skills，在支持 Skills 的 AI Agent（如 Claude Code）中，直接用自然语言：
+
+```
+"查询考试成绩"
+"列出最近的考试"
+"查看考试分类"
+```
+
+AI Agent 会自动：
+- 识别你的意图
+- 选择合适的命令
+- 提示你提供必要的参数
+- 执行命令并展示结果
+
+**方式二：直接使用命令行**
 
 ```bash
 # 查看帮助
@@ -114,9 +136,22 @@ soke-cli exam +list-exams \
   --start-time 1672502400000 \
   --end-time 1704038400000
 
+# 查询考试成绩
+soke-cli exam +get-exam-user \
+  --exam-id exam123 \
+  --dept-user-id user456
+
 # 查看通讯录
 soke-cli contact +list-users --page 1
 ```
+
+### AI Agent Skills 说明
+
+已安装的 Skills：
+- **soke-shared**: 配置初始化、用户认证、权限处理
+- **soke-exam**: 考试管理（查询考试、考试成绩、考试分类）
+
+详细文档：[skills/README.md](skills/README.md)
 
 ## 文件说明
 
@@ -168,5 +203,6 @@ npm install -g @sokeai/cli
 ## 相关链接
 
 - NPM 包: https://www.npmjs.com/package/@sokeai/cli
-- GitHub 仓库: https://codeup.aliyun.com/5edbc121d1d1abe63b55f1c7/soke/soke-cli
+- GitHub 仓库: https://github.com/liuchenlong1111/soke-cli
+- AI Agent Skills: [skills/README.md](skills/README.md)
 - 授客AI 开放平台: https://opendev.soke.cn
