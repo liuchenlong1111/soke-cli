@@ -77,7 +77,7 @@ var TrainingCreate = common.Shortcut{
 			params["valid_time_second"] = validTimeSecond
 		}
 		return common.NewDryRunAPI().
-			POST(runtime.Config.APIBaseURL + "/training/training/create").
+			POST("/training/training/create").
 			Desc("Create training").
 			Params(params)
 	},

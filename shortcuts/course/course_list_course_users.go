@@ -41,7 +41,7 @@ var CourseListCourseUsers = common.Shortcut{
 			params["finish_end_time"] = finishEndTime
 		}
 		return common.NewDryRunAPI().
-			GET(runtime.Config.APIBaseURL + "/course/user/list").
+			GET("/course/user/list").
 			Desc("List course student learning records").
 			Params(params)
 	},

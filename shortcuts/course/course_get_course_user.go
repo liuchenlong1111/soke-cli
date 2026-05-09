@@ -25,7 +25,7 @@ var CourseGetCourseUser = common.Shortcut{
 		courseID := runtime.Str("course-id")
 		deptUserID := runtime.Str("dept-user-id")
 		return common.NewDryRunAPI().
-			GET(runtime.Config.APIBaseURL + "/course/user/info").
+			GET("/course/user/info").
 			Desc("Get course student learning details").
 			Params(map[string]interface{}{
 				"course_id":    courseID,

@@ -23,7 +23,7 @@ var NewsGetInfo = common.Shortcut{
 	},
 	DryRun: func(ctx context.Context, runtime *common.RuntimeContext) *common.DryRunAPI {
 		return common.NewDryRunAPI().
-			GET(runtime.Config.APIBaseURL + "/news/news/info").
+			GET("/news/news/info").
 			Desc("Get news details").
 			Params(map[string]interface{}{
 				"uuid": runtime.Str("uuid"),

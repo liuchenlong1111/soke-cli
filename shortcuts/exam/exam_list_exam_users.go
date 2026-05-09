@@ -41,7 +41,7 @@ var ExamListExamUsers = common.Shortcut{
 			params["finish_end_time"] = finishEndTime
 		}
 		return common.NewDryRunAPI().
-			GET(runtime.Config.APIBaseURL + "/exam/user/list").
+			GET("/exam/user/list").
 			Desc("List exam user results").
 			Params(params)
 	},

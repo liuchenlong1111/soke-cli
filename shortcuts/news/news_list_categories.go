@@ -23,7 +23,7 @@ var NewsListCategories = common.Shortcut{
 	},
 	DryRun: func(ctx context.Context, runtime *common.RuntimeContext) *common.DryRunAPI {
 		return common.NewDryRunAPI().
-			GET(runtime.Config.APIBaseURL + "/news/category/list").
+			GET("/news/category/list").
 			Desc("List news categories").
 			Params(map[string]interface{}{
 				"page":      runtime.Int("page"),

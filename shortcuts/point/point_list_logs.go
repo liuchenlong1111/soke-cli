@@ -39,7 +39,7 @@ var PointListLogs = common.Shortcut{
 			params["end_time"] = endTime
 		}
 		return common.NewDryRunAPI().
-			GET(runtime.Config.APIBaseURL + "/point/logMeta/list").
+			GET("/point/logMeta/list").
 			Desc("List point logs").
 			Params(params)
 	},

@@ -27,7 +27,7 @@ var ContactListDepartmentUsers = common.Shortcut{
 		page := runtime.Int("page")
 		pageSize := runtime.Int("page-size")
 		return common.NewDryRunAPI().
-			GET(runtime.Config.APIBaseURL + "/oa/departmentUser/list").
+			GET("/oa/departmentUser/list").
 			Desc("List users in department").
 			Params(map[string]interface{}{
 				"dept_id":   deptID,
@@ -46,7 +46,7 @@ var ContactListDepartmentUsers = common.Shortcut{
 			"page_size": pageSize,
 		}
 
-		data, err := runtime.CallAPI("GET", runtime.Config.APIBaseURL+"/oa/departmentUser/list", params, nil)
+		data, err := runtime.CallAPI("GET", "/oa/departmentUser/list", params, nil)
 		if err != nil {
 			return err
 		}

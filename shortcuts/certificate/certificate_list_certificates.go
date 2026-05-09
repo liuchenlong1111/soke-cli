@@ -35,7 +35,7 @@ var CertificateListCertificates = common.Shortcut{
 			params["status"] = status
 		}
 		return common.NewDryRunAPI().
-			GET(runtime.Config.APIBaseURL + "/certificate/certificate/list").
+			GET("/certificate/certificate/list").
 			Desc("List certificates").
 			Params(params)
 	},

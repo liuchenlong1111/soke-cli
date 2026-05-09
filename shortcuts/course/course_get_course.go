@@ -23,7 +23,7 @@ var CourseGetCourse = common.Shortcut{
 	DryRun: func(ctx context.Context, runtime *common.RuntimeContext) *common.DryRunAPI {
 		courseID := runtime.Str("course-id")
 		return common.NewDryRunAPI().
-			GET(runtime.Config.APIBaseURL + "/course/course/info").
+			GET("/course/course/info").
 			Desc("Get course details").
 			Params(map[string]interface{}{
 				"course_id": courseID,

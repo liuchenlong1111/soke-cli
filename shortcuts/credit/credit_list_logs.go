@@ -39,7 +39,7 @@ var CreditListLogs = common.Shortcut{
 			params["end_time"] = endTime
 		}
 		return common.NewDryRunAPI().
-			GET(runtime.Config.APIBaseURL + "/credit/logMeta/list").
+			GET("/credit/logMeta/list").
 			Desc("List credit logs").
 			Params(params)
 	},

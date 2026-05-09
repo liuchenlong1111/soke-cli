@@ -23,7 +23,7 @@ var PositionGetInfo = common.Shortcut{
 	},
 	DryRun: func(ctx context.Context, runtime *common.RuntimeContext) *common.DryRunAPI {
 		return common.NewDryRunAPI().
-			GET(runtime.Config.APIBaseURL + "/position/external/info").
+			GET("/position/external/info").
 			Desc("Get position details").
 			Params(map[string]interface{}{
 				"position_id": runtime.Str("position-id"),

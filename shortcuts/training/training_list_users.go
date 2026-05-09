@@ -41,7 +41,7 @@ var TrainingListUsers = common.Shortcut{
 			params["end_time"] = endTime
 		}
 		return common.NewDryRunAPI().
-			GET(runtime.Config.APIBaseURL + "/training/user/list").
+			GET("/training/user/list").
 			Desc("List training enrolled users").
 			Params(params)
 	},

@@ -27,7 +27,7 @@ var CourseListLessons = common.Shortcut{
 		page := runtime.Int("page")
 		pageSize := runtime.Int("page-size")
 		return common.NewDryRunAPI().
-			GET(runtime.Config.APIBaseURL + "/course/lesson/list").
+			GET("/course/lesson/list").
 			Desc("List course lessons").
 			Params(map[string]interface{}{
 				"course_id": courseID,

@@ -23,7 +23,7 @@ var PositionDelete = common.Shortcut{
 	},
 	DryRun: func(ctx context.Context, runtime *common.RuntimeContext) *common.DryRunAPI {
 		return common.NewDryRunAPI().
-			POST(runtime.Config.APIBaseURL + "/position/external/delete").
+			POST("/position/external/delete").
 			Desc("Delete position").
 			Params(map[string]interface{}{
 				"position_id": runtime.Str("position-id"),
