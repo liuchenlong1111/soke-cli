@@ -565,7 +565,6 @@ func (p *OAuthProvider) Login(ctx context.Context, force bool) (*TokenData, erro
 					"d9a8146b1ad04399b07b9187a9aaa134",
 				}
 
-				// Prepare form data for permission save
 				permFormValues := url.Values{}
 				permFormValues.Set("app_id", createAppRespData.AppID)
 				for i, apiID := range apiIDs {
@@ -586,7 +585,6 @@ func (p *OAuthProvider) Login(ctx context.Context, force bool) (*TokenData, erro
 						permSaveBody, _ := io.ReadAll(permSaveResp.Body)
 						fmt.Println("Permission save response:", string(permSaveBody))
 
-						// Save app credentials to config after successful permission save
 						cfg.AppID = createAppRespData.AppID
 						cfg.AppSecret = createAppRespData.AppSecret
 						/***
