@@ -24,8 +24,9 @@ import (
 )
 
 var rootCmd = &cobra.Command{
-	Use:   "soke-cli",
-	Short: "授客AI官方CLI工具",
+	Use:     "soke-cli",
+	Short:   "授客AI官方CLI工具",
+	Version: version.GetVersion(),
 	Long: `授客AI CLI - 命令行工具
 	   使用示例:
 	   soke-cli auth login
