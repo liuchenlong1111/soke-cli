@@ -18,6 +18,8 @@ import (
 	"codeup.aliyun.com/5edbc121d1d1abe63b55f1c7/soke/soke-cli/cmd/news"
 	"codeup.aliyun.com/5edbc121d1d1abe63b55f1c7/soke/soke-cli/cmd/point"
 	"codeup.aliyun.com/5edbc121d1d1abe63b55f1c7/soke/soke-cli/cmd/training"
+	versionCmd "codeup.aliyun.com/5edbc121d1d1abe63b55f1c7/soke/soke-cli/cmd/version"
+	"codeup.aliyun.com/5edbc121d1d1abe63b55f1c7/soke/soke-cli/internal/version"
 	"github.com/spf13/cobra"
 )
 
@@ -29,6 +31,10 @@ var rootCmd = &cobra.Command{
 	   soke-cli auth login
 	   soke-cli api GET /users/me
 	   soke-cli calendar list`,
+	PersistentPreRun: func(cmd *cobra.Command, args []string) {
+		// 在每次命令执行前检查更新（异步，不阻塞）
+		go version.CheckForUpdates()
+	},
 }
 
 func Execute() {
@@ -53,4 +59,5 @@ func init() {
 	rootCmd.AddCommand(news.NewNewsCmd())
 	rootCmd.AddCommand(clock.NewClockCmd())
 	rootCmd.AddCommand(file.NewFileCmd())
+	rootCmd.AddCommand(versionCmd.NewVersionCmd())
 }
