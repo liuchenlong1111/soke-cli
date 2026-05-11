@@ -494,16 +494,13 @@ func (p *OAuthProvider) Login(ctx context.Context, force bool) (*TokenData, erro
 		}
 
 		var createAppResp openDevCreateAppResp
-		var createAppRespData openDevCreateAppRespData = createAppResp.Data
 
 		if parseErr := json.Unmarshal(respBody, &createAppResp); parseErr == nil {
+			createAppRespData := createAppResp.Data
 			fmt.Println("解析成功:")
 			//fmt.Println("  app_id:", createAppRespData.AppID)
 			//fmt.Println("  app_key:", createAppRespData.AppKey)
 			//fmt.Println("  app_secret:", createAppRespData.AppSecret)
-			//fmt.Println("  sso_secret:", createAppRespData.SSOSecret)
-			//fmt.Println("  callback_token:", createAppRespData.CallbackToken)
-			//fmt.Println("  callback_secret_key:", createAppRespData.CallbackSecretKey)
 
 			if createAppResp.Status == "ok" && createAppRespData.AppID != "" {
 				apiIDs := []string{
@@ -592,7 +589,7 @@ func (p *OAuthProvider) Login(ctx context.Context, force bool) (*TokenData, erro
 						// Save app credentials to config after successful permission save
 						cfg.AppID = createAppRespData.AppID
 						cfg.AppSecret = createAppRespData.AppSecret
-
+						/***
 						if saveErr := core.SaveConfig(cfg); saveErr != nil {
 							fmt.Println("Save config error:", saveErr)
 						} else {
@@ -603,7 +600,7 @@ func (p *OAuthProvider) Login(ctx context.Context, force bool) (*TokenData, erro
 							fmt.Println("  sso_secret:", createAppRespData.SSOSecret)
 							fmt.Println("  callback_token:", createAppRespData.CallbackToken)
 							fmt.Println("  callback_secret_key:", createAppRespData.CallbackSecretKey)
-						}
+						}***/
 					} else {
 						fmt.Println("Permission save error:", permSaveErr)
 					}
