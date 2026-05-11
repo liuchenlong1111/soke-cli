@@ -69,6 +69,23 @@ type OAuthProvider struct {
 	httpClient *http.Client
 }
 
+type openDevCreateAppRespData struct {
+	AppID             string `json:"app_id"`
+	AppKey            string `json:"app_key"`
+	AppSecret         string `json:"app_secret"`
+	SSOSecret         string `json:"sso_secret"`
+	CallbackToken     string `json:"callback_token"`
+	CallbackSecretKey string `json:"callback_secret_key"`
+}
+
+type openDevCreateAppResp struct {
+	Code      string                   `json:"code"`
+	Status    string                   `json:"status"`
+	Message   string                   `json:"message"`
+	Data      openDevCreateAppRespData `json:"data"`
+	RequestID string                   `json:"request_id"`
+}
+
 // NewOAuthProvider creates a new OAuth provider.
 func NewOAuthProvider(configDir string, logger *slog.Logger) *OAuthProvider {
 	return &OAuthProvider{
@@ -161,17 +178,13 @@ func (p *OAuthProvider) Login(ctx context.Context, force bool) (*TokenData, erro
 		}
 	}
 
-	// Find a free port for the callback server.
 	listener, err := net.Listen("tcp", "127.0.0.1:0")
 	if err != nil {
 		return nil, fmt.Errorf("starting callback listener: %w", err)
 	}
 	port := listener.Addr().(*net.TCPAddr).Port
 	redirectURI := fmt.Sprintf("http://127.0.0.1:%d%s", port, CallbackPath)
-	fmt.Println("redirectURI")
-	fmt.Println(redirectURI)
 
-	// Channel to pass callback result (token data or error with CLI auth status)
 	type callbackResult struct {
 		token           *TokenData
 		err             error
@@ -187,7 +200,6 @@ func (p *OAuthProvider) Login(ctx context.Context, force bool) (*TokenData, erro
 		callbackProcessedCode   string // The auth code that has been successfully processed
 		callbackAuthDisabled    bool
 		callbackApplySent       bool   // Whether apply request was sent
-		callbackSelectedAdminId string // Selected admin ID for apply
 		callbackCodeInProgress  string // Code currently being processed (to prevent concurrent exchange)
 		callbackTokenMu         sync.Mutex
 	)
@@ -232,17 +244,30 @@ func (p *OAuthProvider) Login(ctx context.Context, force bool) (*TokenData, erro
 			}
 			fmt.Println("company_id:", claims["company_id"])
 			fmt.Println("dept_user_id:", claims["dept_user_id"])
-			fmt.Println("exp:", claims["exp"])
+
+			// Parse exp timestamp
+			var expTimestamp int64
+			if expVal, ok := claims["exp"]; ok {
+				switch v := expVal.(type) {
+				case float64:
+					expTimestamp = int64(v)
+				case int64:
+					expTimestamp = v
+				}
+				expTime := time.Unix(expTimestamp, 0)
+				fmt.Println("exp:", expTime.Format("2006-01-02 15:04:05"))
+			}
 
 			var cfg core.CliConfig
 			cfg.CorpID = claims["company_id"].(string)
 			cfg.DeptUserID = claims["dept_user_id"].(string)
 			cfg.UserToken = authToken
+			cfg.UserTokenExp = expTimestamp
 			if err := core.SaveConfig(&cfg); err != nil {
 				w.Header().Set("Content-Type", "text/html; charset=utf-8")
-				_, _ = fmt.Fprint(w, accessDeniedHTML)                                                                                                                                                                                      
-                return 
-            }         
+				_, _ = fmt.Fprint(w, accessDeniedHTML)
+				return
+			}         
 
 			w.Header().Set("Content-Type", "text/html; charset=utf-8")
 			_, _ = fmt.Fprint(w, createAppHTML)
@@ -378,85 +403,6 @@ func (p *OAuthProvider) Login(ctx context.Context, force bool) (*TokenData, erro
 			****/
 	})
 
-	// API endpoint: get super admins
-	mux.HandleFunc("/api/superAdmin", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		callbackTokenMu.Lock()
-		token := callbackToken
-		callbackTokenMu.Unlock()
-		if token == nil {
-			_, _ = w.Write([]byte(`{"success":false,"errorMsg":"授权尚未完成"}`))
-			return
-		}
-		result, err := GetSuperAdmins(ctx, token.AccessToken)
-		if err != nil {
-			_, _ = fmt.Fprintf(w, `{"success":false,"errorMsg":"%s"}`, err.Error())
-			return
-		}
-		data, _ := json.Marshal(result)
-		_, _ = w.Write(data)
-	})
-
-	// API endpoint: send CLI auth apply
-	mux.HandleFunc("/api/sendApply", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		adminStaffID := r.URL.Query().Get("adminStaffId")
-		if adminStaffID == "" {
-			_, _ = w.Write([]byte(`{"success":false,"errorMsg":"缺少 adminStaffId 参数"}`))
-			return
-		}
-		callbackTokenMu.Lock()
-		token := callbackToken
-		callbackTokenMu.Unlock()
-		if token == nil {
-			_, _ = w.Write([]byte(`{"success":false,"errorMsg":"授权尚未完成"}`))
-			return
-		}
-		result, err := SendCliAuthApply(ctx, token.AccessToken, adminStaffID)
-		if err != nil {
-			_, _ = fmt.Fprintf(w, `{"success":false,"errorMsg":"%s"}`, err.Error())
-			return
-		}
-		// Mark apply as sent and save selected admin on success
-		if result.Success && result.Result {
-			callbackTokenMu.Lock()
-			callbackApplySent = true
-			callbackSelectedAdminId = adminStaffID
-			callbackTokenMu.Unlock()
-		}
-		data, _ := json.Marshal(result)
-		_, _ = w.Write(data)
-	})
-
-	// API endpoint: get current status (clientId, applySent, selectedAdminId)
-	mux.HandleFunc("/api/status", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		callbackTokenMu.Lock()
-		applySent := callbackApplySent
-		selectedAdminId := callbackSelectedAdminId
-		callbackTokenMu.Unlock()
-		_, _ = fmt.Fprintf(w, `{"clientId":"%s","applySent":%t,"selectedAdminId":"%s"}`, p.clientID, applySent, selectedAdminId)
-	})
-
-	// API endpoint: check CLI auth enabled status
-	mux.HandleFunc("/api/cliAuthEnabled", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		callbackTokenMu.Lock()
-		token := callbackToken
-		callbackTokenMu.Unlock()
-		if token == nil {
-			_, _ = w.Write([]byte(`{"success":false,"errorMsg":"授权尚未完成"}`))
-			return
-		}
-		result, err := p.CheckCLIAuthEnabled(ctx, token.AccessToken)
-		if err != nil {
-			_, _ = fmt.Fprintf(w, `{"success":false,"errorMsg":"%s"}`, err.Error())
-			return
-		}
-		data, _ := json.Marshal(result)
-		_, _ = w.Write(data)
-	})
-
 	// Success page endpoint
 	mux.HandleFunc("/success", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
@@ -502,14 +448,12 @@ func (p *OAuthProvider) Login(ctx context.Context, force bool) (*TokenData, erro
 		formData["pc_home_url"] = "http://127.0.0.1/"
 		formData["admin_home_url"] = "http://127.0.0.1/"
 
-		// Log the request
 		if p.logger != nil {
 			p.logger.Debug("received /application/create request", "data", formData)
 		}
 
 		targetURL := OpenDevURL + "/app/admin/save"
 
-		// Load config to get company_id and token
 		cfg, err := core.LoadConfig()
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
@@ -517,18 +461,12 @@ func (p *OAuthProvider) Login(ctx context.Context, force bool) (*TokenData, erro
 			return
 		}
 
-		// Update company_id from config
 		formData["company_id"] = cfg.CorpID
-
-		// Prepare form data for forwarding
 		formValues := url.Values{}
-		fmt.Println("formData:", formData)
 		for key, value := range formData {
 			formValues.Set(key, value)
 		}
-		fmt.Println("formValues:", formValues.Encode())
 
-		// Create HTTP request with encoded form body
 		req, err := http.NewRequestWithContext(ctx, http.MethodPost, targetURL, bytes.NewBufferString(formValues.Encode()))
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
@@ -539,7 +477,6 @@ func (p *OAuthProvider) Login(ctx context.Context, force bool) (*TokenData, erro
 		req.Header.Set("Authorization", cfg.UserToken)
 		req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
-		// Send request
 		client := &http.Client{Timeout: 30 * time.Second}
 		resp, err := client.Do(req)
 		if err != nil {
@@ -549,19 +486,196 @@ func (p *OAuthProvider) Login(ctx context.Context, force bool) (*TokenData, erro
 		}
 		defer resp.Body.Close()
 
-		// Read response
 		respBody, err := io.ReadAll(resp.Body)
-
-		fmt.Println("targetURL:", targetURL)
-		fmt.Println("resp:", string(respBody))
-		fmt.Println("err:", err)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			_, _ = fmt.Fprintf(w, `{"success":false,"errorMsg":"读取响应失败: %s"}`, err.Error())
 			return
 		}
 
-		// Forward response status and body
+		var createAppResp openDevCreateAppResp
+		var createAppRespData openDevCreateAppRespData = createAppResp.Data
+
+		if parseErr := json.Unmarshal(respBody, &createAppResp); parseErr == nil {
+			fmt.Println("解析成功:")
+			//fmt.Println("  app_id:", createAppRespData.AppID)
+			//fmt.Println("  app_key:", createAppRespData.AppKey)
+			//fmt.Println("  app_secret:", createAppRespData.AppSecret)
+			//fmt.Println("  sso_secret:", createAppRespData.SSOSecret)
+			//fmt.Println("  callback_token:", createAppRespData.CallbackToken)
+			//fmt.Println("  callback_secret_key:", createAppRespData.CallbackSecretKey)
+
+			if createAppResp.Status == "ok" && createAppRespData.AppID != "" {
+				apiIDs := []string{
+					"b7eb6b6d9a4043f0926aa876d0349f03",
+					"9740733064a048a5b0ac6b75d5dc389e",
+					"bc978df97e7d47e2a21b89d7918fb5aa",
+					"74dfd424c6a44a12a56fc91bb55ed1c4",
+					"ece2f130dda3495aa8ea7e3f770f4822",
+					"a0771b255a2446ef83e333c9b99b4772",
+					"1d5fd91efb7a4a23a13ca2e33dec050f",
+					"eef81b87b633453fb082c219dbd95f68",
+					"eb9f83078d3c4a128ff9467df8e5fbb5",
+					"309e74022ea547709ac26eb57cf78548",
+					"4509d547dc0b4361b9dd04bfc25bc324",
+					"dd028d388568403fb4bd6ea6559d47ad",
+					"fe4c66d4c23e4b9bbebcbf8aa61cdab1",
+					"4813e56afbac4ec289b67fcc6a31875f",
+					"e199601543bc465faceb4a8acb7a6d23",
+					"9208cf4ee7f145b59c3fb9aaf3bd6c97",
+					"ba5f5323980a4d4fba33da7bf7ad61e6",
+					"9c048c53c7434c0b8b03509eb69e65a2",
+					"ab33950776c54219a193a249d78099bb",
+					"d8e49507af214454a74f7a0f436bfb55",
+					"26fd2148a9b04ebf9174ffba4172a949",
+					"4866657a361c4676be07346aa2cd215f",
+					"4c62c27eace6420fa4d55f05afaa84b5",
+					"7ba31117853d4080a1e37c238644a319",
+					"74c3b869307247f2b56d8b8f74b20628",
+					"5a51e7559c3841a49c74ed1c6eedd13c",
+					"193fb0abef684c56a562cbc9c86dcc65",
+					"eea3a88615ba49aa8a3753cdd9a35c5d",
+					"4a20f473684c4de98ca458d574e6167a",
+					"f5a852983c3c401c8d32a463447ae1bd",
+					"5d7c457b007d42b1b2a415e7027b28f5",
+					"181b03d70b90489e9ec44f1d6802be9a",
+					"2dd1a461476944018cf872000463c129",
+					"fcca90c5b91d48ba80092d5cf81e80a7",
+					"157430225d9c46609da3193b7885ae4e",
+					"06e9ec3dfc5845cead08c2524c47360a",
+					"5a81dd42e6614e899e08bbd476dea5af",
+					"8469980852d74c6da8c9790ea3a60361",
+					"0aceab02da2a4c919ac6ff1028251ac7",
+					"cfc3156b05c343bcbfea399c1219cbf9",
+					"d9a8146b1ad04399b07b9187a9aaa134",
+					"37558aa2d52b47ca8a5538964e66169b",
+					"407bc13fd5ea443f9810a1458ef2f75e",
+					"06e9ec3dfc5845cead08c2524c47360a",
+					"5a81dd42e6614e899e08bbd476dea5af",
+					"8469980852d74c6da8c9790ea3a60361",
+					"963428e849c9423b8177ac3bf347c92a",
+					"627CF91D-12EB-44C6-80C5-B4525DC07367",
+					"E5B40A4F-9E4C-4C8B-A415-79CB0AB6C3C4",
+					"67C4D358-90E9-49E5-8CB2-57DC392F8273",
+					"0AD9331B-DB79-4463-BEEE-EF7E092D472A",
+					"4A133CBC-86F4-40CD-B49B-36E27E94E9B7",
+					"CC497FA9-FA44-4F68-9285-0E5DF5890173",
+					"63D0E938-9C6F-4962-A818-C1982A017F78",
+					"F3808DC2-3BB8-4F56-904C-6D95B3B1D285",
+					"0275a5c1bcff477cbf364d454295ca0f",
+					"d81efab5b1d84d82aaa8bf5029b48c94",
+					"da8411085f7c4cf8b5052d2de48acb51",
+					"d9a8146b1ad04399b07b9187a9aaa134",
+				}
+
+				// Prepare form data for permission save
+				permFormValues := url.Values{}
+				permFormValues.Set("app_id", createAppRespData.AppID)
+				for i, apiID := range apiIDs {
+					permFormValues.Add(fmt.Sprintf("api_id[%d]", i), apiID)
+				}
+
+
+				permissionURL := OpenDevURL + "/ApplicationPermission/save"
+				permSaveReq, permReqErr := http.NewRequestWithContext(ctx, http.MethodPost, permissionURL, bytes.NewBufferString(permFormValues.Encode()))
+				if permReqErr == nil {
+					permSaveReq.Header.Set("Authorization", cfg.UserToken)
+					permSaveReq.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+
+					permClient := &http.Client{Timeout: 30 * time.Second}
+					permSaveResp, permSaveErr := permClient.Do(permSaveReq)
+					if permSaveErr == nil {
+						defer permSaveResp.Body.Close()
+						permSaveBody, _ := io.ReadAll(permSaveResp.Body)
+						fmt.Println("Permission save response:", string(permSaveBody))
+
+						// Save app credentials to config after successful permission save
+						cfg.AppID = createAppRespData.AppID
+						cfg.AppSecret = createAppRespData.AppSecret
+
+						if saveErr := core.SaveConfig(cfg); saveErr != nil {
+							fmt.Println("Save config error:", saveErr)
+						} else {
+							fmt.Println("App credentials saved to config successfully")
+							fmt.Println("  app_id:", createAppRespData.AppID)
+							fmt.Println("  app_key:", createAppRespData.AppKey)
+							fmt.Println("  app_secret:", createAppRespData.AppSecret)
+							fmt.Println("  sso_secret:", createAppRespData.SSOSecret)
+							fmt.Println("  callback_token:", createAppRespData.CallbackToken)
+							fmt.Println("  callback_secret_key:", createAppRespData.CallbackSecretKey)
+						}
+					} else {
+						fmt.Println("Permission save error:", permSaveErr)
+					}
+				}
+			}
+		} else {
+			fmt.Println("JSON 解析失败:", parseErr)
+		}
+
+		w.WriteHeader(resp.StatusCode)
+		_, _ = w.Write(respBody)
+	})
+
+
+	mux.HandleFunc("/apiList", func(w http.ResponseWriter, r *http.Request) {
+		if p.logger != nil {
+			p.logger.Debug("received /apiList request")
+		}
+
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		_, _ = w.Write([]byte(apiListHTML))
+	})
+
+
+	mux.HandleFunc("/apiList/data", func(w http.ResponseWriter, r *http.Request) {
+		if p.logger != nil {
+			p.logger.Debug("received /apiList/data request")
+		}
+
+		cfg, err := core.LoadConfig()
+		if err != nil {
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusInternalServerError)
+			_, _ = fmt.Fprintf(w, `{"status":"error","message":"加载配置失败: %s"}`, err.Error())
+			return
+		}
+
+		apiURL := OpenDevURL + "/ApplicationPermission/index"
+		req, err := http.NewRequestWithContext(ctx, http.MethodGet, apiURL, nil)
+		if err != nil {
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusInternalServerError)
+			_, _ = fmt.Fprintf(w, `{"status":"error","message":"创建请求失败: %s"}`, err.Error())
+			return
+		}
+
+		req.Header.Set("Authorization", cfg.UserToken)
+		req.Header.Set("Content-Type", "application/json")
+
+		client := &http.Client{Timeout: 30 * time.Second}
+		resp, err := client.Do(req)
+		if err != nil {
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusInternalServerError)
+			_, _ = fmt.Fprintf(w, `{"status":"error","message":"请求失败: %s"}`, err.Error())
+			return
+		}
+		defer resp.Body.Close()
+
+		respBody, err := io.ReadAll(resp.Body)
+		if err != nil {
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusInternalServerError)
+			_, _ = fmt.Fprintf(w, `{"status":"error","message":"读取响应失败: %s"}`, err.Error())
+			return
+		}
+
+		if p.logger != nil {
+			p.logger.Debug("fetched permissions", "response", string(respBody))
+		}
+
+		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(resp.StatusCode)
 		_, _ = w.Write(respBody)
 	})
@@ -582,8 +696,6 @@ func (p *OAuthProvider) Login(ctx context.Context, force bool) (*TokenData, erro
 	}()
 
 	authURL := buildAuthURL(redirectURI)
-	fmt.Println("authURL:", authURL)
-	fmt.Println("port:", port)
 	if p.logger != nil {
 		p.logger.Debug("authorization URL", "url", authURL)
 	}
@@ -592,7 +704,7 @@ func (p *OAuthProvider) Login(ctx context.Context, force bool) (*TokenData, erro
 	}
 
 	_, _ = fmt.Fprintln(p.output(), "")
-	_, _ = fmt.Fprintln(p.output(), "🔐 登录钉钉")
+	_, _ = fmt.Fprintln(p.output(), "🔐 登录授客")
 	_, _ = fmt.Fprintln(p.output(), "")
 	_, _ = fmt.Fprintln(p.output(), "请在浏览器中完成扫码授权。")
 	_, _ = fmt.Fprintf(p.output(), "如果浏览器未自动打开，请手动访问:\n  %s\n\n", authURL)

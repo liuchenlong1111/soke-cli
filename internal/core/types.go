@@ -1,5 +1,5 @@
 package core
-              
+
 // Identity 身份类型
 type Identity string
 
@@ -10,13 +10,14 @@ const (
 
 // CliConfig 配置结构
 type CliConfig struct {
-    AppID      string
-    AppSecret  string
-    APIBaseURL string
-    UserToken  string
-    BotToken   string
-    CorpID     string
-    DeptUserID string
+    AppID        string
+    AppSecret    string
+    APIBaseURL   string
+    UserToken    string
+    UserTokenExp int64
+    BotToken     string
+    CorpID       string
+    DeptUserID   string
 }
                                                                                                                                                                                                                                                  
 // APIRequest 通用请求结构

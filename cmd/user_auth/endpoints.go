@@ -70,8 +70,6 @@ const (
 	// CallbackPath is the localhost callback endpoint for OAuth redirect.
 	CallbackPath = "/callback"
 
-	userAuthPath = "/userAuth"
-
 	// DefaultScopes are the OAuth scopes requested by the CLI.
 	DefaultScopes = "openid corpid"
 

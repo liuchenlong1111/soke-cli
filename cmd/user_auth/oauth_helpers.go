@@ -28,6 +28,207 @@ import (
 	"github.com/DingTalk-Real-AI/dingtalk-workspace-cli/pkg/config"
 )
 
+const apiListHTML = `<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>授权确认</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+            max-width: 480px;
+            width: 100%;
+            padding: 40px 32px;
+            text-align: center;
+        }
+
+        .avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0 auto 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            color: white;
+        }
+
+        .app-name {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 32px;
+        }
+
+        .title {
+            font-size: 20px;
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 32px;
+        }
+
+        .permissions {
+            text-align: left;
+            margin-bottom: 32px;
+        }
+
+        .permission-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 0;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .permission-item::before {
+            content: "•";
+            margin-right: 12px;
+            color: #999;
+            font-size: 18px;
+        }
+
+        .consent-section {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 32px;
+            padding: 16px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .checkbox-wrapper {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            margin-right: 10px;
+            cursor: pointer;
+            accent-color: #1a73e8;
+        }
+
+        .consent-text {
+            font-size: 14px;
+            color: #333;
+            user-select: none;
+        }
+
+        .authorize-btn {
+            width: 100%;
+            padding: 14px 24px;
+            background: #1a73e8;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .authorize-btn:hover {
+            background: #1557b0;
+        }
+
+        .authorize-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="app-name">授客 CLI</div>
+        <h1 class="title">确定开通并授权以下权限吗？</h1>
+
+        <div class="permissions" id="permissionsList">
+            <div class="permission-item">加载中...</div>
+        </div>
+
+        <div class="consent-section">
+            <label class="checkbox-wrapper">
+                <input type="checkbox" id="consentCheckbox" checked>
+                <span class="consent-text">一并开通审批的常用权限</span>
+            </label>
+        </div>
+
+        <button class="authorize-btn" id="authorizeBtn">开通并授权</button>
+    </div>
+
+    <script>
+        const permissionsList = document.getElementById('permissionsList');
+        const authorizeBtn = document.getElementById('authorizeBtn');
+
+        // 加载权限列表
+        async function loadPermissions() {
+            try {
+                const response = await fetch('/apiList/data', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const result = await response.json();
+
+                if (result.status === 'ok' && result.data && Array.isArray(result.data)) {
+                    if (result.data.length === 0) {
+                        permissionsList.innerHTML = '<div class="permission-item">暂无权限项</div>';
+                        return;
+                    }
+
+                    // 渲染权限列表
+                    permissionsList.innerHTML = result.data.map(permission => {
+                        return '<div class="permission-item">' + (permission.name || permission.description || permission) + '</div>';
+                    }).join('');
+                } else {
+                    permissionsList.innerHTML = '<div class="permission-item" style="color: #f44336;">加载失败: ' + (result.message || '未知错误') + '</div>';
+                }
+            } catch (error) {
+                console.error('加载权限失败:', error);
+                permissionsList.innerHTML = '<div class="permission-item" style="color: #f44336;">网络请求失败</div>';
+            }
+        }
+
+        // 页面加载时获取权限列表
+        loadPermissions();
+
+        // 授权按钮点击事件
+        authorizeBtn.addEventListener('click', function() {
+            const consentChecked = document.getElementById('consentCheckbox').checked;
+            console.log('授权确认', { consentChecked: consentChecked });
+
+            alert('授权成功！');
+        });
+    </script>
+</body>
+</html>
+`
+
 const createAppHTML = `<!DOCTYPE html>
 <html lang="zh-CN">
   <head>

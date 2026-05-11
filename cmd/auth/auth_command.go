@@ -40,7 +40,7 @@ func NewUserAuthCommand() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:               "user-auth",
 		Short:             "用户认证管理",
-		Long:              "管理钉钉 CLI 的认证凭证。支持 OAuth 扫码登录和 Device Flow。",
+		Long:              "管理钉钉 CLI 的认证凭证。支持 OAuth 扫码登录。",
 		Args:              cobra.NoArgs,
 		TraverseChildren:  true,
 		DisableAutoGenTag: true,
@@ -89,7 +89,7 @@ func newAuthLoginCommand() *cobra.Command {
 			//configDir := defaultConfigDir()
 			configDir := ""
 			var tokenData *authpkg.TokenData
-			fmt.Println(cfg)
+			//fmt.Println(cfg)
 
 			switch {
 			case strings.TrimSpace(cfg.Token) != "":
@@ -101,7 +101,6 @@ func newAuthLoginCommand() *cobra.Command {
 					return apperrors.NewInternal(fmt.Sprintf("failed to persist auth token: %v", err))
 				}
 			case cfg.Device:
-				fmt.Println("11111")
 				loginCtx, cancel := context.WithTimeout(cmd.Context(), config.DeviceFlowTimeout)
 				defer cancel()
 
