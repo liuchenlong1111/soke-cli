@@ -23,7 +23,7 @@ var PositionList = common.Shortcut{
 	},
 	DryRun: func(ctx context.Context, runtime *common.RuntimeContext) *common.DryRunAPI {
 		return common.NewDryRunAPI().
-			GET(runtime.Config.APIBaseURL + "/position/external/list").
+			GET("/position/external/list").
 			Desc("List positions").
 			Params(map[string]interface{}{
 				"page":      runtime.Int("page"),

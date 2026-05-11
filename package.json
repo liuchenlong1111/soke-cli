@@ -1,15 +1,35 @@
- {                                                                                                                                                                                                                                              
+{
     "name": "@sokeai/cli",
-    "version": "1.0.0",                                                                                                                                                                                                                          
-    "description": "授客AI官方CLI工具",                                                                                                                                                                                                          
-    "bin": {                                                                                                                                                                                                                                     
-        "soke-cli": "scripts/run.js"                                                                                                                                                                                                             
-    },                                                                                                                                                                                                                                           
-    "scripts": {                                                                                                                                                                                                                                 
-        "postinstall": "node scripts/install.js"                                                                                                                                                                                                   
-    },                                                                                                                                                                                                                                           
-    "files": [                                                                                                                                                                                                                                   
-        "scripts/",                                                                                                                                                                                                                                
-        "bin/"                                                                                                                                                                                                                                     
-    ]                                                                                                                                                                                                                                            
-}      
+    "version": "1.0.6",
+    "description": "授客AI官方CLI工具 - 支持AI Agent Skills",
+    "bin": {
+        "soke-cli": "scripts/run.js"
+    },
+    "scripts": {
+        "postinstall": "node scripts/install.js",
+        "build": "./scripts/build-binaries.sh",
+        "release": "./scripts/release.sh"
+    },
+    "files": [
+        "scripts/"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/liuchenlong1111/soke-cli.git"
+    },
+    "keywords": [
+        "soke",
+        "cli",
+        "授客AI",
+        "shouke",
+        "command-line",
+        "ai-agent",
+        "skills",
+        "claude-code"
+    ],
+    "author": "授客AI",
+    "license": "MIT",
+    "engines": {
+        "node": ">=14.0.0"
+    }
+}

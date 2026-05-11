@@ -22,7 +22,7 @@ var PointGetConsume = common.Shortcut{
 	},
 	DryRun: func(ctx context.Context, runtime *common.RuntimeContext) *common.DryRunAPI {
 		return common.NewDryRunAPI().
-			GET(runtime.Config.APIBaseURL + "/user/point/consume").
+			GET("/user/point/consume").
 			Desc("Get point consume order details").
 			Params(map[string]interface{}{
 				"trade_no": runtime.Str("trade-no"),

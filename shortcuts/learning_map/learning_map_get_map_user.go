@@ -23,7 +23,7 @@ var LearningMapGetMapUser = common.Shortcut{
 	},
 	DryRun: func(ctx context.Context, runtime *common.RuntimeContext) *common.DryRunAPI {
 		return common.NewDryRunAPI().
-			GET(runtime.Config.APIBaseURL + "/learningMap/learningMapUser/info").
+			GET("/learningMap/learningMapUser/info").
 			Desc("Get learning map user details").
 			Params(map[string]interface{}{
 				"map_id":       runtime.Str("map-id"),

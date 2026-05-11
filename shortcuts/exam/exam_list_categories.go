@@ -23,7 +23,7 @@ var ExamListCategories = common.Shortcut{
 	},
 	DryRun: func(ctx context.Context, runtime *common.RuntimeContext) *common.DryRunAPI {
 		return common.NewDryRunAPI().
-			GET(runtime.Config.APIBaseURL + "/exam/category/list").
+			GET("/exam/category/list").
 			Desc("List exam categories").
 			Params(map[string]interface{}{
 				"page":      runtime.Int("page"),

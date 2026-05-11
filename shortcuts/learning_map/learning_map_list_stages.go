@@ -24,7 +24,7 @@ var LearningMapListStages = common.Shortcut{
 	},
 	DryRun: func(ctx context.Context, runtime *common.RuntimeContext) *common.DryRunAPI {
 		return common.NewDryRunAPI().
-			GET(runtime.Config.APIBaseURL + "/learningMap/learningStage/list").
+			GET("/learningMap/learningStage/list").
 			Desc("List learning map stages").
 			Params(map[string]interface{}{
 				"map_id":    runtime.Str("map-id"),

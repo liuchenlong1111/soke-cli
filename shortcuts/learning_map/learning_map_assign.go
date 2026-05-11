@@ -35,7 +35,7 @@ var LearningMapAssign = common.Shortcut{
 			params["assign_dept_ids"] = assignDeptIDs
 		}
 		return common.NewDryRunAPI().
-			POST(runtime.Config.APIBaseURL + "/learningMap/learningMap/assign").
+			POST("/learningMap/learningMap/assign").
 			Desc("Assign learning map to users").
 			Params(params)
 	},

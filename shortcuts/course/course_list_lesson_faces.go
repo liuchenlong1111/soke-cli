@@ -33,7 +33,7 @@ var CourseListLessonFaces = common.Shortcut{
 			params["userid_list"] = useridList
 		}
 		return common.NewDryRunAPI().
-			GET(runtime.Config.APIBaseURL + "/course/lessonFace/list").
+			GET("/course/lessonFace/list").
 			Desc("List lesson face recognition records").
 			Params(params)
 	},

@@ -24,7 +24,7 @@ var PositionUpdate = common.Shortcut{
 	},
 	DryRun: func(ctx context.Context, runtime *common.RuntimeContext) *common.DryRunAPI {
 		return common.NewDryRunAPI().
-			POST(runtime.Config.APIBaseURL + "/position/external/update").
+			POST("/position/external/update").
 			Desc("Update position").
 			Params(map[string]interface{}{
 				"position_id": runtime.Str("position-id"),

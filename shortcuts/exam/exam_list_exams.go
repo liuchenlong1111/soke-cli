@@ -35,7 +35,7 @@ var ExamListExams = common.Shortcut{
 			params["status"] = status
 		}
 		return common.NewDryRunAPI().
-			GET(runtime.Config.APIBaseURL + "/exam/exam/list").
+			GET("/exam/exam/list").
 			Desc("List exams").
 			Params(params)
 	},

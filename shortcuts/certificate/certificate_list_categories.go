@@ -23,7 +23,7 @@ var CertificateListCategories = common.Shortcut{
 	},
 	DryRun: func(ctx context.Context, runtime *common.RuntimeContext) *common.DryRunAPI {
 		return common.NewDryRunAPI().
-			GET(runtime.Config.APIBaseURL + "/certificate/category/list").
+			GET("/certificate/category/list").
 			Desc("List certificate categories").
 			Params(map[string]interface{}{
 				"page":      runtime.Int("page"),

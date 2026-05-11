@@ -35,7 +35,7 @@ var TrainingAssign = common.Shortcut{
 			params["assign_dept_ids"] = assignDeptIDs
 		}
 		return common.NewDryRunAPI().
-			POST(runtime.Config.APIBaseURL + "/training/training/assign").
+			POST("/training/training/assign").
 			Desc("Assign training to users").
 			Params(params)
 	},

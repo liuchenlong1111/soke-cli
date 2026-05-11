@@ -35,7 +35,7 @@ var NewsListNews = common.Shortcut{
 			params["status"] = status
 		}
 		return common.NewDryRunAPI().
-			GET(runtime.Config.APIBaseURL + "/news/news/list").
+			GET("/news/news/list").
 			Desc("List news").
 			Params(params)
 	},

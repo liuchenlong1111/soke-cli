@@ -45,7 +45,7 @@ var CourseListLessonLearns = common.Shortcut{
 			params["finish_end_time"] = finishEndTime
 		}
 		return common.NewDryRunAPI().
-			GET(runtime.Config.APIBaseURL + "/course/lessonLearn/list").
+			GET("/course/lessonLearn/list").
 			Desc("List lesson learning records").
 			Params(params)
 	},

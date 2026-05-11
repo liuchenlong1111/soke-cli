@@ -61,7 +61,7 @@ var LearningMapCreate = common.Shortcut{
 			params["unlock_type"] = unlockType
 		}
 		return common.NewDryRunAPI().
-			POST(runtime.Config.APIBaseURL + "/learningMap/learningMap/create").
+			POST("/learningMap/learningMap/create").
 			Desc("Create learning map").
 			Params(params)
 	},

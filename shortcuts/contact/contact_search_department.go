@@ -32,7 +32,7 @@ var ContactSearchDepartment = common.Shortcut{
 		pageSize := runtime.Int("page-size")
 
 		return common.NewDryRunAPI().
-			POST(runtime.Config.APIBaseURL + "/oa/department/searchDepartmentByName").
+			POST("/oa/department/searchDepartmentByName").
 			Desc("Search departments by name").
 			Body(map[string]interface{}{
 				"dept_name": deptName,
@@ -48,7 +48,7 @@ var ContactSearchDepartment = common.Shortcut{
 			"page_size": pageSize,
 		}
 
-		data, err := runtime.CallAPI("POST", runtime.Config.APIBaseURL+"/oa/department/searchDepartmentByName", nil, body)
+		data, err := runtime.CallAPI("POST", "/oa/department/searchDepartmentByName", nil, body)
 		if err != nil {
 			return err
 		}

@@ -23,7 +23,7 @@ var PositionCreate = common.Shortcut{
 	},
 	DryRun: func(ctx context.Context, runtime *common.RuntimeContext) *common.DryRunAPI {
 		return common.NewDryRunAPI().
-			POST(runtime.Config.APIBaseURL + "/position/external/create").
+			POST("/position/external/create").
 			Desc("Create position").
 			Params(map[string]interface{}{
 				"position": runtime.Str("position"),

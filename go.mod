@@ -2,6 +2,8 @@ module codeup.aliyun.com/5edbc121d1d1abe63b55f1c7/soke/soke-cli
 
 go 1.25.8
 
+require github.com/spf13/cobra v1.10.2
+
 require (
 	github.com/DingTalk-Real-AI/dingtalk-workspace-cli v1.0.22
 	github.com/fatih/color v1.19.0

@@ -41,7 +41,7 @@ var LearningMapListMapUsers = common.Shortcut{
 			params["end_time"] = endTime
 		}
 		return common.NewDryRunAPI().
-			GET(runtime.Config.APIBaseURL + "/learningMap/learningMapUser/list").
+			GET("/learningMap/learningMapUser/list").
 			Desc("List learning map user results").
 			Params(params)
 	},

@@ -25,7 +25,7 @@ var PointUpdateConsume = common.Shortcut{
 	},
 	DryRun: func(ctx context.Context, runtime *common.RuntimeContext) *common.DryRunAPI {
 		return common.NewDryRunAPI().
-			POST(runtime.Config.APIBaseURL + "/user/point/consumeUpdate").
+			POST("/user/point/consumeUpdate").
 			Desc("Add or reduce user points").
 			Params(map[string]interface{}{
 				"trade_no":     runtime.Str("trade-no"),

@@ -51,7 +51,11 @@ func createShortcutCommand(s common.Shortcut) *cobra.Command {
 	for _, flag := range s.Flags {
 		switch flag.Type {
 		case "int":
-			cmd.Flags().Int(flag.Name, 0, flag.Desc)
+			defaultVal := 0
+			if flag.Default != "" {
+				defaultVal = parseInt(flag.Default)
+			}
+			cmd.Flags().Int(flag.Name, defaultVal, flag.Desc)
 		default:
 			cmd.Flags().String(flag.Name, flag.Default, flag.Desc)
 		}
@@ -61,4 +65,14 @@ func createShortcutCommand(s common.Shortcut) *cobra.Command {
 	}
 
 	return cmd
+}
+
+func parseInt(s string) int {
+	var result int
+	for _, c := range s {
+		if c >= '0' && c <= '9' {
+			result = result*10 + int(c-'0')
+		}
+	}
+	return result
 }

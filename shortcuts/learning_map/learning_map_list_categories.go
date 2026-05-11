@@ -23,7 +23,7 @@ var LearningMapListCategories = common.Shortcut{
 	},
 	DryRun: func(ctx context.Context, runtime *common.RuntimeContext) *common.DryRunAPI {
 		return common.NewDryRunAPI().
-			GET(runtime.Config.APIBaseURL + "/learningMap/category/list").
+			GET("/learningMap/category/list").
 			Desc("List learning map categories").
 			Params(map[string]interface{}{
 				"page":      runtime.Int("page"),

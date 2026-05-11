@@ -39,7 +39,7 @@ var LearningMapListMaps = common.Shortcut{
 			params["status"] = status
 		}
 		return common.NewDryRunAPI().
-			GET(runtime.Config.APIBaseURL + "/learningMap/learningMap/list").
+			GET("/learningMap/learningMap/list").
 			Desc("List learning maps").
 			Params(params)
 	},

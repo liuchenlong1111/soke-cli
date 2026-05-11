@@ -43,7 +43,7 @@ var CourseListCourses = common.Shortcut{
 			params["status"] = runtime.Int("status")
 		}
 		return common.NewDryRunAPI().
-			GET(runtime.Config.APIBaseURL + "/course/course/list").
+			GET("/course/course/list").
 			Desc("List courses").
 			Params(params)
 	},

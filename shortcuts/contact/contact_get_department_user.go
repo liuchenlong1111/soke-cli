@@ -24,7 +24,7 @@ var ContactGetDepartmentUser = common.Shortcut{
 	DryRun: func(ctx context.Context, runtime *common.RuntimeContext) *common.DryRunAPI {
 		deptUserID := runtime.Str("dept-user-id")
 		return common.NewDryRunAPI().
-			GET(runtime.Config.APIBaseURL + "/oa/departmentUser/info").
+			GET("/oa/departmentUser/info").
 			Desc("Get department user details").
 			Params(map[string]interface{}{"dept_user_id": deptUserID})
 	},
@@ -32,7 +32,7 @@ var ContactGetDepartmentUser = common.Shortcut{
 		deptUserID := runtime.Str("dept-user-id")
 
 		params := map[string]interface{}{"dept_user_id": deptUserID}
-		data, err := runtime.CallAPI("GET", runtime.Config.APIBaseURL+"/oa/departmentUser/info", params, nil)
+		data, err := runtime.CallAPI("GET", "/oa/departmentUser/info", params, nil)
 		if err != nil {
 			return err
 		}

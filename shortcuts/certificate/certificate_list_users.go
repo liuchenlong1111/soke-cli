@@ -49,7 +49,7 @@ var CertificateListUsers = common.Shortcut{
 			params["update_end_time"] = updateEndTime
 		}
 		return common.NewDryRunAPI().
-			GET(runtime.Config.APIBaseURL + "/certificate/user/list").
+			GET("/certificate/user/list").
 			Desc("List certificate users").
 			Params(params)
 	},

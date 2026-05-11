@@ -35,7 +35,7 @@ var TrainingListTrainings = common.Shortcut{
 			params["status"] = status
 		}
 		return common.NewDryRunAPI().
-			GET(runtime.Config.APIBaseURL + "/training/training/list").
+			GET("/training/training/list").
 			Desc("List trainings").
 			Params(params)
 	},

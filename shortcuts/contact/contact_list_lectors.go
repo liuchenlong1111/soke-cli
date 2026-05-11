@@ -25,7 +25,7 @@ var ContactListLectors = common.Shortcut{
 		page := runtime.Int("page")
 		pageSize := runtime.Int("page-size")
 		return common.NewDryRunAPI().
-			GET(runtime.Config.APIBaseURL + "/lector/lector/list").
+			GET("/lector/lector/list").
 			Desc("List lectors").
 			Params(map[string]interface{}{
 				"page":      page,
@@ -41,7 +41,7 @@ var ContactListLectors = common.Shortcut{
 			"page_size": pageSize,
 		}
 
-		data, err := runtime.CallAPI("GET", runtime.Config.APIBaseURL+"/lector/lector/list", params, nil)
+		data, err := runtime.CallAPI("GET", "/lector/lector/list", params, nil)
 		if err != nil {
 			return err
 		}

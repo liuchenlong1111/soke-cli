@@ -30,7 +30,7 @@ var PointGetUserInfo = common.Shortcut{
 			params["user_id"] = userID
 		}
 		return common.NewDryRunAPI().
-			GET(runtime.Config.APIBaseURL + "/user/point/info").
+			GET("/user/point/info").
 			Desc("Get user point info").
 			Params(params)
 	},

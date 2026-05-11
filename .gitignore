@@ -1,3 +1,15 @@
 soke-cli
 settings.local.json
 coverage.out
+
+# 编译产物
+bin/
+*.exe
+
+# NPM
+node_modules/
+package-lock.json
+
+# 临时文件
+*.log
+.DS_Store

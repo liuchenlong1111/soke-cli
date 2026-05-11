@@ -25,7 +25,7 @@ var CourseListCategories = common.Shortcut{
 		page := runtime.Int("page")
 		pageSize := runtime.Int("page-size")
 		return common.NewDryRunAPI().
-			GET(runtime.Config.APIBaseURL + "/course/category/list").
+			GET("/course/category/list").
 			Desc("List course categories").
 			Params(map[string]interface{}{
 				"page":      page,

@@ -23,7 +23,7 @@ var TrainingGetUser = common.Shortcut{
 	},
 	DryRun: func(ctx context.Context, runtime *common.RuntimeContext) *common.DryRunAPI {
 		return common.NewDryRunAPI().
-			GET(runtime.Config.APIBaseURL + "/training/user/info").
+			GET("/training/user/info").
 			Desc("Get training user details").
 			Params(map[string]interface{}{
 				"training_id":  runtime.Str("training-id"),

@@ -29,7 +29,7 @@ var ContactListGroups = common.Shortcut{
 		page := runtime.Int("page")
 		pageSize := runtime.Int("page-size")
 		return common.NewDryRunAPI().
-			GET(runtime.Config.APIBaseURL + "/oa/group/list").
+			GET("/oa/group/list").
 			Desc("List user groups").
 			Params(map[string]interface{}{
 				"start_time": startTime,
@@ -51,7 +51,7 @@ var ContactListGroups = common.Shortcut{
 			"page_size":  pageSize,
 		}
 
-		data, err := runtime.CallAPI("GET", runtime.Config.APIBaseURL+"/oa/group/list", params, nil)
+		data, err := runtime.CallAPI("GET", "/oa/group/list", params, nil)
 		if err != nil {
 			return err
 		}

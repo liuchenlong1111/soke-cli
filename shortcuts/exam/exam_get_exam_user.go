@@ -25,7 +25,7 @@ var ExamGetExamUser = common.Shortcut{
 		examID := runtime.Str("exam-id")
 		deptUserID := runtime.Str("dept-user-id")
 		return common.NewDryRunAPI().
-			GET(runtime.Config.APIBaseURL + "/exam/user/info").
+			GET("/exam/user/info").
 			Desc("Get exam user details").
 			Params(map[string]interface{}{
 				"exam_id":      examID,
