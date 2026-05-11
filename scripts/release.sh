@@ -199,8 +199,8 @@ main() {
     echo -e "NPM: ${BLUE}https://www.npmjs.com/package/@sokeai/cli${NC}"
     echo -e "GitHub: ${BLUE}https://github.com/sokeai/soke-cli/releases/tag/v${VERSION}${NC}"
     echo ""
-    echo "用户可以通过以下命令安装:"
-    echo -e "${YELLOW}npm install -g @sokeai/cli${NC}"
+    echo "安装或升级到最新版本:"
+    echo -e "${YELLOW}npm install -g @sokeai/cli@latest${NC}"
 }
 
 # 确认发布
