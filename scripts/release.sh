@@ -75,14 +75,24 @@ check_tag() {
 
 # 运行测试
 run_tests() {
-    echo -e "${YELLOW}运行测试...${NC}"
+    echo -e "${YELLOW}运行单元测试...${NC}"
 
     if ! go test ./...; then
-        echo -e "${RED}错误: 测试失败${NC}"
+        echo -e "${RED}错误: 单元测试失败${NC}"
         exit 1
     fi
 
-    echo -e "${GREEN}✓ 测试通过${NC}"
+    echo -e "${GREEN}✓ 单元测试通过${NC}"
+    echo ""
+
+    echo -e "${YELLOW}运行端到端测试...${NC}"
+
+    if ! ./scripts/e2e-test.sh; then
+        echo -e "${RED}错误: 端到端测试失败${NC}"
+        exit 1
+    fi
+
+    echo -e "${GREEN}✓ 端到端测试通过${NC}"
     echo ""
 }
 

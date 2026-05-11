@@ -7,11 +7,13 @@ import (
 	"codeup.aliyun.com/5edbc121d1d1abe63b55f1c7/soke/soke-cli/cmd/api"
 	"codeup.aliyun.com/5edbc121d1d1abe63b55f1c7/soke/soke-cli/cmd/auth"
 	"codeup.aliyun.com/5edbc121d1d1abe63b55f1c7/soke/soke-cli/cmd/certificate"
+	"codeup.aliyun.com/5edbc121d1d1abe63b55f1c7/soke/soke-cli/cmd/clock"
 	"codeup.aliyun.com/5edbc121d1d1abe63b55f1c7/soke/soke-cli/cmd/config"
 	"codeup.aliyun.com/5edbc121d1d1abe63b55f1c7/soke/soke-cli/cmd/contact"
 	"codeup.aliyun.com/5edbc121d1d1abe63b55f1c7/soke/soke-cli/cmd/course"
 	"codeup.aliyun.com/5edbc121d1d1abe63b55f1c7/soke/soke-cli/cmd/credit"
 	"codeup.aliyun.com/5edbc121d1d1abe63b55f1c7/soke/soke-cli/cmd/exam"
+	"codeup.aliyun.com/5edbc121d1d1abe63b55f1c7/soke/soke-cli/cmd/file"
 	"codeup.aliyun.com/5edbc121d1d1abe63b55f1c7/soke/soke-cli/cmd/learning_map"
 	"codeup.aliyun.com/5edbc121d1d1abe63b55f1c7/soke/soke-cli/cmd/news"
 	"codeup.aliyun.com/5edbc121d1d1abe63b55f1c7/soke/soke-cli/cmd/point"
@@ -49,4 +51,6 @@ func init() {
 	rootCmd.AddCommand(learning_map.NewLearningMapCmd())
 	rootCmd.AddCommand(training.NewTrainingCmd())
 	rootCmd.AddCommand(news.NewNewsCmd())
+	rootCmd.AddCommand(clock.NewClockCmd())
+	rootCmd.AddCommand(file.NewFileCmd())
 }
