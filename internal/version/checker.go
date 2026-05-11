@@ -7,11 +7,13 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strconv"
+	"strings"
 	"time"
 )
 
 // 当前版本（编译时注入）
-var Version = "1.0.3"
+var Version = "1.0.6"
 
 // NPM 注册表响应结构
 type npmRegistryResponse struct {
@@ -91,9 +93,52 @@ func fetchLatestVersion() (string, error) {
 	return npmResp.DistTags.Latest, nil
 }
 
-// 比较版本号（简单字符串比较）
+// 解析版本号为数字数组
+func parseVersion(version string) ([]int, error) {
+	parts := strings.Split(version, ".")
+	if len(parts) != 3 {
+		return nil, fmt.Errorf("无效的版本号格式: %s", version)
+	}
+
+	result := make([]int, 3)
+	for i, part := range parts {
+		num, err := strconv.Atoi(part)
+		if err != nil {
+			return nil, fmt.Errorf("无效的版本号部分: %s", part)
+		}
+		result[i] = num
+	}
+
+	return result, nil
+}
+
+// 比较版本号（语义化版本比较）
 func isNewerVersion(latest, current string) bool {
-	return latest != current && latest > current
+	if latest == current {
+		return false
+	}
+
+	latestParts, err := parseVersion(latest)
+	if err != nil {
+		return false
+	}
+
+	currentParts, err := parseVersion(current)
+	if err != nil {
+		return false
+	}
+
+	// 比较主版本号、次版本号、修订号
+	for i := 0; i < 3; i++ {
+		if latestParts[i] > currentParts[i] {
+			return true
+		}
+		if latestParts[i] < currentParts[i] {
+			return false
+		}
+	}
+
+	return false
 }
 
 // CheckForUpdates 检查更新（带缓存机制，每24小时检查一次）
@@ -128,6 +173,11 @@ func CheckForUpdates() {
 	if isNewerVersion(latestVersion, Version) {
 		printUpdateNotice(latestVersion)
 	}
+}
+
+// CheckForUpdatesAsync 异步检查更新（用于 PersistentPreRun）
+func CheckForUpdatesAsync() {
+	go CheckForUpdates()
 }
 
 // 打印更新提示

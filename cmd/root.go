@@ -33,8 +33,8 @@ var rootCmd = &cobra.Command{
 	   soke-cli api GET /users/me
 	   soke-cli calendar list`,
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
-		// 在每次命令执行前检查更新（异步，不阻塞）
-		go version.CheckForUpdates()
+		// 在每次命令执行前检查更新（同步执行，使用缓存快速返回）
+		version.CheckForUpdates()
 	},
 }
 

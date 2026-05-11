@@ -42,7 +42,7 @@ get_current_version() {
 }
 
 # 更新 package.json 中的版本号
-update_version() {
+update_package_json_version() {
     local new_version=$1
 
     if [[ "$OSTYPE" == "darwin"* ]]; then
@@ -54,6 +54,35 @@ update_version() {
     fi
 
     print_info "已更新 package.json 版本号为: ${GREEN}${new_version}${NC}"
+}
+
+# 更新 internal/version/checker.go 中的版本号
+update_version_checker() {
+    local new_version=$1
+    local version_file="internal/version/checker.go"
+
+    if [[ ! -f "$version_file" ]]; then
+        print_warning "未找到 $version_file 文件，跳过更新"
+        return
+    fi
+
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+        # macOS 使用 BSD sed
+        sed -i '' "s/var Version = \".*\"/var Version = \"$new_version\"/" "$version_file"
+    else
+        # Linux 使用 GNU sed
+        sed -i "s/var Version = \".*\"/var Version = \"$new_version\"/" "$version_file"
+    fi
+
+    print_info "已更新 $version_file 版本号为: ${GREEN}${new_version}${NC}"
+}
+
+# 更新所有版本号
+update_all_versions() {
+    local new_version=$1
+
+    update_package_json_version "$new_version"
+    update_version_checker "$new_version"
 }
 
 # 验证版本号格式（简单的语义化版本检查）
@@ -117,12 +146,12 @@ if [[ "$is_release" == "y" || "$is_release" == "Y" ]]; then
         fi
     done
 
-    # 更新 package.json 中的版本号
-    update_version "$NEW_VERSION"
+    # 更新所有文件中的版本号
+    update_all_versions "$NEW_VERSION"
 
-    # 将 package.json 的改动加入暂存区
-    git add package.json
-    print_info "已将 package.json 版本更新加入暂存区"
+    # 将版本更新的改动加入暂存区
+    git add package.json internal/version/checker.go
+    print_info "已将版本更新加入暂存区"
 fi
 
 # 执行 git add .
