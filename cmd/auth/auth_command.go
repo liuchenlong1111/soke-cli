@@ -62,21 +62,19 @@ func NewUserAuthCommand() *cobra.Command {
 func newAuthLoginCommand() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "login",
-		Short: "登录钉钉（自动刷新 token，必要时扫码）",
-		Long: `登录钉钉并获取认证凭证。
+		Short: "登录授客（自动获取token，需要扫码）",
+		Long: `登录授客并获取认证凭证。
 
 支持的登录方式:
-  - OAuth 设备流 (默认): 通过钉钉扫码授权登录
-  - 直接提供 Token: 通过 --token 参数传入已有 token
+  - OAuth 设备流 (默认): 通过授客扫码授权登录
 
 不支持的登录方式:
   - 邮箱/密码登录
   - 手机号/验证码登录
-  - 应用凭证 (AppKey/AppSecret) 直接登录
 
 示例:
-  dws auth login              # 扫码登录
-  dws auth login --force      # 强制重新登录 (忽略缓存 token)`,
+   auth login              # 扫码登录
+   auth login --force      # 强制重新登录 (忽略缓存 token)`,
 		DisableAutoGenTag: true,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cfg, err := resolveAuthLoginConfig(cmd)
