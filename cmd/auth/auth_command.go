@@ -39,7 +39,7 @@ type authLoginConfig struct {
 
 func NewUserAuthCommand() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:               "user-auth",
+		Use:               "auth",
 		Short:             "用户认证管理",
 		Long:              "管理 CLI 的认证凭证。支持 OAuth 扫码登录。",
 		Args:              cobra.NoArgs,
