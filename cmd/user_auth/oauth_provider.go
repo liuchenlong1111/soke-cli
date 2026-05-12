@@ -199,10 +199,6 @@ func (p *OAuthProvider) Login(ctx context.Context, force bool) (*TokenData, erro
 				if p.logger != nil {
 					p.logger.Debug("access_token still valid, skipping login")
 				}
-				// Even on early return, persist custom app credentials if provided
-				// via --client-id/--client-secret flags. Without this, the flags
-				// are only in runtime globals and lost when the process exits.
-				p.persistAppConfigIfNeeded()
 				return data, nil
 			}
 			if data.IsRefreshTokenValid() {
@@ -211,7 +207,6 @@ func (p *OAuthProvider) Login(ctx context.Context, force bool) (*TokenData, erro
 				}
 				refreshed, rErr := p.lockedRefresh(ctx)
 				if rErr == nil {
-					p.persistAppConfigIfNeeded()
 					return refreshed, nil
 				}
 				if p.logger != nil {
@@ -886,18 +881,6 @@ continueLogin:
 		return nil, fmt.Errorf("%s: %w", "保存 token 失败", err)
 	}
 
-	// Persist app credentials (with secret) if using custom client credentials.
-	// MUST run BEFORE os.Setenv below to avoid env-matching short circuit.
-	p.persistAppConfigIfNeeded()
-
-	// Always persist clientId to app.json so future process startups
-	// can load it via ResolveAppCredentials and populate DWS_CLIENT_ID env.
-	if p.clientID != "" {
-		_ = os.Setenv("DWS_CLIENT_ID", p.clientID)
-		if !HasAppConfig(p.configDir) {
-			_ = SaveAppConfig(p.configDir, &AppConfig{ClientID: p.clientID})
-		}
-	}
 
 	// 输出登录成功信息
 	_, _ = fmt.Fprintln(p.output(), "")
@@ -1029,30 +1012,4 @@ func (p *OAuthProvider) Logout() error {
 // Status returns the current auth status.
 func (p *OAuthProvider) Status() (*TokenData, error) {
 	return LoadTokenData(p.configDir)
-}
-
-// persistAppConfigIfNeeded saves app credentials if custom ones were used.
-// This ensures the client secret is available for future token refreshes.
-func (p *OAuthProvider) persistAppConfigIfNeeded() {
-	// Check if custom credentials were provided via runtime flags
-	clientID, clientSecret := getRuntimeCredentials()
-	if clientID == "" || clientSecret == "" {
-		return
-	}
-
-	// Skip if using default placeholder credentials
-	if clientID == DefaultClientID {
-		return
-	}
-
-	// Save app config with secret stored in keychain
-	config := &AppConfig{
-		ClientID:     clientID,
-		ClientSecret: PlainSecret(clientSecret),
-	}
-	if err := SaveAppConfig(p.configDir, config); err != nil {
-		if p.logger != nil {
-			p.logger.Warn("failed to persist app credentials", "error", err)
-		}
-	}
 }

@@ -175,12 +175,7 @@ func newAuthLogoutCommand() *cobra.Command {
 				_ = authpkg.DeleteClientSecret(storedClientID)
 				_ = authpkg.DeleteAppTokenData(storedClientID)
 			}
-			// Also try cleaning app token using appKey from app config
-			if appKey, _ := authpkg.ResolveAppCredentials(configDir); appKey != "" && appKey != storedClientID {
-				_ = authpkg.DeleteAppTokenData(appKey)
-			}
-			// Clean up app credentials (app.json + keychain secret)
-			_ = authpkg.DeleteAppConfig(configDir)
+			
 			_ = os.Remove(filepath.Join(configDir, "mcp_url"))
 			_ = os.Remove(filepath.Join(configDir, "token"))
 			_ = os.Remove(filepath.Join(configDir, "token.json"))

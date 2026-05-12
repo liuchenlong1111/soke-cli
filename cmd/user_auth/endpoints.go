@@ -208,13 +208,6 @@ func resolveCredentialSource() string {
 	if hasRuntimeOverride {
 		return "flag"
 	}
-	// Check if loaded from app config
-	if id, _ := ResolveAppCredentials(getDefaultConfigDir()); id != "" {
-		return "app"
-	}
-	if os.Getenv("DWS_CLIENT_ID") != "" || os.Getenv("DWS_CLIENT_SECRET") != "" {
-		return "env"
-	}
 	return "default"
 }
 
@@ -249,10 +242,7 @@ func ClientID() string {
 	if id := edition.Get().AuthClientID; id != "" {
 		return id
 	}
-	// Try loading from persisted app config
-	if id, _ := ResolveAppCredentials(getDefaultConfigDir()); id != "" {
-		return id
-	}
+
 	if v := os.Getenv("DWS_CLIENT_ID"); v != "" {
 		return v
 	}
@@ -275,10 +265,7 @@ func ClientSecret() string {
 	if override != "" {
 		return override
 	}
-	// Try loading from persisted app config (secret is in keychain)
-	if _, secret := ResolveAppCredentials(getDefaultConfigDir()); secret != "" {
-		return secret
-	}
+
 	if v := os.Getenv("DWS_CLIENT_SECRET"); v != "" {
 		return v
 	}
