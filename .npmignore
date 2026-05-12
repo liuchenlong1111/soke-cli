@@ -28,8 +28,7 @@ sidecar/
 main.go
 main_*.go
 
-# Skills目录不打包到npm（通过GitHub分发）
-skills/
+# Skills目录需要打包到 npm（用于自动同步到 sokeclaw 工作区）
 
 # 其他
 .DS_Store

@@ -13,7 +13,7 @@ import (
 )
 
 // 当前版本（编译时注入）
-var Version = "1.0.6"
+var Version = "1.0.8"
 
 // NPM 注册表响应结构
 type npmRegistryResponse struct {

@@ -8,6 +8,86 @@ const platform = os.platform();
 const arch = os.arch();
 const version = require('../package.json').version;
 
+function copyDirRecursive(srcDir, destDir) {
+  if (!fs.existsSync(srcDir)) return;
+  if (!fs.existsSync(destDir)) fs.mkdirSync(destDir, { recursive: true });
+
+  const entries = fs.readdirSync(srcDir, { withFileTypes: true });
+  for (const entry of entries) {
+    const srcPath = path.join(srcDir, entry.name);
+    const destPath = path.join(destDir, entry.name);
+
+    if (entry.isDirectory()) {
+      copyDirRecursive(srcPath, destPath);
+      continue;
+    }
+
+    if (entry.isSymbolicLink()) {
+      try {
+        const linkTarget = fs.readlinkSync(srcPath);
+        try {
+          fs.unlinkSync(destPath);
+        } catch (_) {}
+        fs.symlinkSync(linkTarget, destPath);
+      } catch (_) {}
+      continue;
+    }
+
+    fs.copyFileSync(srcPath, destPath);
+  }
+}
+
+function detectSokeclawWorkspaceSkillsDir() {
+  const homeDir = os.homedir();
+  const defaultSkillsDir = path.join(
+    homeDir,
+    '.sokeclaw',
+    'openai-agents',
+    'workspaces',
+    'main',
+    'skills'
+  );
+
+  const workclawConfigPath = path.join(homeDir, '.sokeclaw', 'workclaw.json');
+  if (!fs.existsSync(workclawConfigPath)) return defaultSkillsDir;
+
+  try {
+    const configText = fs.readFileSync(workclawConfigPath, 'utf8');
+    const config = JSON.parse(configText);
+    const workspaceDir = config?.defaults?.agents?.openaiAgents?.main?.workspace;
+    if (typeof workspaceDir === 'string' && workspaceDir.length > 0) {
+      return path.join(workspaceDir, 'skills');
+    }
+  } catch (_) {}
+
+  return defaultSkillsDir;
+}
+
+function syncSkillsToSokeclawWorkspace() {
+  const packageRoot = path.join(__dirname, '..');
+  const packagedSkillsDir = path.join(packageRoot, 'skills');
+  if (!fs.existsSync(packagedSkillsDir)) return;
+
+  const sokeclawSkillsDir = detectSokeclawWorkspaceSkillsDir();
+  const sokeclawRootDir = path.join(os.homedir(), '.sokeclaw');
+  if (!fs.existsSync(sokeclawRootDir)) return;
+
+  try {
+    fs.mkdirSync(sokeclawSkillsDir, { recursive: true });
+  } catch (_) {
+    return;
+  }
+
+  const skillNames = ['soke-shared', 'soke-exam'];
+  for (const skillName of skillNames) {
+    const src = path.join(packagedSkillsDir, skillName);
+    const dest = path.join(sokeclawSkillsDir, skillName);
+    if (fs.existsSync(src)) {
+      copyDirRecursive(src, dest);
+    }
+  }
+}
+
 // 平台映射
 const platformMap = {
   'darwin': 'darwin',
@@ -108,6 +188,10 @@ downloadFile(downloadURL, binaryPath)
         process.exit(1);
       }
     }
+
+    try {
+      syncSkillsToSokeclawWorkspace();
+    } catch (_) {}
 
     console.log('soke-cli 安装成功!');
     console.log(`二进制文件位置: ${binaryPath}`);

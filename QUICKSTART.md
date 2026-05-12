@@ -88,6 +88,30 @@ npm install -g @sokeai/cli
 npx skills add liuchenlong1111/soke-cli -y -g
 ```
 
+#### 在 sokeclaw 客户端中使用 Skills（重要）
+
+从 `@sokeai/cli@1.0.7` 起，执行 `npm install -g @sokeai/cli` 时会自动检测本机是否已安装 sokeclaw（`~/.sokeclaw/`），并将内置的 Skills（`soke-shared`、`soke-exam`）同步到当前工作区的 skills 目录，默认位置为：
+
+`~/.sokeclaw/openai-agents/workspaces/main/skills/`
+
+因此用户只需要执行两条命令即可在 sokeclaw 工作区里看到并调用（例如 `/skill soke-exam`）：
+
+- `npm install -g @sokeai/cli`
+- `npx skills add liuchenlong1111/soke-cli -y -g`（可选但推荐：用于把同一套技能安装到 `~/.agents/skills/`，供其它支持 skills 的 Agent 使用）
+
+如果你安装后没有立刻看到技能，重启/刷新 sokeclaw 即可触发重新扫描。
+
+如果 sokeclaw 内仍提示 `command not found: soke-cli`，说明 GUI/运行时没有加载你的 shell 环境（常见于 NVM）。可用以下方式确认并修复：
+
+```bash
+which soke-cli
+soke-cli -v
+```
+
+修复方式二选一：
+- 在 sokeclaw 执行命令时使用 `which soke-cli` 输出的绝对路径
+- 将 `soke-cli` 放到更通用的 PATH 目录（如 `~/.local/bin` 或 `/usr/local/bin`），确保 GUI 也能找到
+
 ### 初始化配置
 
 ```bash

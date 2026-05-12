@@ -1,6 +1,6 @@
 {
     "name": "@sokeai/cli",
-    "version": "1.0.6",
+    "version": "1.0.8",
     "description": "授客AI官方CLI工具 - 支持AI Agent Skills",
     "bin": {
         "soke-cli": "scripts/run.js"
@@ -11,7 +11,8 @@
         "release": "./scripts/release.sh"
     },
     "files": [
-        "scripts/"
+        "scripts/",
+        "skills/"
     ],
     "repository": {
         "type": "git",
