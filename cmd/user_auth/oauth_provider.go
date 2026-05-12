@@ -234,22 +234,15 @@ func (p *OAuthProvider) Login(ctx context.Context, force bool) (*TokenData, erro
 	redirectURI := fmt.Sprintf("http://127.0.0.1:%d%s", port, CallbackPath)
 
 	type callbackResult struct {
-		token           *TokenData
-		err             error
-		cliAuthDisabled bool
-		denialReason    string
+		token *TokenData
+		err   error
 	}
 	resultCh := make(chan callbackResult, 1)
 	errCh := make(chan error, 1)
 
 	var (
-		callbackToken           *TokenData
-		callbackProcessedCode   string // The auth code that has been successfully processed
-		callbackAuthDisabled    bool
-		callbackApplySent       bool   // Whether apply request was sent
-		callbackCodeInProgress  string // Code currently being processed (to prevent concurrent exchange)
-		callbackTokenMu         sync.Mutex
-		pendingTokenData        *TokenData // 待发送的 TokenData，等待 /success 页面请求
+		callbackTokenMu  sync.Mutex
+		pendingTokenData *TokenData // 待发送的 TokenData，等待 /success 页面请求
 	)
 
 	mux := http.NewServeMux()
@@ -275,7 +268,6 @@ func (p *OAuthProvider) Login(ctx context.Context, force bool) (*TokenData, erro
 					p.logger.Error("JWT parsing failed", "error", err)
 				}
 				w.WriteHeader(http.StatusUnauthorized)
-				//_, _ = fmt.Fprintf(w, "JWT 解析失败: %v", err)
 				w.Header().Set("Content-Type", "text/html; charset=utf-8")
 				_, _ = fmt.Fprint(w, accessDeniedHTML)
 				return
@@ -312,128 +304,15 @@ func (p *OAuthProvider) Login(ctx context.Context, force bool) (*TokenData, erro
 			return
 		}
 
-		callbackTokenMu.Lock()
-		processedCode := callbackProcessedCode
-		processedAuthDisabled := callbackAuthDisabled
-		codeInProgress := callbackCodeInProgress
-		hasToken := callbackToken != nil
-
-		if authToken != "" && authToken == processedCode {
-			callbackTokenMu.Unlock()
-			w.Header().Set("Content-Type", "text/html; charset=utf-8")
-			if processedAuthDisabled {
-				_, _ = fmt.Fprint(w, notEnabledHTML)
-			} else {
-				_, _ = fmt.Fprint(w, successHTML)
-			}
-			return
-		}
-
-		if authToken != "" && authToken == codeInProgress {
-			callbackTokenMu.Unlock()
-			w.Header().Set("Content-Type", "text/html; charset=utf-8")
-			_, _ = fmt.Fprint(w, `<html><head><meta http-equiv="refresh" content="1"></head><body><p>正在处理授权，请稍候...</p></body></html>`)
-			return
-		}
-
-		if authToken == "" && hasToken {
-			callbackTokenMu.Unlock()
-			w.Header().Set("Content-Type", "text/html; charset=utf-8")
-			if processedAuthDisabled {
-				_, _ = fmt.Fprint(w, notEnabledHTML)
-			} else {
-				_, _ = fmt.Fprint(w, successHTML)
-			}
-			return
-		}
-
-		if authToken != "" {
-			callbackCodeInProgress = authToken
-		}
-		callbackTokenMu.Unlock()
-
 		if authToken == "" {
 			select {
-			case errCh <- errors.New(	"回调中未收到授权码"):
+			case errCh <- errors.New("回调中未收到授权码"):
 			default:
 			}
 			w.WriteHeader(http.StatusBadRequest)
 			_, _ = fmt.Fprint(w, "授权失败：未收到授权码")
 			return
 		}
-		
-		/****
-		// Exchange code for token
-		tokenData, exchangeErr := p.exchangeCode(ctx, code)
-		if exchangeErr != nil {
-			// Clear in-progress state on error
-			callbackTokenMu.Lock()
-			if callbackCodeInProgress == code {
-				callbackCodeInProgress = ""
-			}
-			callbackTokenMu.Unlock()
-
-			w.Header().Set("Content-Type", "text/html; charset=utf-8")
-			_, _ = fmt.Fprintf(w, "<html><body><h1>授权失败</h1><p>%s</p></body></html>", exchangeErr.Error())
-			select {
-			case resultCh <- callbackResult{err: exchangeErr}:
-			default:
-			}
-			return
-		}
-
-		// Mark as processed immediately after successful exchange
-		callbackTokenMu.Lock()
-		previouslyProcessed := callbackProcessedCode != ""
-		callbackToken = tokenData
-		callbackProcessedCode = authToken // Remember this code was successfully processed
-		callbackCodeInProgress = ""  // Clear in-progress state
-		// Reset apply state for new authorization (user switched org)
-		if previouslyProcessed {
-			callbackApplySent = false
-			callbackSelectedAdminId = ""
-		}
-		callbackTokenMu.Unlock()
-
-		// Check CLI auth enabled status (fail-closed: treat errors as disabled)
-		authStatus, statusErr := p.CheckCLIAuthEnabled(ctx, tokenData.AccessToken)
-		var denialReason string
-		if statusErr != nil {
-			denialReason = "unknown"
-		} else {
-			denialReason = classifyDenialReason(authStatus, os.Getenv("DWS_CHANNEL"))
-		}
-		cliAuthEnabled := denialReason == ""
-		
-
-		// Update CLI auth disabled state
-		callbackTokenMu.Lock()
-		callbackAuthDisabled = !cliAuthEnabled
-		callbackTokenMu.Unlock()
-
-		// Display appropriate HTML based on auth status and denial reason
-		w.Header().Set("Content-Type", "text/html; charset=utf-8")
-		switch {
-		case cliAuthEnabled:
-			_, _ = fmt.Fprint(w, successHTML)
-		case denialReason == "user_forbidden" || denialReason == "user_not_allowed":
-			_, _ = fmt.Fprint(w, accessDeniedHTML)
-		case denialReason == "channel_not_allowed" || denialReason == "channel_required":
-			_, _ = fmt.Fprint(w, channelDeniedHTML)
-		default:
-			_, _ = fmt.Fprint(w, notEnabledHTML)
-		}
-			
-		// Ensure response is flushed to client
-		if f, ok := w.(http.Flusher); ok {
-			f.Flush()
-		}
-		// Notify main goroutine with full result
-		select {
-		case resultCh <- callbackResult{token: tokenData, cliAuthDisabled: !cliAuthEnabled, denialReason: denialReason}:
-		default:
-		}
-			****/
 	})
 
 	// Success page endpoint
@@ -558,10 +437,6 @@ func (p *OAuthProvider) Login(ctx context.Context, force bool) (*TokenData, erro
 
 		if parseErr := json.Unmarshal(respBody, &createAppResp); parseErr == nil {
 			createAppRespData := createAppResp.Data
-			//fmt.Println("解析成功:")
-			//fmt.Println("  app_id:", createAppRespData.AppID)
-			//fmt.Println("  app_key:", createAppRespData.AppKey)
-			//fmt.Println("  app_secret:", createAppRespData.AppSecret)
 
 			if createAppResp.Status == "ok" && createAppRespData.AppID != "" {
 				apiIDs := []string{
@@ -643,8 +518,6 @@ func (p *OAuthProvider) Login(ctx context.Context, force bool) (*TokenData, erro
 					permSaveResp, permSaveErr := permClient.Do(permSaveReq)
 					if permSaveErr == nil {
 						defer permSaveResp.Body.Close()
-						//permSaveBody, _ := io.ReadAll(permSaveResp.Body)
-						//fmt.Println("Permission save response:", string(permSaveBody))
 
 						cfg.AppID = createAppRespData.AppID
 						cfg.AppSecret = createAppRespData.AppSecret
@@ -803,76 +676,6 @@ func (p *OAuthProvider) Login(ctx context.Context, force bool) (*TokenData, erro
 		return nil, fmt.Errorf("%s: %w", "换取 token 失败", result.err)
 	}
 
-	// Handle CLI auth disabled - for terminal denial reasons, exit immediately
-	// (page shows accessDeniedHTML/channelDeniedHTML with no apply button,
-	// so polling for apply submission would hang forever).
-	// Error messages are kept consistent with the text shown on the HTML pages.
-	if result.cliAuthDisabled {
-		switch result.denialReason {
-		case "user_forbidden", "user_not_allowed":
-			return nil, errors.New("您不在该组织的 CLI 授权人员范围内，请联系组织管理员将您加入授权名单")
-		case "channel_not_allowed", "channel_required":
-			return nil, errors.New("当前渠道未获得该组织授权，或组织已开启渠道管控，请联系组织管理员开通渠道访问权限，或升级到最新版本的 CLI")
-		}
-
-		_, _ = fmt.Fprintln(p.output(), "")
-		_, _ = fmt.Fprintln(p.output(), "⏳ 该组织尚未开启 CLI 数据访问权限，请在浏览器中提交授权申请...")
-
-		// Poll for CLI auth status while waiting
-		applyTimeout := time.NewTimer(10 * time.Minute)
-		defer applyTimeout.Stop()
-		pollTicker := time.NewTicker(5 * time.Second)
-		defer pollTicker.Stop()
-
-		elapsedSeconds := 0
-		for {
-			select {
-			case <-applyTimeout.C:
-				return nil, errors.New("操作超时，请重新登录")
-			case <-ctx.Done():
-				return nil, ctx.Err()
-			case <-pollTicker.C:
-				elapsedSeconds += 5
-
-				// Get latest token and state (user may have switched org)
-				callbackTokenMu.Lock()
-				currentToken := callbackToken
-				currentAuthDisabled := callbackAuthDisabled
-				applySent := callbackApplySent
-				callbackTokenMu.Unlock()
-
-				// Check if user switched to an org with CLI auth enabled
-				if currentToken != nil && !currentAuthDisabled {
-					_, _ = fmt.Fprintf(p.output(), "\r%s\n", "✅ 权限已开启，继续登录...")
-					time.Sleep(2 * time.Second)
-					result.token = currentToken
-					result.cliAuthDisabled = false
-					goto continueLogin
-				}
-
-				// Check if CLI auth is now enabled (admin approved)
-				if currentToken != nil {
-					authStatus, err := p.CheckCLIAuthEnabled(ctx, currentToken.AccessToken)
-					if err == nil && classifyDenialReason(authStatus, os.Getenv("DWS_CHANNEL")) == "" {
-						_, _ = fmt.Fprintf(p.output(), "\r%s\n", "✅ 权限已开启，继续登录...")
-						time.Sleep(2 * time.Second)
-						result.token = currentToken
-						result.cliAuthDisabled = false
-						goto continueLogin
-					}
-				}
-
-				// Show polling status based on apply state
-				if applySent {
-					_, _ = fmt.Fprintf(p.output(), "\r⏳ %s (%ds/600s)   ", "等待管理员审批中", elapsedSeconds)
-				} else {
-					_, _ = fmt.Fprintf(p.output(), "\r⏳ %s (%ds/600s)   ", "等待提交申请中", elapsedSeconds)
-				}
-			}
-		}
-	}
-
-continueLogin:
 	tokenData := result.token
 
 	// Save token data with associated client ID for refresh
@@ -933,25 +736,7 @@ func (p *OAuthProvider) GetAccessToken(ctx context.Context) (string, error) {
 	return "", errors.New("所有凭证已失效，请运行 dws auth login 重新登录")
 }
 
-// lockedRefresh attempts to refresh the token while holding dual-layer locks.
-// It uses a double-check pattern with both process-level and file-level locking:
-//
-// Layer 1 (Process Lock - sync.Map):
-//
-//	Prevents multiple goroutines within the same process from refreshing simultaneously.
-//	If another goroutine is already refreshing, we wait for it and then re-check.
-//
-// Layer 2 (File Lock - flock/LockFileEx):
-//
-//	Prevents multiple CLI processes from refreshing simultaneously.
-//	If another process is refreshing, we wait for the file lock and then re-check.
-//
-// Double-Check Pattern:
-//
-//	After acquiring the lock, we re-load from disk because another goroutine/process
-//	may have already completed the refresh while we were waiting. This prevents the
-//	classic race where two callers both see an expired token and both call the
-//	refresh API, invalidating each other's refresh_token.
+
 func (p *OAuthProvider) lockedRefresh(ctx context.Context) (*TokenData, error) {
 	// Acquire dual-layer lock (process-level + file-level)
 	lock, err := AcquireDualLock(ctx, p.configDir)
