@@ -24,6 +24,7 @@ import (
 	"time"
 
 	authpkg "codeup.aliyun.com/5edbc121d1d1abe63b55f1c7/soke/soke-cli/cmd/user_auth"
+	"codeup.aliyun.com/5edbc121d1d1abe63b55f1c7/soke/soke-cli/internal/core"
 	apperrors "codeup.aliyun.com/5edbc121d1d1abe63b55f1c7/soke/soke-cli/internal/errors"
 	"github.com/DingTalk-Real-AI/dingtalk-workspace-cli/pkg/config"
 	"github.com/DingTalk-Real-AI/dingtalk-workspace-cli/pkg/edition"
@@ -149,12 +150,10 @@ func newAuthLogoutCommand() *cobra.Command {
 		Short:             "清除认证信息",
 		DisableAutoGenTag: true,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			//configDir := defaultConfigDir()
 			configDir := ""
 			_, cancel := context.WithTimeout(cmd.Context(), 15*time.Second)
 			defer cancel()
 
-			// Load token data to get associated clientId before deletion
 			var storedClientID string
 			if tokenData, err := authpkg.LoadTokenData(configDir); err == nil && tokenData != nil {
 				storedClientID = tokenData.ClientID
@@ -163,6 +162,11 @@ func newAuthLogoutCommand() *cobra.Command {
 			if err := authpkg.DeleteTokenData(configDir); err != nil {
 				return apperrors.NewInternal(fmt.Sprintf("failed to clear token data: %v", err))
 			}
+
+			if err := clearCliConfig(); err != nil {
+				_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "警告: 清除配置文件失败: %v\n", err)
+			}
+
 			// Clean up associated client secret and app token from keychain
 			if storedClientID != "" {
 				_ = authpkg.DeleteClientSecret(storedClientID)
@@ -299,4 +303,32 @@ func writeAuthLoginJSON(w io.Writer, data *authpkg.TokenData, forced bool) error
 	enc := json.NewEncoder(w)
 	enc.SetIndent("", "  ")
 	return enc.Encode(resp)
+}
+
+// clearCliConfig 清除 CliConfig 中的认证相关信息
+func clearCliConfig() error {
+	cfg, err := core.LoadConfig()
+	if err != nil {
+		// 如果配置文件不存在，不算错误
+		if os.IsNotExist(err) {
+			return nil
+		}
+		return fmt.Errorf("加载配置失败: %w", err)
+	}
+
+	// 清除认证相关字段
+	cfg.AppID = ""
+	cfg.AppSecret = ""
+	cfg.UserToken = ""
+	cfg.UserTokenExp = 0
+	cfg.BotToken = ""
+	cfg.CorpID = ""
+	cfg.DeptUserID = ""
+
+	// 保存清空后的配置
+	if err := core.SaveConfig(cfg); err != nil {
+		return fmt.Errorf("保存配置失败: %w", err)
+	}
+
+	return nil
 }
