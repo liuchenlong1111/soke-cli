@@ -48,11 +48,11 @@ func init() {
 
 const (
 	// AuthorizeURL is the DingTalk OAuth authorization page.
-	AuthorizeURL = "https://app2651.eapps.dingtalkcloud.com/pcAdmin/dist/login/jsLogin"
-	//AuthorizeURL = "https://app1730.eapps.dingtalkcloud.com/pcAdmin/dist/login/jsLogin"
+	AuthorizeURL = "https://app2651.eapps.dingtalkcloud.com/pcAdmin/dist/login/jsLogin" //预发
+	//AuthorizeURL = "https://app1730.eapps.dingtalkcloud.com/pcAdmin/dist/login/jsLogin"  //正式
 
-	OpenDevURL = "https://opendevpre.eduto.com"
-	//OpenDevURL = "https://opendev.soke.cn"
+	OpenDevURL = "https://opendevpre.eduto.com" //预发
+	//OpenDevURL = "https://opendev.soke.cn" //正式
 
 	// DefaultClientID is the CLI's built-in OAuth client ID (DingTalk AppKey).
 	// TODO: Replace <YOUR_CLIENT_ID> with your actual DingTalk AppKey before building.

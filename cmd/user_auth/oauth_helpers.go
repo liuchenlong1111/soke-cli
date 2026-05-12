@@ -228,6 +228,278 @@ const apiListHTML = `<!DOCTYPE html>
 </html>
 `
 
+const selectAppHTML = `<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>选择应用</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 8px;
+            padding: 40px;
+            width: 100%;
+            max-width: 600px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 24px;
+            font-weight: 500;
+            margin-bottom: 40px;
+            color: #1f2329;
+        }
+
+        .app-list {
+            margin-bottom: 24px;
+        }
+
+        .app-item {
+            display: flex;
+            align-items: center;
+            padding: 16px;
+            border: 1px solid #e5e6eb;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .app-item:hover {
+            border-color: #3370ff;
+            background: #f7f9fc;
+        }
+
+        .app-item.selected {
+            border-color: #3370ff;
+            background: #e8f0ff;
+        }
+
+        .app-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            margin-right: 16px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .app-info {
+            flex: 1;
+        }
+
+        .app-name {
+            font-size: 16px;
+            font-weight: 500;
+            color: #1f2329;
+            margin-bottom: 4px;
+        }
+
+        .app-desc {
+            font-size: 12px;
+            color: #86909c;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .app-arrow {
+            width: 20px;
+            height: 20px;
+            color: #86909c;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #86909c;
+        }
+
+        .error {
+            text-align: center;
+            padding: 40px;
+            color: #f53f3f;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 32px;
+        }
+
+        button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: #3370ff;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2b5dd4;
+        }
+
+        .btn-primary:disabled {
+            background: #c9cdd4;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #1f2329;
+            border: 1px solid #e5e6eb;
+        }
+
+        .btn-secondary:hover {
+            background: #f7f8fa;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>选择应用</h1>
+
+        <div class="app-list" id="appList">
+            <div class="loading">加载中...</div>
+        </div>
+
+        <div class="btn-group">
+            <button type="button" class="btn-secondary" id="backBtn">上一步</button>
+            <button type="button" class="btn-primary" id="confirmBtn" disabled>确认</button>
+        </div>
+    </div>
+
+    <script>
+        let selectedAppId = null;
+        let selectedAppKey = null;
+        const appList = document.getElementById('appList');
+        const confirmBtn = document.getElementById('confirmBtn');
+        const backBtn = document.getElementById('backBtn');
+
+        // 加载应用列表
+        async function loadApps() {
+            try {
+                const response = await fetch('/application/list');
+                const result = await response.json();
+
+                if (result.success && result.data && result.data.length > 0) {
+                    renderApps(result.data);
+                } else {
+                    appList.innerHTML = '<div class="error">暂无可用应用</div>';
+                }
+            } catch (error) {
+                console.error('加载应用列表失败:', error);
+                appList.innerHTML = '<div class="error">加载失败，请稍后重试</div>';
+            }
+        }
+
+        // 渲染应用列表
+        function renderApps(apps) {
+            appList.innerHTML = apps.map(app => {
+                const avatarColors = ['#667eea', '#f093fb', '#4facfe', '#43e97b', '#fa709a'];
+                const color = avatarColors[Math.floor(Math.random() * avatarColors.length)];
+                const initial = (app.name || app.app_name || '应用')[0];
+
+                return '<div class="app-item" data-app-id="' + app.app_id + '" data-app-key="' + app.app_key + '">' +
+                    '<div class="app-avatar" style="background: ' + color + ';">' + initial + '</div>' +
+                    '<div class="app-info">' +
+                        '<div class="app-name">' + (app.name || app.app_name || '未命名应用') + '</div>' +
+                        '<div class="app-desc">' + (app.description || app.app_id || '') + '</div>' +
+                    '</div>' +
+                    '<svg class="app-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">' +
+                        '<path d="M9 18l6-6-6-6"/>' +
+                    '</svg>' +
+                '</div>';
+            }).join('');
+
+            // 添加点击事件
+            document.querySelectorAll('.app-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    document.querySelectorAll('.app-item').forEach(i => i.classList.remove('selected'));
+                    this.classList.add('selected');
+                    selectedAppId = this.dataset.appId;
+                    selectedAppKey = this.dataset.appKey;
+                    confirmBtn.disabled = false;
+                });
+            });
+        }
+
+        // 返回按钮
+        backBtn.addEventListener('click', function() {
+            window.location.href = '/create-app';
+        });
+
+        // 确认按钮
+        confirmBtn.addEventListener('click', async function() {
+            if (!selectedAppId) return;
+
+            confirmBtn.disabled = true;
+            confirmBtn.textContent = '处理中...';
+
+            try {
+                const response = await fetch('/application/select', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        app_id: selectedAppId,
+                        app_key: selectedAppKey
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    window.location.href = '/success';
+                } else {
+                    alert('选择失败: ' + (result.errorMsg || result.message || '未知错误'));
+                    confirmBtn.disabled = false;
+                    confirmBtn.textContent = '确认';
+                }
+            } catch (error) {
+                console.error('选择应用失败:', error);
+                alert('网络错误，请稍后重试');
+                confirmBtn.disabled = false;
+                confirmBtn.textContent = '确认';
+            }
+        });
+
+        // 页面加载时获取应用列表
+        loadApps();
+    </script>
+</body>
+</html>
+`
+
 const createAppHTML = `<!DOCTYPE html>
 <html lang="zh-CN">
   <head>
@@ -389,7 +661,7 @@ const createAppHTML = `<!DOCTYPE html>
 
         <div class="btn-group">
           <button type="submit" class="btn-primary" id="submitBtn">创建</button>
-          <button type="button" class="btn-secondary">选择已有应用</button>
+          <button type="button" class="btn-secondary" id="selectExistingBtn">选择已有应用</button>
         </div>
       </form>
     </div>
@@ -397,7 +669,13 @@ const createAppHTML = `<!DOCTYPE html>
     <script>
       const form = document.getElementById('appForm');
       const submitBtn = document.getElementById('submitBtn');
+      const selectExistingBtn = document.getElementById('selectExistingBtn');
       const successMessage = document.getElementById('successMessage');
+
+      // 选择已有应用按钮点击事件
+      selectExistingBtn.addEventListener('click', function() {
+        window.location.href = '/select-app';
+      });
 
       form.addEventListener('submit', async function(e) {
         e.preventDefault();

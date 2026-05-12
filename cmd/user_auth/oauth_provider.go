@@ -352,6 +352,12 @@ func (p *OAuthProvider) Login(ctx context.Context, force bool) (*TokenData, erro
 		_, _ = fmt.Fprint(w, createAppHTML)
 	})
 
+	// 创建应用页面（别名路由）
+	mux.HandleFunc("/create-app", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		_, _ = fmt.Fprint(w, createAppHTML)
+	})
+
 	mux.HandleFunc("/application/create", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 
@@ -555,6 +561,251 @@ func (p *OAuthProvider) Login(ctx context.Context, force bool) (*TokenData, erro
 
 		w.WriteHeader(resp.StatusCode)
 		_, _ = w.Write(respBody)
+	})
+
+	// 选择已有应用页面
+	mux.HandleFunc("/select-app", func(w http.ResponseWriter, r *http.Request) {
+		if p.logger != nil {
+			p.logger.Debug("received /select-app request")
+		}
+
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		_, _ = w.Write([]byte(selectAppHTML))
+	})
+
+	// 获取应用列表
+	mux.HandleFunc("/application/list", func(w http.ResponseWriter, r *http.Request) {
+		if p.logger != nil {
+			p.logger.Debug("received /application/list request")
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+
+		cfg, err := core.LoadConfig()
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			_, _ = fmt.Fprintf(w, `{"success":false,"errorMsg":"加载配置失败: %s"}`, err.Error())
+			return
+		}
+
+		// 调用授客开放平台获取应用列表，添加 source=cli 参数
+		apiURL := OpenDevURL + "/app/admin/index?source=cli"
+		req, err := http.NewRequestWithContext(ctx, http.MethodGet, apiURL, nil)
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			_, _ = fmt.Fprintf(w, `{"success":false,"errorMsg":"创建请求失败: %s"}`, err.Error())
+			return
+		}
+
+		req.Header.Set("Authorization", cfg.UserToken)
+		req.Header.Set("Content-Type", "application/json")
+
+		client := &http.Client{Timeout: 30 * time.Second}
+		resp, err := client.Do(req)
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			_, _ = fmt.Fprintf(w, `{"success":false,"errorMsg":"请求失败: %s"}`, err.Error())
+			return
+		}
+		defer resp.Body.Close()
+
+		respBody, err := io.ReadAll(resp.Body)
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			_, _ = fmt.Fprintf(w, `{"success":false,"errorMsg":"读取响应失败: %s"}`, err.Error())
+			return
+		}
+
+		// 解析响应 - 根据截图的数据格式
+		var apiResp struct {
+			Code    string `json:"code"`
+			Status  string `json:"status"`
+			Message string `json:"message"`
+			Data    []struct {
+				ID          int    `json:"id"`
+				AppID       string `json:"app_id"`
+				Name        string `json:"name"`
+				Description string `json:"description"`
+				AppKey      string `json:"app_key"`
+			} `json:"data"`
+		}
+
+		if parseErr := json.Unmarshal(respBody, &apiResp); parseErr == nil {
+			if apiResp.Status == "ok" && apiResp.Code == "200" {
+				// 转换为前端需要的格式
+				result := struct {
+					Success bool `json:"success"`
+					Data    []struct {
+						AppID       string `json:"app_id"`
+						AppKey      string `json:"app_key"`
+						Name        string `json:"name"`
+						Description string `json:"description"`
+					} `json:"data"`
+				}{
+					Success: true,
+				}
+
+				for _, app := range apiResp.Data {
+					result.Data = append(result.Data, struct {
+						AppID       string `json:"app_id"`
+						AppKey      string `json:"app_key"`
+						Name        string `json:"name"`
+						Description string `json:"description"`
+					}{
+						AppID:       app.AppID,
+						AppKey:      app.AppKey,
+						Name:        app.Name,
+						Description: app.Description,
+					})
+				}
+
+				resultJSON, _ := json.Marshal(result)
+				w.WriteHeader(http.StatusOK)
+				_, _ = w.Write(resultJSON)
+				return
+			}
+		}
+
+		// 如果解析失败或状态不是 ok，返回错误
+		w.WriteHeader(http.StatusInternalServerError)
+		_, _ = fmt.Fprintf(w, `{"success":false,"errorMsg":"获取应用列表失败: %s"}`, apiResp.Message)
+	})
+
+	// 选择应用处理
+	mux.HandleFunc("/application/select", func(w http.ResponseWriter, r *http.Request) {
+		if p.logger != nil {
+			p.logger.Debug("received /application/select request")
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+
+		// Only accept POST method
+		if r.Method != http.MethodPost {
+			w.WriteHeader(http.StatusMethodNotAllowed)
+			_, _ = w.Write([]byte(`{"success":false,"errorMsg":"只支持 POST 方法"}`))
+			return
+		}
+
+		// 解析 JSON 请求体
+		var reqBody struct {
+			AppID     string `json:"app_id"`
+			AppKey    string `json:"app_key"`
+		}
+
+		bodyBytes, err := io.ReadAll(r.Body)
+		if err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			_, _ = fmt.Fprintf(w, `{"success":false,"errorMsg":"读取请求失败: %s"}`, err.Error())
+			return
+		}
+
+		if err := json.Unmarshal(bodyBytes, &reqBody); err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			_, _ = fmt.Fprintf(w, `{"success":false,"errorMsg":"解析请求失败: %s"}`, err.Error())
+			return
+		}
+
+		if reqBody.AppID == "" || reqBody.AppKey == "" {
+			w.WriteHeader(http.StatusBadRequest)
+			_, _ = w.Write([]byte(`{"success":false,"errorMsg":"app_id 和 app_key 不能为空"}`))
+			return
+		}
+
+		// 加载配置
+		cfg, err := core.LoadConfig()
+		if err != nil {
+			cfg = &core.CliConfig{}
+		}
+
+		// 调用 /app/admin/read 接口获取完整的应用信息
+		readURL := OpenDevURL + "/app/admin/read?app_id=" + url.QueryEscape(reqBody.AppID) + "&app_key=" + url.QueryEscape(reqBody.AppKey)
+
+		readReq, err := http.NewRequestWithContext(ctx, http.MethodGet, readURL, nil)
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			_, _ = fmt.Fprintf(w, `{"success":false,"errorMsg":"创建读取请求失败: %s"}`, err.Error())
+			return
+		}
+
+		readReq.Header.Set("Authorization", cfg.UserToken)
+
+		client := &http.Client{Timeout: 30 * time.Second}
+		readResp, err := client.Do(readReq)
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			_, _ = fmt.Fprintf(w, `{"success":false,"errorMsg":"读取应用信息失败: %s"}`, err.Error())
+			return
+		}
+		defer readResp.Body.Close()
+
+		readRespBody, err := io.ReadAll(readResp.Body)
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			_, _ = fmt.Fprintf(w, `{"success":false,"errorMsg":"读取响应失败: %s"}`, err.Error())
+			return
+		}
+
+		// 打印响应内容用于调试
+		if p.logger != nil {
+			p.logger.Debug("read app response", "body", string(readRespBody))
+		}
+
+		// 解析应用详情响应
+		var readApiResp struct {
+			Code    string `json:"code"`
+			Status  string `json:"status"`
+			Message string `json:"message"`
+			Data    struct {
+				AppID     string `json:"app_id"`
+				AppKey    string `json:"app_key"`
+				AppSecret string `json:"app_secret"`
+			} `json:"data"`
+		}
+
+		if parseErr := json.Unmarshal(readRespBody, &readApiResp); parseErr != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			_, _ = fmt.Fprintf(w, `{"success":false,"errorMsg":"解析应用信息失败: %s, 响应内容: %s"}`, parseErr.Error(), string(readRespBody))
+			return
+		}
+
+		if readApiResp.Status != "ok" || readApiResp.Code != "200" {
+			w.WriteHeader(http.StatusInternalServerError)
+			_, _ = fmt.Fprintf(w, `{"success":false,"errorMsg":"获取应用信息失败: %s"}`, readApiResp.Message)
+			return
+		}
+
+		if readApiResp.Data.AppSecret == "" {
+			w.WriteHeader(http.StatusInternalServerError)
+			_, _ = w.Write([]byte(`{"success":false,"errorMsg":"应用密钥为空"}`))
+			return
+		}
+
+		// 保存选择的应用信息到配置
+		cfg.AppID = reqBody.AppID
+		cfg.AppSecret = readApiResp.Data.AppSecret
+
+		if saveErr := core.SaveConfig(cfg); saveErr != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			_, _ = fmt.Fprintf(w, `{"success":false,"errorMsg":"保存配置失败: %s"}`, saveErr.Error())
+			return
+		}
+
+		// 构造 TokenData 并保存到共享变量
+		tokenData := &TokenData{
+			AccessToken:  cfg.UserToken,
+			CorpID:       cfg.CorpID,
+			ExpiresAt:    time.Unix(cfg.UserTokenExp, 0),
+			RefreshExpAt: time.Unix(cfg.UserTokenExp, 0).Add(30 * 24 * time.Hour),
+		}
+
+		// 保存到共享变量
+		callbackTokenMu.Lock()
+		pendingTokenData = tokenData
+		callbackTokenMu.Unlock()
+
+		// 返回成功响应
+		w.WriteHeader(http.StatusOK)
+		_, _ = w.Write([]byte(`{"success":true,"message":"选择成功"}`))
 	})
 
 
