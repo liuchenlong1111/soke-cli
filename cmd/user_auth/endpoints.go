@@ -155,19 +155,6 @@ func GetRevokeTokenURL() string {
 	return "" // Direct mode doesn't have revoke endpoint
 }
 
-// resolveCredentialSource determines the source of the current credentials.
-// Returns one of: "flag", "env", "app", "default".
-// This is used to track where credentials came from for token refresh.
-func resolveCredentialSource() string {
-	clientMu.RLock()
-	hasRuntimeOverride := runtimeClientID != "" || runtimeClientSecret != ""
-	clientMu.RUnlock()
-
-	if hasRuntimeOverride {
-		return "flag"
-	}
-	return "default"
-}
 
 // SetClientID allows runtime override of the client ID (e.g., from CLI flags).
 func SetClientID(id string) {
@@ -235,14 +222,6 @@ func ClientSecret() string {
 func HasValidClientSecret() bool {
 	secret := ClientSecret()
 	return secret != "" && !strings.HasPrefix(secret, "<")
-}
-
-// getRuntimeCredentials returns the runtime-override credentials if set.
-// Returns empty strings if no runtime overrides were provided.
-func getRuntimeCredentials() (clientID, clientSecret string) {
-	clientMu.RLock()
-	defer clientMu.RUnlock()
-	return runtimeClientID, runtimeClientSecret
 }
 
 // getDefaultConfigDir returns the default configuration directory.

@@ -40,7 +40,7 @@ func NewUserAuthCommand() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:               "user-auth",
 		Short:             "用户认证管理",
-		Long:              "管理钉钉 CLI 的认证凭证。支持 OAuth 扫码登录。",
+		Long:              "管理 CLI 的认证凭证。支持 OAuth 扫码登录。",
 		Args:              cobra.NoArgs,
 		TraverseChildren:  true,
 		DisableAutoGenTag: true,
@@ -85,7 +85,6 @@ func newAuthLoginCommand() *cobra.Command {
 			//configDir := defaultConfigDir()
 			configDir := ""
 			var tokenData *authpkg.TokenData
-			//fmt.Println(cfg)
 
 			switch {
 			case strings.TrimSpace(cfg.Token) != "":
@@ -178,20 +177,13 @@ func newAuthLogoutCommand() *cobra.Command {
 			w := cmd.OutOrStdout()
 			fmt.Fprintln(w, "[OK] 已清除所有认证信息")
 			if !edition.Get().IsEmbedded {
-				fmt.Fprintln(w, "请运行 dws auth login 重新登录")
+				fmt.Fprintln(w, "请运行  auth login 重新登录")
 			}
 			return nil
 		},
 	}
 }
 
-
-func timeOrEmpty(t time.Time) string {
-	if t.IsZero() {
-		return ""
-	}
-	return t.UTC().Format(time.RFC3339)
-}
 
 
 func clearCompatCache() {

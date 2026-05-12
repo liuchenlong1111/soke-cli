@@ -22,7 +22,6 @@ import (
 	"net/http"
 	"net/url"
 	"os"
-	"slices"
 	"time"
 
 	"github.com/DingTalk-Real-AI/dingtalk-workspace-cli/pkg/config"
@@ -462,73 +461,6 @@ const createAppHTML = `<!DOCTYPE html>
 </html>
 `
 
-// exchangeCodeViaMCP exchanges auth code for token via MCP proxy.
-// This is used when client secret is not available (server-side secret management).
-func (p *OAuthProvider) exchangeCodeViaMCP(ctx context.Context, code string) (*TokenData, error) {
-	clientID := ClientID()
-	url := GetMCPBaseURL() + MCPOAuthTokenPath
-	body := map[string]string{
-		"clientId":  clientID,
-		"authCode":  code,
-		"grantType": "authorization_code",
-	}
-	resp, err := p.postJSON(ctx, url, body)
-	if err != nil {
-		return nil, err
-	}
-	data, err := p.parseMCPTokenResponse(resp)
-	if err != nil {
-		return nil, err
-	}
-	// Snapshot credentials used for this token (for refresh)
-	data.ClientID = clientID
-	data.Source = "mcp"
-	// MCP mode doesn't need to save clientSecret (server-side managed)
-	return data, nil
-}
-
-// refreshViaMCP refreshes token via MCP proxy.
-func (p *OAuthProvider) refreshViaMCP(ctx context.Context, data *TokenData) (*TokenData, error) {
-	// Use stored clientId from token data
-	clientID := data.ClientID
-	if clientID == "" {
-		// Fallback for legacy tokens
-		clientID = ClientID()
-	}
-
-	if clientID == "" {
-		return nil, fmt.Errorf("无法刷新 token: 缺少 clientId，请重新登录")
-	}
-
-	url := GetMCPBaseURL() + MCPRefreshTokenPath
-	body := map[string]string{
-		"clientId":     clientID,
-		"refreshToken": data.RefreshToken,
-		"grantType":    "refresh_token",
-	}
-	resp, err := p.postJSON(ctx, url, body)
-	if err != nil {
-		return nil, err
-	}
-	updated, err := p.parseMCPTokenResponse(resp)
-	if err != nil {
-		return nil, err
-	}
-	// Preserve original credentials info
-	updated.ClientID = data.ClientID
-	updated.Source = data.Source
-	updated.PersistentCode = data.PersistentCode
-	updated.CorpID = data.CorpID
-	updated.UserID = data.UserID
-	updated.UserName = data.UserName
-	updated.CorpName = data.CorpName
-
-	if err := SaveTokenData(p.configDir, updated); err != nil {
-		return nil, fmt.Errorf("保存刷新后的 token 失败（旧 refresh_token 已失效，请重新登录）: %w", err)
-	}
-	return updated, nil
-}
-
 func (p *OAuthProvider) postJSON(ctx context.Context, endpoint string, body any) ([]byte, error) {
 	b, err := json.Marshal(body)
 	if err != nil {
@@ -553,40 +485,6 @@ func (p *OAuthProvider) postJSON(ctx context.Context, endpoint string, body any)
 	data, err := io.ReadAll(io.LimitReader(resp.Body, config.MaxResponseBodySize))
 	if err != nil {
 		return nil, fmt.Errorf("reading response: %w", err)
-	}
-	return data, nil
-}
-
-func (p *OAuthProvider) parseTokenResponse(body []byte) (*TokenData, error) {
-	var resp struct {
-		AccessToken    string `json:"accessToken"`
-		RefreshToken   string `json:"refreshToken"`
-		PersistentCode string `json:"persistentCode"`
-		ExpiresIn      int64  `json:"expiresIn"`
-		CorpID         string `json:"corpId"`
-	}
-	if err := json.Unmarshal(body, &resp); err != nil {
-		return nil, fmt.Errorf("parsing token response: %w", err)
-	}
-	if resp.AccessToken == "" {
-		return nil, fmt.Errorf("token response missing accessToken")
-	}
-
-	now := time.Now()
-	expiresIn := resp.ExpiresIn
-	if expiresIn <= 0 {
-		// 默认 2 小时有效期（钉钉 access_token 标准有效期）
-		expiresIn = config.DefaultAccessTokenExpiry
-	}
-	data := &TokenData{
-		AccessToken:  resp.AccessToken,
-		RefreshToken: resp.RefreshToken,
-		ExpiresAt:    now.Add(time.Duration(expiresIn) * time.Second),
-		RefreshExpAt: now.Add(config.DefaultRefreshTokenLifetime),
-		CorpID:       resp.CorpID,
-	}
-	if resp.PersistentCode != "" {
-		data.PersistentCode = resp.PersistentCode
 	}
 	return data, nil
 }
@@ -1499,52 +1397,6 @@ type CLIAuthResult struct {
 	ChannelScope         string   `json:"channelScope,omitempty"`         // "all" | "specified"
 	AllowedChannels      []string `json:"allowedChannels,omitempty"`      // channelCode list when channelScope="specified"
 	ChannelConfigEnabled bool     `json:"channelConfigEnabled,omitempty"` // whether org has any channel restriction configured
-}
-
-// classifyDenialReason inspects a CLIAuthStatus response and returns a machine-readable
-// denial reason string. Returns "" when access is granted.
-//
-// Priority rationale:
-//  1. Explicit org-wide ban (userScope=forbidden) always wins.
-//  2. Channel scope is evaluated BEFORE user scope because the CLI has
-//     authoritative knowledge of DWS_CHANNEL and can verify membership against
-//     allowedChannels. This avoids falsely blaming the user when the real
-//     denial cause is a channel mismatch (e.g. user is in allowedUsers but the
-//     current channel is not in allowedChannels).
-//  3. Only when the channel is unrestricted or matches do we attribute the
-//     denial to the user scope.
-func classifyDenialReason(status *CLIAuthStatus, currentChannel string) string {
-	if status.ErrorCode == "CHANNEL_REQUIRED" {
-		return "channel_required"
-	}
-	if status.ErrorCode == "NO_AUTH" {
-		return "no_auth"
-	}
-	if status.Result == nil || !status.Success {
-		return "unknown"
-	}
-	r := status.Result
-	if r.CLIAuthEnabled {
-		return ""
-	}
-
-	if r.UserScope == "forbidden" {
-		return "user_forbidden"
-	}
-
-	if r.ChannelScope == "specified" {
-		if currentChannel == "" {
-			return "channel_required"
-		}
-		if !slices.Contains(r.AllowedChannels, currentChannel) {
-			return "channel_not_allowed"
-		}
-	}
-
-	if r.UserScope == "specified" {
-		return "user_not_allowed"
-	}
-	return "cli_not_enabled"
 }
 
 // SuperAdmin represents a corp super admin.

@@ -14,11 +14,8 @@
 package auth
 
 import (
-	"bytes"
-	"context"
 	"encoding/json"
 	"fmt"
-	"net/http"
 	"os"
 	"path/filepath"
 	"time"
@@ -152,46 +149,3 @@ func DeleteTokenData(configDir string) error {
 	return legacyErr
 }
 
-
-
-// revokeTokenViaMCP revokes token via MCP endpoint.
-func revokeTokenViaMCP(ctx context.Context) error {
-	revokeURL := GetRevokeTokenURL()
-	if revokeURL == "" {
-		return nil // No revoke endpoint available
-	}
-
-	// Load current token to get accessToken
-	tokenData, err := LoadTokenData(getDefaultConfigDir())
-	if err != nil || tokenData == nil {
-		return nil // No token to revoke
-	}
-
-	body := map[string]string{
-		"clientId":    ClientID(),
-		"accessToken": tokenData.AccessToken,
-	}
-	bodyBytes, err := json.Marshal(body)
-	if err != nil {
-		return fmt.Errorf("marshaling revoke request: %w", err)
-	}
-
-	req, err := http.NewRequestWithContext(ctx, http.MethodPost, revokeURL, bytes.NewReader(bodyBytes))
-	if err != nil {
-		return fmt.Errorf("creating revoke request: %w", err)
-	}
-	req.Header.Set("Content-Type", "application/json")
-
-	client := &http.Client{Timeout: 10 * time.Second}
-	resp, err := client.Do(req)
-	if err != nil {
-		return fmt.Errorf("calling revoke endpoint: %w", err)
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusOK {
-		return fmt.Errorf("revoke endpoint returned status %d", resp.StatusCode)
-	}
-
-	return nil
-}
