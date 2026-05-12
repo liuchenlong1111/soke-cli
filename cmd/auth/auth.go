@@ -1,13 +1,14 @@
-package auth                                                                                                                                                                                                                                   
-                  
-import (                                                                                                                                                                                                                                       
-    "context"   
-    "fmt"                                                                                                                                                                                                                                      
-    "net/http"                                                                                                                                                                                                                                 
-    "time"                                                                                                                                                                                                                                     
-    "github.com/spf13/cobra"                                                                                                                                                                                                                   
-    "codeup.aliyun.com/5edbc121d1d1abe63b55f1c7/soke/soke-cli/internal/auth"                                                                                                                                                                                             
-    "codeup.aliyun.com/5edbc121d1d1abe63b55f1c7/soke/soke-cli/internal/core"                                                                                                                                                                                             
+package auth
+
+import (
+	"context"
+	"fmt"
+	"net/http"
+	"time"
+
+	"codeup.aliyun.com/5edbc121d1d1abe63b55f1c7/soke/soke-cli/internal/auth"
+	"codeup.aliyun.com/5edbc121d1d1abe63b55f1c7/soke/soke-cli/internal/core"
+	"github.com/spf13/cobra"
 )                                                                                                                                                                                                                                              
                                                                                                                                                                                                                                                  
 func NewAuthCmd() *cobra.Command {                                                                                                                                                                                                             
@@ -31,7 +32,7 @@ func newLoginCmd() *cobra.Command {
             cfg, err := core.LoadConfig()                                                                                                                                                                                                      
             if err != nil {                                                                                                                                                                                                                    
                 return fmt.Errorf("请先运行 'soke-cli config init'")                                                                                                                                                                         
-            }                                                                                                                                                                                                                                  
+            }                                                                                                                                                                     
                                                                                                                                                                                                                                                
             // 创建OAuth客户端                                                                                                                                                                                                                 
             oauthClient := &auth.OAuthClient{
