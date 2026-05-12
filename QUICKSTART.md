@@ -101,16 +101,13 @@ npx skills add liuchenlong1111/soke-cli -y -g
 
 如果你安装后没有立刻看到技能，重启/刷新 sokeclaw 即可触发重新扫描。
 
-如果 sokeclaw 内仍提示 `command not found: soke-cli`，说明 GUI/运行时没有加载你的 shell 环境（常见于 NVM）。可用以下方式确认并修复：
+如果 sokeclaw 内执行技能时提示 `command not found: soke-cli`，说明 sokeclaw 运行时的 GUI 环境没有读取到你的 NVM/Node 环境变量。
 
+**一键修复命令：**
 ```bash
-which soke-cli
-soke-cli -v
+soke-cli setup-gui-env
 ```
-
-修复方式二选一：
-- 在 sokeclaw 执行命令时使用 `which soke-cli` 输出的绝对路径
-- 将 `soke-cli` 放到更通用的 PATH 目录（如 `~/.local/bin` 或 `/usr/local/bin`），确保 GUI 也能找到
+执行此命令后，它会自动将你的 Node/NVM 环境变量注入给 GUI 环境，并重启 SokeClaw 客户端，之后即可正常使用。
 
 ### 初始化配置
 

@@ -3,6 +3,7 @@ const path = require('path');
 const fs = require('fs');
 const https = require('https');
 const { execSync } = require('child_process');
+const readline = require('readline');
 
 const platform = os.platform();
 const arch = os.arch();
@@ -188,6 +189,127 @@ function syncSkillsToWorkclawRegistry() {
   } catch (_) {}
 }
 
+function isLikelyInteractiveInstall() {
+  if (!process.stdin.isTTY) return false;
+  if (!process.stdout.isTTY) return false;
+  if (process.env.CI) return false;
+  if (process.env.npm_config_yes === 'true') return false;
+  return true;
+}
+
+function promptYesNo(message) {
+  return new Promise((resolve) => {
+    const rl = readline.createInterface({
+      input: process.stdin,
+      output: process.stdout
+    });
+
+    rl.question(message, (answer) => {
+      rl.close();
+      const normalized = String(answer || '').trim().toLowerCase();
+      resolve(normalized === 'y' || normalized === 'yes');
+    });
+  });
+}
+
+function detectNpmGlobalBinDir() {
+  const prefix = process.env.npm_config_prefix;
+  if (typeof prefix === 'string' && prefix.length > 0) {
+    const binDir = platform === 'win32' ? prefix : path.join(prefix, 'bin');
+    return binDir;
+  }
+  return null;
+}
+
+function detectSokeCliShimPath() {
+  const binDir = detectNpmGlobalBinDir();
+  if (!binDir) return null;
+
+  const candidates =
+    platform === 'win32'
+      ? [path.join(binDir, 'soke-cli.cmd'), path.join(binDir, 'soke-cli.exe')]
+      : [path.join(binDir, 'soke-cli')];
+
+  for (const candidate of candidates) {
+    if (fs.existsSync(candidate)) return candidate;
+  }
+  return null;
+}
+
+function getPreferredLinkTargetPaths() {
+  if (platform === 'win32') return [];
+  return ['/usr/local/bin/soke-cli', '/opt/homebrew/bin/soke-cli'];
+}
+
+function ensureSymlink(targetPath, sourcePath) {
+  try {
+    const existing = fs.lstatSync(targetPath);
+    if (existing.isSymbolicLink()) {
+      const currentTarget = fs.readlinkSync(targetPath);
+      if (currentTarget === sourcePath) return { ok: true, changed: false };
+      fs.unlinkSync(targetPath);
+    } else {
+      return { ok: false, changed: false, reason: 'exists_non_symlink' };
+    }
+  } catch (_) {}
+
+  try {
+    fs.symlinkSync(sourcePath, targetPath);
+    return { ok: true, changed: true };
+  } catch (err) {
+    return { ok: false, changed: false, reason: err && err.message ? err.message : 'failed' };
+  }
+}
+
+async function maybeAssistGuiPath() {
+  if (!isLikelyInteractiveInstall()) return;
+
+  const shimPath = detectSokeCliShimPath();
+  if (!shimPath) return;
+
+  const targets = getPreferredLinkTargetPaths();
+  if (targets.length === 0) return;
+
+  let selectedTarget = null;
+  for (const t of targets) {
+    const dir = path.dirname(t);
+    if (fs.existsSync(dir)) {
+      selectedTarget = t;
+      break;
+    }
+  }
+  if (!selectedTarget) selectedTarget = targets[0];
+
+  const dir = path.dirname(selectedTarget);
+  let dirWritable = false;
+  try {
+    fs.accessSync(dir, fs.constants.W_OK);
+    dirWritable = true;
+  } catch (_) {}
+
+  const question = dirWritable
+    ? `检测到你可能在 sokeclaw（GUI）里遇到 “command not found: soke-cli”。是否创建链接 ${selectedTarget} 指向 ${shimPath} 以便 GUI 可直接找到？(y/N) `
+    : `检测到你可能在 sokeclaw（GUI）里遇到 “command not found: soke-cli”。是否输出一条需要 sudo 的命令来创建链接 ${selectedTarget} 指向 ${shimPath}？(y/N) `;
+
+  const ok = await promptYesNo(question);
+  if (!ok) return;
+
+  if (dirWritable) {
+    const res = ensureSymlink(selectedTarget, shimPath);
+    if (res.ok) {
+      console.log(`已配置：${selectedTarget} -> ${shimPath}`);
+    } else if (res.reason === 'exists_non_symlink') {
+      console.log(`跳过：${selectedTarget} 已存在且不是软链接。`);
+    } else {
+      console.log(`创建软链接失败：${res.reason}`);
+    }
+    return;
+  }
+
+  console.log(`请执行以下命令完成配置（需要 sudo）：`);
+  console.log(`sudo ln -sf "${shimPath}" "${selectedTarget}"`);
+}
+
 // 平台映射
 const platformMap = {
   'darwin': 'darwin',
@@ -297,6 +419,9 @@ downloadFile(downloadURL, binaryPath)
       syncSkillsToWorkclawRegistry();
     } catch (_) {}
 
+    return maybeAssistGuiPath();
+  })
+  .then(() => {
     console.log('soke-cli 安装成功!');
     console.log(`二进制文件位置: ${binaryPath}`);
     console.log('\n使用方法:');
