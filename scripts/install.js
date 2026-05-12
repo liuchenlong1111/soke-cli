@@ -88,6 +88,106 @@ function syncSkillsToSokeclawWorkspace() {
   }
 }
 
+function upsertSkillRegistryEntry(registry, entry) {
+  if (!registry || typeof registry !== 'object') return;
+  if (!Array.isArray(registry.skills)) registry.skills = [];
+
+  const idx = registry.skills.findIndex((s) => s && s.id === entry.id);
+  if (idx >= 0) {
+    registry.skills[idx] = { ...registry.skills[idx], ...entry };
+    return;
+  }
+
+  registry.skills.push(entry);
+}
+
+function syncSkillsToWorkclawRegistry() {
+  const homeDir = os.homedir();
+  const workclawRootDir = path.join(homeDir, '.workclaw');
+  const workclawSkillsDir = path.join(workclawRootDir, 'skills');
+  const registryPath = path.join(workclawSkillsDir, 'registry.json');
+
+  if (!fs.existsSync(workclawRootDir)) return;
+  try {
+    fs.mkdirSync(workclawSkillsDir, { recursive: true });
+  } catch (_) {
+    return;
+  }
+
+  const packageRoot = path.join(__dirname, '..');
+  const packagedSkillsDir = path.join(packageRoot, 'skills');
+  if (!fs.existsSync(packagedSkillsDir)) return;
+
+  let registry;
+  try {
+    registry = JSON.parse(fs.readFileSync(registryPath, 'utf8'));
+  } catch (_) {
+    registry = { version: 1, migrations: {}, skills: [] };
+  }
+
+  if (registry.version == null) registry.version = 1;
+  if (!registry.migrations) registry.migrations = {};
+
+  const existingSkills = Array.isArray(registry.skills) ? registry.skills : [];
+  const existingInstallPaths = existingSkills
+    .map((s) => s?.install?.path)
+    .filter((p) => typeof p === 'string');
+
+  const workclawSkillInstallDir = workclawSkillsDir;
+
+  const defaultSourceType =
+    typeof existingSkills[0]?.source?.type === 'string' && existingSkills[0]?.source?.type
+      ? existingSkills[0].source.type
+      : 'local';
+
+  const skillNames = ['soke-shared', 'soke-exam'];
+  for (const skillName of skillNames) {
+    const src = path.join(packagedSkillsDir, skillName);
+    const dest = path.join(workclawSkillInstallDir, skillName);
+    if (fs.existsSync(src)) copyDirRecursive(src, dest);
+  }
+
+  upsertSkillRegistryEntry(registry, {
+    id: 'skill:soke-exam',
+    name: 'soke-exam',
+    displayName: '授客考试管理',
+    description: '授客考试管理：查询考试、考试分类、考试用户成绩、考试详情。',
+    source: { type: defaultSourceType, slug: '', url: '' },
+    install: {
+      path: path.join(workclawSkillInstallDir, 'soke-exam'),
+      installedAt: '',
+      updatedAt: '',
+      version: '1.0.0'
+    },
+    state: { enabled: true, health: 'ok', lastError: '' },
+    runtime: { supported: ['openclaw'], enabled: ['openclaw'], primary: 'openclaw' },
+    security: { riskLevel: 'normal', requiresApproval: false },
+    metadata: { emoji: '📝', homepage: '', requires: { bins: ['soke-cli'] } }
+  });
+
+  upsertSkillRegistryEntry(registry, {
+    id: 'skill:soke-shared',
+    name: 'soke-shared',
+    displayName: 'soke-shared 共享规则',
+    description: '授客CLI共享基础：配置、登录、权限管理、错误处理、安全规则。',
+    source: { type: defaultSourceType, slug: '', url: '' },
+    install: {
+      path: path.join(workclawSkillInstallDir, 'soke-shared'),
+      installedAt: '',
+      updatedAt: '',
+      version: '1.0.0'
+    },
+    state: { enabled: true, health: 'ok', lastError: '' },
+    runtime: { supported: ['openclaw'], enabled: ['openclaw'], primary: 'openclaw' },
+    security: { riskLevel: 'normal', requiresApproval: false },
+    metadata: { emoji: '🔧', homepage: '', requires: {} }
+  });
+
+  try {
+    fs.writeFileSync(registryPath, JSON.stringify(registry, null, 2));
+  } catch (_) {}
+}
+
 // 平台映射
 const platformMap = {
   'darwin': 'darwin',
@@ -191,6 +291,10 @@ downloadFile(downloadURL, binaryPath)
 
     try {
       syncSkillsToSokeclawWorkspace();
+    } catch (_) {}
+
+    try {
+      syncSkillsToWorkclawRegistry();
     } catch (_) {}
 
     console.log('soke-cli 安装成功!');
