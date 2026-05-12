@@ -205,13 +205,6 @@ func (p *OAuthProvider) Login(ctx context.Context, force bool) (*TokenData, erro
 				if p.logger != nil {
 					p.logger.Debug("access_token expired, trying refresh_token")
 				}
-				refreshed, rErr := p.lockedRefresh(ctx)
-				if rErr == nil {
-					return refreshed, nil
-				}
-				if p.logger != nil {
-					p.logger.Warn("refresh_token 刷新失败，将尝试扫码登录", "error", rErr)
-				}
 			}
 		}
 	}
@@ -717,71 +710,7 @@ func (p *OAuthProvider) GetAccessToken(ctx context.Context) (string, error) {
 		return data.AccessToken, nil
 	}
 
-	// Slow path: token expired — try locked refresh.
-	if data.IsRefreshTokenValid() {
-		refreshed, rErr := p.lockedRefresh(ctx)
-		if rErr == nil {
-			return refreshed.AccessToken, nil
-		}
-		if p.logger != nil {
-			p.logger.Warn("refresh_token 刷新失败", "error", rErr)
-		}
-	}
-
 	return "", errors.New("所有凭证已失效，请运行 dws auth login 重新登录")
-}
-
-
-func (p *OAuthProvider) lockedRefresh(ctx context.Context) (*TokenData, error) {
-	// Acquire dual-layer lock (process-level + file-level)
-	lock, err := AcquireDualLock(ctx, p.configDir)
-	if err != nil {
-		return nil, fmt.Errorf("acquiring dual lock: %w", err)
-	}
-	defer lock.Release()
-
-	// Double-check: re-load from disk — another goroutine/process may have refreshed
-	// while we were waiting for the lock.
-	data, err := LoadTokenData(p.configDir)
-	if err != nil {
-		return nil, err
-	}
-	if data.IsAccessTokenValid() {
-		if p.logger != nil {
-			if lock.Waited {
-				p.logger.Debug("token already refreshed by another goroutine/process")
-			} else {
-				p.logger.Debug("token still valid after acquiring lock")
-			}
-		}
-		return data, nil
-	}
-
-	// Still expired — we need to actually refresh.
-	if !data.IsRefreshTokenValid() {
-		return nil, fmt.Errorf("refresh_token 已过期")
-	}
-
-	if p.logger != nil {
-		p.logger.Debug("refreshing token (dual-locked)")
-	}
-	return p.refreshWithRefreshToken(ctx, data)
-}
-
-// ExchangeAuthCode takes an AuthCode and an optional UserID provided by an
-// external host, exchanges it for tokens, and persists them.
-func (p *OAuthProvider) ExchangeAuthCode(ctx context.Context, authCode, uid string) (*TokenData, error) {
-	tokenData, err := p.exchangeCode(ctx, authCode)
-	if err != nil {
-		return nil, fmt.Errorf("%s: %w", "换取 token 失败", err)
-	}
-	if uid != "" {
-		tokenData.UserID = uid
-	}
-	if err := SaveTokenData(p.configDir, tokenData); err != nil {
-		return nil, fmt.Errorf("%s: %w", "保存 token 失败", err)
-	}
-	return tokenData, nil
 }
 
 // Logout clears all stored credentials.

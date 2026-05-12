@@ -54,12 +54,6 @@ const (
 	OpenDevURL = "https://opendevpre.eduto.com"
 	//OpenDevURL = "https://opendev.soke.cn"
 
-	// UserAccessTokenURL exchanges an authorization code for user tokens.
-	UserAccessTokenURL = "https://api.dingtalk.com/v1.0/oauth2/userAccessToken"
-
-	// UserInfoURL fetches the authenticated user's profile.
-	UserInfoURL = "https://api.dingtalk.com/v1.0/contact/users/me"
-
 	// DefaultClientID is the CLI's built-in OAuth client ID (DingTalk AppKey).
 	// TODO: Replace <YOUR_CLIENT_ID> with your actual DingTalk AppKey before building.
 	DefaultClientID = "<YOUR_CLIENT_ID>"
@@ -74,30 +68,17 @@ const (
 	// DefaultScopes are the OAuth scopes requested by the CLI.
 	DefaultScopes = "openid corpid"
 
-	// Device Authorization Grant (RFC 8628) endpoints.
-
-	// DefaultDeviceBaseURL is the login server base URL for device flow.
-	DefaultDeviceBaseURL = "https://login.dingtalk.com"
-
 	// DeviceCodePath requests a device_code and user_code.
 	DeviceCodePath = "/oauth2/device/code.json"
 
 	// DeviceTokenPath polls for authorization completion.
 	DeviceTokenPath = "/oauth2/device/token.json"
 
-	// DeviceGrantType is the grant_type value defined by RFC 8628.
-	DeviceGrantType = "urn:ietf:params:oauth:grant-type:device_code"
-
-	// Terminal API base URL for developer settings page.
-	DefaultTerminalBaseURL = "https://open-dev.dingtalk.com"
 	// DevicePollPath is the device flow polling path (used with MCP base URL).
 	DevicePollPath = "/cli/oauth/device/poll"
 
 	// DeveloperSettingsPath is the path to the organization developer settings page.
 	DeveloperSettingsPath = "/fe/old#/developerSettings"
-
-	LogoutURL         = "https://login.dingtalk.com/oauth2/logout"
-	LogoutContinueURL = "https://login.dingtalk.com"
 
 	// MCP API endpoints for CLI authorization management.
 	DefaultMCPBaseURL    = "https://mcp.dingtalk.com"
@@ -110,12 +91,6 @@ const (
 	MCPOAuthTokenPath   = "/oauth2/getToken"
 	MCPRefreshTokenPath = "/oauth2/refreshToken"
 	MCPRevokeTokenPath  = "/oauth2/revokeToken"
-
-	// App-level access token endpoints (for dws api raw calls).
-
-	// AppAccessTokenURL is the unified app-level access token endpoint.
-	// POST with {"appKey":"X","appSecret":"X"} → {"accessToken":"...","expireIn":7200}
-	AppAccessTokenURL = "https://api.dingtalk.com/v1.0/oauth2/accessToken"
 )
 
 // GetTerminalBaseURL returns the terminal base URL with priority:
@@ -170,23 +145,6 @@ func IsClientIDFromMCP() bool {
 	return clientIDFromMCP || edition.Get().AuthClientFromMCP
 }
 
-// GetUserAccessTokenURL returns the appropriate token exchange URL.
-// Uses MCP endpoint when clientID is from MCP, otherwise uses direct DingTalk API.
-func GetUserAccessTokenURL() string {
-	if IsClientIDFromMCP() {
-		return GetMCPBaseURL() + MCPOAuthTokenPath
-	}
-	return UserAccessTokenURL
-}
-
-// GetRefreshTokenURL returns the appropriate token refresh URL.
-// Uses MCP endpoint when clientID is from MCP, otherwise uses direct DingTalk API.
-func GetRefreshTokenURL() string {
-	if IsClientIDFromMCP() {
-		return GetMCPBaseURL() + MCPRefreshTokenPath
-	}
-	return UserAccessTokenURL // DingTalk uses same endpoint for refresh
-}
 
 // GetRevokeTokenURL returns the token revocation URL (MCP only).
 // Returns empty string if not using MCP mode.

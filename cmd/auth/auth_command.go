@@ -54,9 +54,6 @@ func NewUserAuthCommand() *cobra.Command {
 	}
 	cmd.AddCommand(
 		newAuthLogoutCommand(),
-		//newAuthStatusCommand(),
-		//newAuthExchangeCommand(),
-		//newAuthResetCommand(),
 	)
 	return cmd
 }
@@ -78,8 +75,7 @@ func newAuthLoginCommand() *cobra.Command {
 
 示例:
   dws auth login              # 扫码登录
-  dws auth login --force      # 强制重新登录 (忽略缓存 token)
-  dws auth login --token xxx  # 使用指定 token`,
+  dws auth login --force      # 强制重新登录 (忽略缓存 token)`,
 		DisableAutoGenTag: true,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cfg, err := resolveAuthLoginConfig(cmd)
@@ -109,11 +105,10 @@ func newAuthLoginCommand() *cobra.Command {
 				//configureOAuthProviderCompatibility(provider, configDir)
 				tokenData, err = provider.Login(loginCtx, cfg.Force)
 				if err != nil {
-					return apperrors.NewAuth(fmt.Sprintf("dingtalk login failed: %v", err))
+					return apperrors.NewAuth(fmt.Sprintf(" login failed: %v", err))
 				}
 			}
 
-			//ResetRuntimeTokenCache()
 			clearCompatCache()
 
 			w := cmd.OutOrStdout()
@@ -157,9 +152,8 @@ func newAuthLogoutCommand() *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			//configDir := defaultConfigDir()
 			configDir := ""
-			revokeCtx, cancel := context.WithTimeout(cmd.Context(), 15*time.Second)
+			_, cancel := context.WithTimeout(cmd.Context(), 15*time.Second)
 			defer cancel()
-			_ = authpkg.RevokeTokenRemote(revokeCtx)
 
 			// Load token data to get associated clientId before deletion
 			var storedClientID string
