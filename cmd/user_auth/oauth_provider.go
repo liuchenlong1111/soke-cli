@@ -684,11 +684,6 @@ func (p *OAuthProvider) Login(ctx context.Context, force bool) (*TokenData, erro
 		return nil, fmt.Errorf("%s: %w", "保存 token 失败", err)
 	}
 
-
-	// 输出登录成功信息
-	_, _ = fmt.Fprintln(p.output(), "")
-	_, _ = fmt.Fprintln(p.output(), "✅ 授权成功，已通知主流程")
-
 	// 读取配置文件显示详细信息
 	cfg, err := core.LoadConfig()
 	if err == nil {
