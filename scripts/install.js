@@ -262,52 +262,33 @@ function ensureSymlink(targetPath, sourcePath) {
 }
 
 async function maybeAssistGuiPath() {
-  if (!isLikelyInteractiveInstall()) return;
+  const platform = os.platform();
+  const binDir = path.join(__dirname, '..', 'bin');
+  const binaryName = platform === 'win32' ? 'soke-cli.exe' : 'soke-cli';
+  const binaryPath = path.join(binDir, binaryName);
+  
+  if (!fs.existsSync(binaryPath)) return Promise.resolve();
 
-  const shimPath = detectSokeCliShimPath();
-  if (!shimPath) return;
-
-  const targets = getPreferredLinkTargetPaths();
-  if (targets.length === 0) return;
-
-  let selectedTarget = null;
-  for (const t of targets) {
-    const dir = path.dirname(t);
-    if (fs.existsSync(dir)) {
-      selectedTarget = t;
-      break;
+  // 我们不再弹窗询问，而是直接以静默模式尝试执行 setup-gui-env
+  // 这会尝试创建软链，如果没权限，它会默默失败（不会报错打断安装）
+  // 用户如果后面遇到 command not found，仍可以手动执行 soke-cli setup-gui-env
+  return new Promise((resolve) => {
+    try {
+      const runJsPath = path.join(__dirname, 'run.js');
+      const { spawn } = require('child_process');
+      const child = spawn(process.execPath, [runJsPath, 'setup-gui-env', '--silent'], {
+        stdio: 'ignore', // 静默执行，不污染 npm install 输出
+        detached: true
+      });
+      child.on('error', () => resolve());
+      child.on('exit', () => resolve());
+      
+      // 避免卡住
+      setTimeout(() => resolve(), 3000);
+    } catch (e) {
+      resolve();
     }
-  }
-  if (!selectedTarget) selectedTarget = targets[0];
-
-  const dir = path.dirname(selectedTarget);
-  let dirWritable = false;
-  try {
-    fs.accessSync(dir, fs.constants.W_OK);
-    dirWritable = true;
-  } catch (_) {}
-
-  const question = dirWritable
-    ? `检测到你可能在 sokeclaw（GUI）里遇到 “command not found: soke-cli”。是否创建链接 ${selectedTarget} 指向 ${shimPath} 以便 GUI 可直接找到？(y/N) `
-    : `检测到你可能在 sokeclaw（GUI）里遇到 “command not found: soke-cli”。是否输出一条需要 sudo 的命令来创建链接 ${selectedTarget} 指向 ${shimPath}？(y/N) `;
-
-  const ok = await promptYesNo(question);
-  if (!ok) return;
-
-  if (dirWritable) {
-    const res = ensureSymlink(selectedTarget, shimPath);
-    if (res.ok) {
-      console.log(`已配置：${selectedTarget} -> ${shimPath}`);
-    } else if (res.reason === 'exists_non_symlink') {
-      console.log(`跳过：${selectedTarget} 已存在且不是软链接。`);
-    } else {
-      console.log(`创建软链接失败：${res.reason}`);
-    }
-    return;
-  }
-
-  console.log(`请执行以下命令完成配置（需要 sudo）：`);
-  console.log(`sudo ln -sf "${shimPath}" "${selectedTarget}"`);
+  });
 }
 
 // 平台映射
