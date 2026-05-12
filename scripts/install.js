@@ -278,13 +278,11 @@ async function maybeAssistGuiPath() {
       const { spawn } = require('child_process');
       const child = spawn(process.execPath, [runJsPath, 'setup-gui-env', '--silent'], {
         stdio: 'ignore', // 静默执行，不污染 npm install 输出
-        detached: true
+        detached: true   // 允许子进程独立于父进程运行
       });
-      child.on('error', () => resolve());
-      child.on('exit', () => resolve());
-      
-      // 避免卡住
-      setTimeout(() => resolve(), 3000);
+      // 断开与子进程的联系，让它在后台自己跑，不阻塞 npm 安装退出
+      child.unref();
+      resolve();
     } catch (e) {
       resolve();
     }
