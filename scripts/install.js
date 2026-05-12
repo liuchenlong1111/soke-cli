@@ -38,9 +38,12 @@ function copyDirRecursive(srcDir, destDir) {
   }
 }
 
-function detectSokeclawWorkspaceSkillsDir() {
+function detectSokeclawWorkspaceSkillsDirs() {
   const homeDir = os.homedir();
-  const defaultSkillsDir = path.join(
+  const dirs = [];
+
+  // 1. Sokeclaw 默认工作区
+  const defaultSokeclawDir = path.join(
     homeDir,
     '.sokeclaw',
     'openai-agents',
@@ -49,19 +52,41 @@ function detectSokeclawWorkspaceSkillsDir() {
     'skills'
   );
 
+  // 2. Zev 默认工作区 (Sokeclaw 可能会生成这个)
+  const defaultZevDir = path.join(
+    homeDir,
+    '.zev',
+    'openai-agents',
+    'workspaces',
+    'main',
+    'skills'
+  );
+
+  // 3. 从 workclaw.json 读取配置
   const workclawConfigPath = path.join(homeDir, '.sokeclaw', 'workclaw.json');
-  if (!fs.existsSync(workclawConfigPath)) return defaultSkillsDir;
+  let configuredDir = null;
+  if (fs.existsSync(workclawConfigPath)) {
+    try {
+      const configText = fs.readFileSync(workclawConfigPath, 'utf8');
+      const config = JSON.parse(configText);
+      const workspaceDir = config?.defaults?.agents?.openaiAgents?.main?.workspace;
+      if (typeof workspaceDir === 'string' && workspaceDir.length > 0) {
+        configuredDir = path.join(workspaceDir, 'skills');
+      }
+    } catch (_) {}
+  }
 
-  try {
-    const configText = fs.readFileSync(workclawConfigPath, 'utf8');
-    const config = JSON.parse(configText);
-    const workspaceDir = config?.defaults?.agents?.openaiAgents?.main?.workspace;
-    if (typeof workspaceDir === 'string' && workspaceDir.length > 0) {
-      return path.join(workspaceDir, 'skills');
-    }
-  } catch (_) {}
+  // 收集所有有效的潜在目录
+  if (configuredDir) {
+    dirs.push(configuredDir);
+  } else {
+    dirs.push(defaultSokeclawDir);
+  }
+  
+  // 始终将 .zev 目录也加入同步列表
+  dirs.push(defaultZevDir);
 
-  return defaultSkillsDir;
+  return dirs;
 }
 
 function syncSkillsToSokeclawWorkspace() {
@@ -69,22 +94,21 @@ function syncSkillsToSokeclawWorkspace() {
   const packagedSkillsDir = path.join(packageRoot, 'skills');
   if (!fs.existsSync(packagedSkillsDir)) return;
 
-  const sokeclawSkillsDir = detectSokeclawWorkspaceSkillsDir();
-  const sokeclawRootDir = path.join(os.homedir(), '.sokeclaw');
-  if (!fs.existsSync(sokeclawRootDir)) return;
-
-  try {
-    fs.mkdirSync(sokeclawSkillsDir, { recursive: true });
-  } catch (_) {
-    return;
-  }
-
+  const targetDirs = detectSokeclawWorkspaceSkillsDirs();
   const skillNames = ['soke-shared', 'soke-exam'];
-  for (const skillName of skillNames) {
-    const src = path.join(packagedSkillsDir, skillName);
-    const dest = path.join(sokeclawSkillsDir, skillName);
-    if (fs.existsSync(src)) {
-      copyDirRecursive(src, dest);
+
+  for (const targetDir of targetDirs) {
+    try {
+      fs.mkdirSync(targetDir, { recursive: true });
+      for (const skillName of skillNames) {
+        const src = path.join(packagedSkillsDir, skillName);
+        const dest = path.join(targetDir, skillName);
+        if (fs.existsSync(src)) {
+          copyDirRecursive(src, dest);
+        }
+      }
+    } catch (_) {
+      // 忽略单个目录的写入失败
     }
   }
 }
