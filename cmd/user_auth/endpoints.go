@@ -49,9 +49,10 @@ func init() {
 const (
 	// AuthorizeURL is the DingTalk OAuth authorization page.
 	AuthorizeURL = "https://app2651.eapps.dingtalkcloud.com/pcAdmin/dist/login/jsLogin"
+	//AuthorizeURL = "https://app1730.eapps.dingtalkcloud.com/pcAdmin/dist/login/jsLogin"
 
-	//"https://opendevpre.eduto.com" : "https://opendev.soke.cn"
 	OpenDevURL = "https://opendevpre.eduto.com"
+	//OpenDevURL = "https://opendev.soke.cn"
 
 	// UserAccessTokenURL exchanges an authorization code for user tokens.
 	UserAccessTokenURL = "https://api.dingtalk.com/v1.0/oauth2/userAccessToken"

@@ -100,16 +100,6 @@ func newAuthLoginCommand() *cobra.Command {
 				if err := authpkg.SaveTokenData(configDir, tokenData); err != nil {
 					return apperrors.NewInternal(fmt.Sprintf("failed to persist auth token: %v", err))
 				}
-			case cfg.Device:
-				loginCtx, cancel := context.WithTimeout(cmd.Context(), config.DeviceFlowTimeout)
-				defer cancel()
-
-				provider := authpkg.NewDeviceFlowProvider(configDir, nil)
-				provider.Output = cmd.ErrOrStderr()
-				tokenData, err = provider.Login(loginCtx)
-				if err != nil {
-					return apperrors.NewAuth(fmt.Sprintf("device authorization failed: %v", err))
-				}
 			default:
 				loginCtx, cancel := context.WithTimeout(cmd.Context(), config.OAuthFlowTimeout)
 				defer cancel()
@@ -134,28 +124,7 @@ func newAuthLoginCommand() *cobra.Command {
 				return writeAuthLoginJSON(w, tokenData, cfg.Force)
 			}
 
-			// Default table output
-			fmt.Fprintln(w)
-			if !cfg.Device && tokenData != nil && tokenData.IsAccessTokenValid() && !cfg.Force {
-				fmt.Fprintf(w, "[OK] Token 有效，无需重新登录\n")
-			} else {
-				fmt.Fprintf(w, "[OK] 登录成功！\n")
-			}
-			if tokenData != nil {
-				if tokenData.CorpName != "" {
-					fmt.Fprintf(w, "%-16s%s\n", "企业:", tokenData.CorpName)
-				}
-				if tokenData.CorpID != "" {
-					fmt.Fprintf(w, "%-16s%s\n", "企业 ID:", tokenData.CorpID)
-				}
-				if tokenData.UserName != "" {
-					fmt.Fprintf(w, "%-16s%s\n", "用户:", tokenData.UserName)
-				}
-				if expiry := authLoginDisplayExpiry(tokenData); expiry != "" {
-					fmt.Fprintf(w, "%-16s%s\n", "有效期:", expiry)
-				}
-			}
-			fmt.Fprintf(w, "Token 将自动刷新，无需重复登录\n")
+			// Default table output - removed duplicate output
 			return nil
 		},
 	}
@@ -235,32 +204,6 @@ func timeOrEmpty(t time.Time) string {
 	return t.UTC().Format(time.RFC3339)
 }
 
-func authLoginFormatExpiry(t time.Time) string {
-	remaining := time.Until(t)
-	if remaining <= 0 {
-		return "已过期"
-	}
-	if remaining > 24*time.Hour {
-		return fmt.Sprintf("%.0f 天后", remaining.Hours()/24)
-	}
-	return fmt.Sprintf("%.0f 小时后", remaining.Hours())
-}
-
-// authLoginDisplayExpiry 返回用于显示的有效期（优先显示 refresh token 有效期）
-func authLoginDisplayExpiry(data *authpkg.TokenData) string {
-	if data == nil {
-		return ""
-	}
-	// 优先使用 refresh token 有效期（更长，对用户更有意义）
-	if data.IsRefreshTokenValid() {
-		return authLoginFormatExpiry(data.RefreshExpAt)
-	}
-	// 回退到 access token 有效期
-	if !data.ExpiresAt.IsZero() {
-		return authLoginFormatExpiry(data.ExpiresAt)
-	}
-	return ""
-}
 
 func clearCompatCache() {
 	//store := cacheStoreFromEnv()
@@ -287,26 +230,6 @@ func resolveAuthLoginConfig(cmd *cobra.Command) (authLoginConfig, error) {
 		Force:  force,
 		Device: device,
 	}, nil
-}
-
-func authStatusAuthenticated(data *authpkg.TokenData) bool {
-	if data == nil {
-		return false
-	}
-	return data.IsAccessTokenValid() || data.IsRefreshTokenValid()
-}
-
-func authStatusUpdatedAt(data *authpkg.TokenData) string {
-	if data == nil {
-		return ""
-	}
-	if data.IsAccessTokenValid() {
-		return timeOrEmpty(data.ExpiresAt)
-	}
-	if data.IsRefreshTokenValid() {
-		return timeOrEmpty(data.RefreshExpAt)
-	}
-	return ""
 }
 
 // authStatusResponse is the JSON response for auth status command.

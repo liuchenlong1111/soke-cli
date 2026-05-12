@@ -25,6 +25,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"strings"
 	"sync"
 	"time"
 
@@ -97,16 +98,6 @@ func NewOAuthProvider(configDir string, logger *slog.Logger) *OAuthProvider {
 	}
 }
 
-// resetCredentialState clears any stale credential state inherited from
-// previous login methods so that OAuth flow always starts fresh by
-// fetching clientID from MCP.
-func (p *OAuthProvider) resetCredentialState() {
-	p.clientID = ""
-	clientMu.Lock()
-	clientIDFromMCP = false
-	clientMu.Unlock()
-}
-
 func (p *OAuthProvider) output() io.Writer {
 	if p != nil && p.Output != nil {
 		return p.Output
@@ -118,11 +109,92 @@ func (p *OAuthProvider) output() io.Writer {
 // 1. If force=false, try silent token refresh first (refresh_token)
 // 2. If all silent methods fail (or force=true), fall back to browser OAuth flow
 func (p *OAuthProvider) Login(ctx context.Context, force bool) (*TokenData, error) {
-	// Smart degradation: try silent refresh before opening browser.
+	// 首先检查 core.CliConfig 中的必需字段和 UserToken 是否有效
+	var cliConfigChecked bool
+	var missingFields []string
+	var needRelogin bool
+
 	if !force {
+		cfg, err := core.LoadConfig()
+		if err == nil {
+			cliConfigChecked = true
+
+			// 检查所有必需字段是否存在
+			if cfg.AppID == "" {
+				missingFields = append(missingFields, "AppID")
+			}
+			if cfg.AppSecret == "" {
+				missingFields = append(missingFields, "AppSecret")
+			}
+			if cfg.UserToken == "" {
+				missingFields = append(missingFields, "UserToken")
+			}
+			if cfg.CorpID == "" {
+				missingFields = append(missingFields, "CorpID")
+			}
+			if cfg.DeptUserID == "" {
+				missingFields = append(missingFields, "DeptUserID")
+			}
+
+			// 如果有字段缺失，需要重新登录
+			if len(missingFields) > 0 {
+				needRelogin = true
+				if p.logger != nil {
+					p.logger.Debug("config incomplete, need login", "missing_fields", missingFields)
+				}
+				_, _ = fmt.Fprintln(p.output(), "")
+				_, _ = fmt.Fprintf(p.output(), "⚠️  配置不完整（缺少: %s），需要重新登录\n", strings.Join(missingFields, ", "))
+				_, _ = fmt.Fprintln(p.output(), "")
+			} else {
+				// 所有字段都存在，检查 UserToken 是否过期
+				now := time.Now().Unix()
+				if cfg.UserTokenExp > now {
+					// Token 未过期，无需重新登录
+					if p.logger != nil {
+						p.logger.Debug("UserToken still valid, skipping login",
+							"expires_at", time.Unix(cfg.UserTokenExp, 0).Format("2006-01-02 15:04:05"))
+					}
+
+					// 构造 TokenData 返回
+					tokenData := &TokenData{
+						AccessToken:  cfg.UserToken,
+						CorpID:       cfg.CorpID,
+						ExpiresAt:    time.Unix(cfg.UserTokenExp, 0),
+						RefreshExpAt: time.Unix(cfg.UserTokenExp, 0).Add(30 * 24 * time.Hour),
+					}
+
+					// 输出提示信息
+					_, _ = fmt.Fprintln(p.output(), "")
+					_, _ = fmt.Fprintln(p.output(), "✅ 已登录，Token 仍然有效")
+					_, _ = fmt.Fprintf(p.output(), "企业 ID: %s\n", cfg.CorpID)
+					_, _ = fmt.Fprintln(p.output(), "")
+
+					return tokenData, nil
+				} else {
+					// Token 已过期，需要重新登录
+					needRelogin = true
+					if p.logger != nil {
+						p.logger.Debug("UserToken expired, need re-login",
+							"expired_at", time.Unix(cfg.UserTokenExp, 0).Format("2006-01-02 15:04:05"))
+					}
+					_, _ = fmt.Fprintln(p.output(), "")
+					_, _ = fmt.Fprintln(p.output(), "⚠️  Token 已过期，需要重新登录")
+					_, _ = fmt.Fprintln(p.output(), "")
+				}
+			}
+		} else {
+			// 配置文件不存在或读取失败，需要重新登录
+			needRelogin = true
+			if p.logger != nil {
+				p.logger.Debug("config not found or invalid, need login", "error", err)
+			}
+		}
+	}
+
+	// 如果配置有问题，跳过 TokenData 检查，直接进入授权流程
+	if !needRelogin && !force {
 		data, err := LoadTokenData(p.configDir)
 		if err == nil {
-			// Case 1: access_token still valid — no action needed.
 			if data.IsAccessTokenValid() {
 				if p.logger != nil {
 					p.logger.Debug("access_token still valid, skipping login")
@@ -133,7 +205,6 @@ func (p *OAuthProvider) Login(ctx context.Context, force bool) (*TokenData, erro
 				p.persistAppConfigIfNeeded()
 				return data, nil
 			}
-			// Case 2: refresh using refresh_token (with lock to prevent concurrent refresh).
 			if data.IsRefreshTokenValid() {
 				if p.logger != nil {
 					p.logger.Debug("access_token expired, trying refresh_token")
@@ -150,32 +221,14 @@ func (p *OAuthProvider) Login(ctx context.Context, force bool) (*TokenData, erro
 		}
 	}
 
-	// Fall through: full browser OAuth flow.
-	// Defensive reset: clear stale credential state from previous login methods,
-	// but preserve user-provided --client-id if present.
-	userClientID := p.clientID
-	p.resetCredentialState()
-
-	if userClientID != "" && userClientID != DefaultClientID {
-		// User provided --client-id flag: use it directly, skip MCP fetch.
-		p.clientID = userClientID
-		if p.logger != nil {
-			p.logger.Debug("using user-provided client ID, skipping MCP fetch", "clientID", userClientID)
-		}
-	} else {
-		// No user-provided client ID: fetch from MCP server.
-		if p.logger != nil {
-			p.logger.Debug("fetching client ID from MCP server")
-		}
-		mcpClientID, mcpErr := FetchClientIDFromMCP(ctx)
-		if mcpErr != nil {
-			return nil, fmt.Errorf("%s: %w", "获取 Client ID 失败", mcpErr)
-		}
-		p.clientID = mcpClientID
-		SetClientIDFromMCP(mcpClientID)
-		if p.logger != nil {
-			p.logger.Debug("fetched client ID from MCP server", "clientID", mcpClientID)
-		}
+	if cliConfigChecked {
+		_, _ = fmt.Fprintln(p.output(), "")
+		_, _ = fmt.Fprintln(p.output(), "⚠️  Token 已过期，需要重新登录")
+		_, _ = fmt.Fprintln(p.output(), "")
+	} else if !force {
+		_, _ = fmt.Fprintln(p.output(), "")
+		_, _ = fmt.Fprintln(p.output(), "ℹ️  未找到登录信息，开始授权流程")
+		_, _ = fmt.Fprintln(p.output(), "")
 	}
 
 	listener, err := net.Listen("tcp", "127.0.0.1:0")
@@ -194,7 +247,6 @@ func (p *OAuthProvider) Login(ctx context.Context, force bool) (*TokenData, erro
 	resultCh := make(chan callbackResult, 1)
 	errCh := make(chan error, 1)
 
-	// Shared state for API handlers (protected by mutex)
 	var (
 		callbackToken           *TokenData
 		callbackProcessedCode   string // The auth code that has been successfully processed
@@ -202,6 +254,7 @@ func (p *OAuthProvider) Login(ctx context.Context, force bool) (*TokenData, erro
 		callbackApplySent       bool   // Whether apply request was sent
 		callbackCodeInProgress  string // Code currently being processed (to prevent concurrent exchange)
 		callbackTokenMu         sync.Mutex
+		pendingTokenData        *TokenData // 待发送的 TokenData，等待 /success 页面请求
 	)
 
 	mux := http.NewServeMux()
@@ -215,15 +268,10 @@ func (p *OAuthProvider) Login(ctx context.Context, force bool) (*TokenData, erro
 			_, _ = fmt.Fprint(w, accessDeniedHTML)
 			return
 		}
-		//fmt.Println(authToken)
-
-
-		// Parse JWT token if present
 		if authToken != "" {
-			// TODO: Replace with your actual JWT secret key
 			secretKey := os.Getenv("JWT_SECRET_KEY")
 			if secretKey == "" {
-				secretKey = "&fb0CW@3zN6$@I9V" // Fallback, should be configured
+				secretKey = "&fb0CW@3zN6$@I9V" 
 			}
 
 			claims, err := parseJWT(authToken, secretKey)
@@ -238,12 +286,9 @@ func (p *OAuthProvider) Login(ctx context.Context, force bool) (*TokenData, erro
 				return
 			}
 
-			// Log parsed claims for debugging
 			if p.logger != nil {
 				p.logger.Info("JWT parsed successfully", "claims", claims)
 			}
-			fmt.Println("company_id:", claims["company_id"])
-			fmt.Println("dept_user_id:", claims["dept_user_id"])
 
 			// Parse exp timestamp
 			var expTimestamp int64
@@ -254,8 +299,6 @@ func (p *OAuthProvider) Login(ctx context.Context, force bool) (*TokenData, erro
 				case int64:
 					expTimestamp = v
 				}
-				expTime := time.Unix(expTimestamp, 0)
-				fmt.Println("exp:", expTime.Format("2006-01-02 15:04:05"))
 			}
 
 			var cfg core.CliConfig
@@ -274,14 +317,12 @@ func (p *OAuthProvider) Login(ctx context.Context, force bool) (*TokenData, erro
 			return
 		}
 
-		// Check state and handle page refresh or concurrent requests
 		callbackTokenMu.Lock()
 		processedCode := callbackProcessedCode
 		processedAuthDisabled := callbackAuthDisabled
 		codeInProgress := callbackCodeInProgress
 		hasToken := callbackToken != nil
 
-		// Case 1: This code was already successfully processed - show cached page
 		if authToken != "" && authToken == processedCode {
 			callbackTokenMu.Unlock()
 			w.Header().Set("Content-Type", "text/html; charset=utf-8")
@@ -293,7 +334,6 @@ func (p *OAuthProvider) Login(ctx context.Context, force bool) (*TokenData, erro
 			return
 		}
 
-		// Case 2: This code is being processed by another request - show wait page
 		if authToken != "" && authToken == codeInProgress {
 			callbackTokenMu.Unlock()
 			w.Header().Set("Content-Type", "text/html; charset=utf-8")
@@ -301,7 +341,6 @@ func (p *OAuthProvider) Login(ctx context.Context, force bool) (*TokenData, erro
 			return
 		}
 
-		// Case 3: No code but we have a processed token - show cached page
 		if authToken == "" && hasToken {
 			callbackTokenMu.Unlock()
 			w.Header().Set("Content-Type", "text/html; charset=utf-8")
@@ -313,7 +352,6 @@ func (p *OAuthProvider) Login(ctx context.Context, force bool) (*TokenData, erro
 			return
 		}
 
-		// Case 4: New code - mark as in-progress and process
 		if authToken != "" {
 			callbackCodeInProgress = authToken
 		}
@@ -405,6 +443,35 @@ func (p *OAuthProvider) Login(ctx context.Context, force bool) (*TokenData, erro
 
 	// Success page endpoint
 	mux.HandleFunc("/success", func(w http.ResponseWriter, r *http.Request) {
+		// 如果是 POST 请求，说明是前端通知完成
+		if r.Method == http.MethodPost {
+			callbackTokenMu.Lock()
+			token := pendingTokenData
+			callbackTokenMu.Unlock()
+
+			if token != nil {
+				// 通知主流程授权完成
+				select {
+				case resultCh <- callbackResult{token: token}:
+					fmt.Println("✅ 授权成功")
+					w.Header().Set("Content-Type", "application/json")
+					w.WriteHeader(http.StatusOK)
+					_, _ = w.Write([]byte(`{"success":true}`))
+				default:
+					fmt.Println("⚠️  流程可能已超时，无法完成授权")
+					w.Header().Set("Content-Type", "application/json")
+					w.WriteHeader(http.StatusInternalServerError)
+					_, _ = w.Write([]byte(`{"success":false,"error":"timeout"}`))
+				}
+			} else {
+				w.Header().Set("Content-Type", "application/json")
+				w.WriteHeader(http.StatusBadRequest)
+				_, _ = w.Write([]byte(`{"success":false,"error":"no token data"}`))
+			}
+			return
+		}
+
+		// GET 请求，显示成功页面
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 		_, _ = fmt.Fprint(w, successHTML)
 	})
@@ -456,9 +523,8 @@ func (p *OAuthProvider) Login(ctx context.Context, force bool) (*TokenData, erro
 
 		cfg, err := core.LoadConfig()
 		if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			_, _ = fmt.Fprintf(w, `{"success":false,"errorMsg":"加载配置失败: %s"}`, err.Error())
-			return
+			// 配置文件不存在，创建新配置对象
+			cfg = &core.CliConfig{}
 		}
 
 		formData["company_id"] = cfg.CorpID
@@ -497,7 +563,7 @@ func (p *OAuthProvider) Login(ctx context.Context, force bool) (*TokenData, erro
 
 		if parseErr := json.Unmarshal(respBody, &createAppResp); parseErr == nil {
 			createAppRespData := createAppResp.Data
-			fmt.Println("解析成功:")
+			//fmt.Println("解析成功:")
 			//fmt.Println("  app_id:", createAppRespData.AppID)
 			//fmt.Println("  app_key:", createAppRespData.AppKey)
 			//fmt.Println("  app_secret:", createAppRespData.AppSecret)
@@ -582,25 +648,43 @@ func (p *OAuthProvider) Login(ctx context.Context, force bool) (*TokenData, erro
 					permSaveResp, permSaveErr := permClient.Do(permSaveReq)
 					if permSaveErr == nil {
 						defer permSaveResp.Body.Close()
-						permSaveBody, _ := io.ReadAll(permSaveResp.Body)
-						fmt.Println("Permission save response:", string(permSaveBody))
+						//permSaveBody, _ := io.ReadAll(permSaveResp.Body)
+						//fmt.Println("Permission save response:", string(permSaveBody))
 
 						cfg.AppID = createAppRespData.AppID
 						cfg.AppSecret = createAppRespData.AppSecret
-						/***
+
+						// 保存配置到文件
 						if saveErr := core.SaveConfig(cfg); saveErr != nil {
 							fmt.Println("Save config error:", saveErr)
-						} else {
-							fmt.Println("App credentials saved to config successfully")
-							fmt.Println("  app_id:", createAppRespData.AppID)
-							fmt.Println("  app_key:", createAppRespData.AppKey)
-							fmt.Println("  app_secret:", createAppRespData.AppSecret)
-							fmt.Println("  sso_secret:", createAppRespData.SSOSecret)
-							fmt.Println("  callback_token:", createAppRespData.CallbackToken)
-							fmt.Println("  callback_secret_key:", createAppRespData.CallbackSecretKey)
-						}***/
+							w.WriteHeader(http.StatusInternalServerError)
+							_, _ = fmt.Fprintf(w, `{"success":false,"errorMsg":"保存配置失败: %s"}`, saveErr.Error())
+							return
+						}
+
+						// 构造 TokenData 并保存到共享变量，等待 /success 页面请求
+						tokenData := &TokenData{
+							AccessToken:  cfg.UserToken,
+							CorpID:       cfg.CorpID,
+							ExpiresAt:    time.Unix(cfg.UserTokenExp, 0),
+							RefreshExpAt: time.Unix(cfg.UserTokenExp, 0).Add(30 * 24 * time.Hour), // 默认30天刷新期
+						}
+
+						// 保存到共享变量
+						callbackTokenMu.Lock()
+						pendingTokenData = tokenData
+						callbackTokenMu.Unlock()
+
+						// 返回成功响应，让前端跳转到 /success
+						w.Header().Set("Content-Type", "application/json")
+						w.WriteHeader(http.StatusOK)
+						_, _ = w.Write([]byte(`{"success":true,"message":"授权成功"}`))
+						return
 					} else {
 						fmt.Println("Permission save error:", permSaveErr)
+						w.WriteHeader(http.StatusInternalServerError)
+						_, _ = fmt.Fprintf(w, `{"success":false,"errorMsg":"权限保存失败: %s"}`, permSaveErr.Error())
+						return
 					}
 				}
 			}
@@ -814,6 +898,26 @@ continueLogin:
 			_ = SaveAppConfig(p.configDir, &AppConfig{ClientID: p.clientID})
 		}
 	}
+
+	// 输出登录成功信息
+	_, _ = fmt.Fprintln(p.output(), "")
+	_, _ = fmt.Fprintln(p.output(), "✅ 授权成功，已通知主流程")
+
+	// 读取配置文件显示详细信息
+	cfg, err := core.LoadConfig()
+	if err == nil {
+		if cfg.CorpID != "" {
+			_, _ = fmt.Fprintf(p.output(), "企业 ID: %s\n", cfg.CorpID)
+		}
+		if cfg.AppID != "" {
+			_, _ = fmt.Fprintf(p.output(), "应用 ID: %s\n", cfg.AppID)
+		}
+		if cfg.UserTokenExp > 0 {
+			expTime := time.Unix(cfg.UserTokenExp, 0)
+			_, _ = fmt.Fprintf(p.output(), "Token 过期时间: %s\n", expTime.Format("2006-01-02 15:04:05"))
+		}
+	}
+	_, _ = fmt.Fprintln(p.output(), "")
 
 	return tokenData, nil
 }

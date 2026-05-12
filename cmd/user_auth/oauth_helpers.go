@@ -433,19 +433,21 @@ const createAppHTML = `<!DOCTYPE html>
 
           if (response.ok) {
             const result = await response.json();
-            if (result.status === 'ok') {
+            if (result.success) {
               successMessage.style.display = 'block';
               form.reset();
               console.log('创建成功:', result);
+
               // 跳转到成功页面
               setTimeout(() => {
                 window.location.href = '/success';
-              }, 3000);
+              }, 1000);
             } else {
-              alert('创建失败: ' + (result.message || result.msg || '未知错误'));
+              alert('创建失败: ' + (result.errorMsg || result.message || '未知错误'));
             }
           } else {
-            alert('创建失败，请稍后重试');
+            const errorData = await response.json().catch(() => ({}));
+            alert('创建失败: ' + (errorData.errorMsg || '请稍后重试'));
           }
         } catch (error) {
           console.error('请求错误:', error);
@@ -650,9 +652,6 @@ func (p *OAuthProvider) postJSON(ctx context.Context, endpoint string, body any)
 	if err != nil {
 		return nil, fmt.Errorf("reading response: %w", err)
 	}
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("HTTP %d: %s", resp.StatusCode, truncateBody(data, 200))
-	}
 	return data, nil
 }
 
@@ -748,10 +747,27 @@ const successHTML = `<!doctype html>
     <meta charset="utf-8" />
     <title>授客 CLI</title>
     <script>
+      // 页面加载完成后，发送完成通知给服务器
+      window.addEventListener('DOMContentLoaded', function() {
+        fetch('/success', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ success: true })
+        }).then(function(response) {
+          return response.json();
+        }).then(function(data) {
+          console.log('通知服务器完成:', data);
+        }).catch(function(error) {
+          console.error('通知服务器失败:', error);
+        });
+      });
+
       if (window.location.pathname !== "/success") {
         setTimeout(function() {
           window.location.href = "/success";
-        }, 500);
+        }, 200);
       }
     </script>
     <style>
@@ -835,7 +851,7 @@ const successHTML = `<!doctype html>
         alt="lock icon"
       />
       <h1>授权成功</h1>
-      <p>请返回终端继续操作。此页面可以关闭。</p>
+      <p>请返回终端继续操作，此页面可以关闭。</p>
     </div>
   </body>
 </html>`
