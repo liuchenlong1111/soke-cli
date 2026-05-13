@@ -122,8 +122,11 @@ func newAuthLoginCommand() *cobra.Command {
 		},
 	}
 	cmd.Flags().String("token", "", "Access token")
+	_ = cmd.Flags().MarkHidden("token")
 	cmd.Flags().Bool("device", false, "Use device authorization flow")
+	_ = cmd.Flags().MarkHidden("device")
 	cmd.Flags().Bool("force", false, "Force interactive login (ignore cached token)")
+	_ = cmd.Flags().MarkHidden("force")
 	// Hidden compatibility flags
 	cmd.Flags().String("redirect-url", "", "Loopback redirect URL")
 	cmd.Flags().String("scopes", "", "Space-separated DingTalk OAuth scopes")
