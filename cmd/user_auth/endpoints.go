@@ -48,8 +48,12 @@ func init() {
 
 const (
 	// AuthorizeURL is the DingTalk OAuth authorization page.
-	AuthorizeURL = "https://app2651.eapps.dingtalkcloud.com/pcAdmin/dist/login/jsLogin" //预发
+	//AuthorizeURL = "https://app2651.eapps.dingtalkcloud.com/pcAdmin/dist/login/jsLogin" //预发
 	//AuthorizeURL = "https://app1730.eapps.dingtalkcloud.com/pcAdmin/dist/login/jsLogin"  //正式
+
+	AuthorizeURL ="https://saas.eduto.com/pcHome/dist/sokeLogin"//预发
+	//AuthorizeURL ="https://saas.soke.cn/pcHome/dist/sokeLogin"//正式
+
 
 	OpenDevURL = "https://opendevpre.eduto.com" //预发
 	//OpenDevURL = "https://opendev.soke.cn" //正式
