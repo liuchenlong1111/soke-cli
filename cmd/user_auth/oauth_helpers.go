@@ -811,7 +811,7 @@ func (p *OAuthProvider) parseMCPTokenResponse(body []byte) (*TokenData, error) {
 
 func buildAuthURL(redirectURI string) string {
 	params := url.Values{
-		"redirect_uri":  {redirectURI},
+		"cli_redirect_uri":  {redirectURI},
 		//"response_type": {"code"},
 		//"scope":         {DefaultScopes},
 		//"prompt":        {"consent"},

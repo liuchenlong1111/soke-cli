@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"context"
 	"fmt"
 	"os"
 
@@ -19,6 +20,8 @@ import (
 	"codeup.aliyun.com/5edbc121d1d1abe63b55f1c7/soke/soke-cli/cmd/point"
 	"codeup.aliyun.com/5edbc121d1d1abe63b55f1c7/soke/soke-cli/cmd/training"
 	versionCmd "codeup.aliyun.com/5edbc121d1d1abe63b55f1c7/soke/soke-cli/cmd/version"
+	authpkg "codeup.aliyun.com/5edbc121d1d1abe63b55f1c7/soke/soke-cli/internal/auth"
+	"codeup.aliyun.com/5edbc121d1d1abe63b55f1c7/soke/soke-cli/internal/errors"
 	"codeup.aliyun.com/5edbc121d1d1abe63b55f1c7/soke/soke-cli/internal/version"
 	"github.com/spf13/cobra"
 )
@@ -32,9 +35,28 @@ var rootCmd = &cobra.Command{
 	   soke-cli auth login
 	   soke-cli api GET /users/me
 	   soke-cli calendar list`,
-	PersistentPreRun: func(cmd *cobra.Command, args []string) {
+	PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
 		// 在每次命令执行前检查更新（同步执行，使用缓存快速返回）
 		version.CheckForUpdates()
+
+		// 认证检查：这是整个系统中唯一的认证拦截点
+		// 在发起任何 API 请求之前进行检查，提供 fail-fast 机制
+		ctx := context.Background()
+
+		// 获取根命令名称（第一级命令）
+		commandName := cmd.Name()
+		if cmd.Parent() != nil && cmd.Parent().Name() != "soke-cli" {
+			// 如果有父命令且父命令不是根命令，使用父命令名称
+			commandName = cmd.Parent().Name()
+		}
+
+		if err := authpkg.CheckAuth(ctx, commandName); err != nil {
+			// 格式化错误输出
+			errors.PrintHuman(os.Stderr, err)
+			return err
+		}
+
+		return nil
 	},
 }
 
