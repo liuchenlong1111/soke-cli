@@ -45,7 +45,7 @@ var LearningProfileList = common.Shortcut{
 		}
 
 		return common.NewDryRunAPI().
-			POST("/learningProfile/list").
+			POST("/dataCenter/learningProfile/list").
 			Desc("Get student learning profile list").
 			Body(body)
 	},
@@ -70,7 +70,7 @@ var LearningProfileList = common.Shortcut{
 			body["is_new"] = isNew
 		}
 
-		data, err := runtime.CallAPI("POST", "/learningProfile/list", nil, body)
+		data, err := runtime.CallAPI("POST", "/dataCenter/learningProfile/list", nil, body)
 		if err != nil {
 			return err
 		}
