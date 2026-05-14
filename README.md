@@ -15,9 +15,10 @@
 
 3. **业务模块快捷命令**
    - 针对授客AI核心业务场景提供了丰富的快捷命令集：
-     - **通讯录 (contact)**: 部门与用户查询、管理等。
+     - **通讯录 (contact)**: 部门与用户查询、管理、搜索等。
      - **课程 (course)**: 课程列表、分类、学习记录、人脸识别记录等。
      - **考试 (exam)**: 考试列表、分类、考试成绩与记录查询。
+     - **学习档案 (learning-profile)**: 学员学习档案查询、学习情况统计。
      - **学习地图 (learning-map)**: 学习地图、阶段、任务查询与分配。
      - **证书 (certificate)**: 证书发放记录、分类等。
      - **学分 (credit) & 积分 (point)**: 学分/积分日志及用户情况查询。
@@ -71,6 +72,8 @@ AI Agent 会自动：
 
 - **soke-shared**: 配置初始化、用户认证、权限处理等基础功能
 - **soke-exam**: 考试管理（查询考试、考试成绩、考试分类）
+- **soke-course**: 课程管理（查询课程、课程分类、学习记录）
+- **soke-learning-profile**: 学习档案查询（查询学员学习档案、学习情况统计）
 - 更多业务模块的 Skills 正在开发中...
 
 详细文档：[skills/README.md](skills/README.md)
@@ -156,8 +159,68 @@ soke-cli api POST /some/endpoint --data '{"key": "value"}'
 
 ## 开发与贡献
 
-1. 依赖管理：项目使用 Go Modules，可以运行 `go mod tidy` 整理依赖。
-2. 添加新命令：
+### 快速开始本地测试
+
+```bash
+# 1. 编译、安装到全局、运行测试（一条命令）
+bash ./scripts/local-test.sh
+# 提示时输入 'y' 更新全局安装
+
+# 2. 链接 Skills 到 Claude（首次需要）
+bash ./scripts/link-skills.sh
+# 选择 'all' 链接到所有目录
+
+# 3. 在 AI Agent 中测试
+# 打开 Claude Code，输入："查询张三的学习档案"
+```
+
+**📖 详细指南：** [docs/LOCAL_TESTING.md](docs/LOCAL_TESTING.md)
+
+### 本地开发测试
+
+1. **一键测试和安装**
+   ```bash
+   # 编译 -> 安装到全局 -> 运行测试（一条命令完成所有步骤）
+   bash ./scripts/local-test.sh
+   ```
+   
+   这个脚本会：
+   - 编译项目
+   - 检查本地版本功能
+   - 检测全局安装状态
+   - 提示是否需要更新全局安装（会自动备份）
+   - 运行功能测试验证
+
+2. **运行完整 E2E 测试**
+   ```bash
+   # 测试所有模块
+   bash ./scripts/e2e-test.sh
+   
+   # 测试特定模块
+   bash ./scripts/e2e-test.sh learning-profile
+   bash ./scripts/e2e-test.sh contact
+   ```
+
+3. **依赖管理**
+   
+   项目使用 Go Modules，可以运行 `go mod tidy` 整理依赖。
+
+4. **添加新命令**
    - 业务接口建议在 `shortcuts/` 目录下添加对应的结构定义。
    - 基础功能可在 `cmd/` 下新建对应包并在 `cmd/root.go` 中注册。
-3. 测试：运行 `make test` 进行单元测试。
+   - 为新模块创建 Skill 文档：`skills/<module-name>/SKILL.md`
+
+5. **完整开发流程**
+   ```bash
+   # 1. 修改代码后，运行本地测试（会提示是否更新全局安装）
+   bash ./scripts/local-test.sh
+   
+   # 2. 运行完整 E2E 测试
+   bash ./scripts/e2e-test.sh
+   
+   # 3. 测试 Skills（需要先更新全局安装）
+   npx skills add liuchenlong1111/soke-cli -y -g
+   
+   # 4. 在 AI Agent 中测试自然语言交互
+   # 例如："查询张三的学习档案"
+   ```

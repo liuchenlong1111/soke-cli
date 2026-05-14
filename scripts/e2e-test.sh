@@ -42,6 +42,35 @@ if [ ! -f "./soke-cli" ]; then
     echo ""
 fi
 
+# 检查全局安装的 CLI 版本
+echo -e "${YELLOW}检查全局 CLI 安装...${NC}"
+GLOBAL_CLI=$(which soke-cli 2>/dev/null)
+if [ -n "$GLOBAL_CLI" ]; then
+    echo -e "  全局 CLI 路径: ${BLUE}${GLOBAL_CLI}${NC}"
+
+    # 检查全局版本是否支持 learning-profile
+    if ! $GLOBAL_CLI learning-profile --help &>/dev/null; then
+        echo -e "${YELLOW}  警告: 全局 CLI 不支持 learning-profile 模块${NC}"
+        echo -e "${YELLOW}  需要更新全局安装以支持 skill 测试${NC}"
+        echo ""
+        echo -e "${YELLOW}是否要将本地编译版本安装到全局? (y/n)${NC}"
+        read -r INSTALL_GLOBAL
+        if [ "$INSTALL_GLOBAL" = "y" ] || [ "$INSTALL_GLOBAL" = "Y" ]; then
+            echo -e "${YELLOW}安装到全局...${NC}"
+            sudo cp ./soke-cli $GLOBAL_CLI
+            echo -e "${GREEN}✓ 全局 CLI 已更新${NC}"
+        else
+            echo -e "${YELLOW}跳过全局安装，将仅测试本地版本${NC}"
+        fi
+    else
+        echo -e "${GREEN}✓ 全局 CLI 支持 learning-profile 模块${NC}"
+    fi
+else
+    echo -e "${YELLOW}  未找到全局 CLI 安装${NC}"
+    echo -e "${YELLOW}  Skill 测试需要全局安装 soke-cli${NC}"
+fi
+echo ""
+
 # 检查是否已登录
 echo -e "${YELLOW}检查登录状态...${NC}"
 if ! ./soke-cli config show &>/dev/null; then
@@ -99,6 +128,15 @@ if should_test_module "contact"; then
     test_command "contact" "+list-lectors" "" "获取讲师列表"
     test_command "contact" "+list-groups" "--start-time 1672502400000 --end-time 1704038400000" "获取用户组列表"
     test_command "contact" "+search-user" "--dept-user-name 测试" "搜索用户"
+    test_command "contact" "+search-dept" "--dept-name 测试" "搜索部门"
+    echo ""
+fi
+
+# ==================== Learning Profile 模块 ====================
+if should_test_module "learning-profile"; then
+    echo -e "${YELLOW}[Learning Profile 模块]${NC}"
+    test_command "learning-profile" "+list" "--offset 0 --page-size 10" "获取学习档案列表"
+    test_command "learning-profile" "+list" "--is-new 1 --page-size 5" "获取新员工学习档案"
     echo ""
 fi
 
