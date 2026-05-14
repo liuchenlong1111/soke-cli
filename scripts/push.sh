@@ -236,13 +236,3 @@ fi
 
 echo "  - Aliyun (origin): master 分支已更新"
 echo "  - GitHub (github): master 和 main 分支已更新"
-
-if [[ "$IS_RELEASE" == true ]]; then
-    echo ""
-    print_highlight "📦 下一步操作："
-    echo "  1. 编译二进制文件: make build"
-    echo "  2. 发布到 NPM: npm publish"
-    echo "  3. 创建 GitHub Release (可选)"
-fi
-
-echo ""
