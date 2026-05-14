@@ -142,9 +142,9 @@ func (p *OAuthProvider) Login(ctx context.Context, force bool) (*TokenData, erro
 				if p.logger != nil {
 					p.logger.Debug("config incomplete, need login", "missing_fields", missingFields)
 				}
-				_, _ = fmt.Fprintln(p.output(), "")
-				_, _ = fmt.Fprintf(p.output(), "⚠️  配置不完整（缺少: %s），需要重新登录\n", strings.Join(missingFields, ", "))
-				_, _ = fmt.Fprintln(p.output(), "")
+				//_, _ = fmt.Fprintln(p.output(), "")
+				//_, _ = fmt.Fprintf(p.output(), "⚠️  配置不完整（缺少: %s），需要重新登录\n", strings.Join(missingFields, ", "))
+				//_, _ = fmt.Fprintln(p.output(), "")
 			} else {
 				// 所有字段都存在，检查 UserToken 是否过期
 				now := time.Now().Unix()
@@ -177,9 +177,9 @@ func (p *OAuthProvider) Login(ctx context.Context, force bool) (*TokenData, erro
 						p.logger.Debug("UserToken expired, need re-login",
 							"expired_at", time.Unix(cfg.UserTokenExp, 0).Format("2006-01-02 15:04:05"))
 					}
-					_, _ = fmt.Fprintln(p.output(), "")
-					_, _ = fmt.Fprintln(p.output(), "⚠️  Token 已过期，需要重新登录")
-					_, _ = fmt.Fprintln(p.output(), "")
+					//_, _ = fmt.Fprintln(p.output(), "")
+					//_, _ = fmt.Fprintln(p.output(), "⚠️  Token 已过期，需要重新登录")
+					//_, _ = fmt.Fprintln(p.output(), "")
 				}
 			}
 		} else {
@@ -210,9 +210,9 @@ func (p *OAuthProvider) Login(ctx context.Context, force bool) (*TokenData, erro
 	}
 
 	if cliConfigChecked {
-		_, _ = fmt.Fprintln(p.output(), "")
-		_, _ = fmt.Fprintln(p.output(), "⚠️  Token 已过期，需要重新登录")
-		_, _ = fmt.Fprintln(p.output(), "")
+		//_, _ = fmt.Fprintln(p.output(), "")
+		//_, _ = fmt.Fprintln(p.output(), "⚠️  Token 已过期，需要重新登录")
+		//_, _ = fmt.Fprintln(p.output(), "")
 	} else if !force {
 		_, _ = fmt.Fprintln(p.output(), "")
 		_, _ = fmt.Fprintln(p.output(), "ℹ️  未找到登录信息，开始授权流程")
@@ -751,30 +751,48 @@ func (p *OAuthProvider) Login(ctx context.Context, force bool) (*TokenData, erro
 		}
 
 		// 解析应用详情响应
-		var readApiResp struct {
-			Code    string `json:"code"`
-			Status  string `json:"status"`
-			Message string `json:"message"`
-			Data    struct {
-				AppID     string `json:"app_id"`
-				AppKey    string `json:"app_key"`
-				AppSecret string `json:"app_secret"`
-			} `json:"data"`
+		// 先尝试解析为通用响应格式，检查 data 字段类型
+		var rawResp struct {
+			Code    string          `json:"code"`
+			Status  string          `json:"status"`
+			Message string          `json:"message"`
+			Data    json.RawMessage `json:"data"`
 		}
 
-		if parseErr := json.Unmarshal(readRespBody, &readApiResp); parseErr != nil {
+		if parseErr := json.Unmarshal(readRespBody, &rawResp); parseErr != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			_, _ = fmt.Fprintf(w, `{"success":false,"errorMsg":"解析应用信息失败: %s, 响应内容: %s"}`, parseErr.Error(), string(readRespBody))
 			return
 		}
 
-		if readApiResp.Status != "ok" || readApiResp.Code != "200" {
+		if rawResp.Status != "ok" || rawResp.Code != "200" {
 			w.WriteHeader(http.StatusInternalServerError)
-			_, _ = fmt.Fprintf(w, `{"success":false,"errorMsg":"获取应用信息失败: %s"}`, readApiResp.Message)
+			_, _ = fmt.Fprintf(w, `{"success":false,"errorMsg":"获取应用信息失败: %s"}`, rawResp.Message)
 			return
 		}
 
-		if readApiResp.Data.AppSecret == "" {
+		// 检查 data 是否为空数组或空对象
+		dataStr := strings.TrimSpace(string(rawResp.Data))
+		if dataStr == "[]" || dataStr == "{}" || dataStr == "null" {
+			w.WriteHeader(http.StatusNotFound)
+			_, _ = w.Write([]byte(`{"success":false,"errorMsg":"未找到应用信息，请检查 app_id 和 app_key 是否正确"}`))
+			return
+		}
+
+		// 解析 data 为应用详情对象
+		var appData struct {
+			AppID     string `json:"app_id"`
+			AppKey    string `json:"app_key"`
+			AppSecret string `json:"app_secret"`
+		}
+
+		if parseErr := json.Unmarshal(rawResp.Data, &appData); parseErr != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			_, _ = fmt.Fprintf(w, `{"success":false,"errorMsg":"解析应用数据失败: %s, 数据内容: %s"}`, parseErr.Error(), string(rawResp.Data))
+			return
+		}
+
+		if appData.AppSecret == "" {
 			w.WriteHeader(http.StatusInternalServerError)
 			_, _ = w.Write([]byte(`{"success":false,"errorMsg":"应用密钥为空"}`))
 			return
@@ -782,7 +800,7 @@ func (p *OAuthProvider) Login(ctx context.Context, force bool) (*TokenData, erro
 
 		// 保存选择的应用信息到配置
 		cfg.AppID = reqBody.AppID
-		cfg.AppSecret = readApiResp.Data.AppSecret
+		cfg.AppSecret = appData.AppSecret
 
 		if saveErr := core.SaveConfig(cfg); saveErr != nil {
 			w.WriteHeader(http.StatusInternalServerError)
