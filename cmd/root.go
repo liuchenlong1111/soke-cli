@@ -16,6 +16,7 @@ import (
 	"codeup.aliyun.com/5edbc121d1d1abe63b55f1c7/soke/soke-cli/cmd/exam"
 	"codeup.aliyun.com/5edbc121d1d1abe63b55f1c7/soke/soke-cli/cmd/file"
 	"codeup.aliyun.com/5edbc121d1d1abe63b55f1c7/soke/soke-cli/cmd/learning_map"
+	"codeup.aliyun.com/5edbc121d1d1abe63b55f1c7/soke/soke-cli/cmd/learning_profile"
 	"codeup.aliyun.com/5edbc121d1d1abe63b55f1c7/soke/soke-cli/cmd/news"
 	"codeup.aliyun.com/5edbc121d1d1abe63b55f1c7/soke/soke-cli/cmd/point"
 	"codeup.aliyun.com/5edbc121d1d1abe63b55f1c7/soke/soke-cli/cmd/training"
@@ -79,6 +80,7 @@ func init() {
 	rootCmd.AddCommand(credit.NewCreditCmd())
 	rootCmd.AddCommand(point.NewPointCmd())
 	rootCmd.AddCommand(learning_map.NewLearningMapCmd())
+	rootCmd.AddCommand(learning_profile.NewLearningProfileCmd())
 	rootCmd.AddCommand(training.NewTrainingCmd())
 	rootCmd.AddCommand(news.NewNewsCmd())
 	rootCmd.AddCommand(clock.NewClockCmd())
