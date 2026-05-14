@@ -81,7 +81,7 @@ AI Agent 会自动：
 
 ```bash
 # 安装 CLI
-npm install -g @sokeai/cli
+npm install -g @sokeai/cli@latest  
 
 # 安装 AI Agent Skills（可选，推荐）
 npx skills add liuchenlong1111/soke-cli -y -g
