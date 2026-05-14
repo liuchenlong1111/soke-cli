@@ -89,13 +89,31 @@ function detectSokeclawWorkspaceSkillsDirs() {
   return dirs;
 }
 
+/**
+ * 自动检测 skills 目录中的所有 skill
+ * 只包含以 'soke-' 开头的目录
+ */
+function detectSkillNames(packagedSkillsDir) {
+  if (!fs.existsSync(packagedSkillsDir)) return [];
+
+  try {
+    const entries = fs.readdirSync(packagedSkillsDir, { withFileTypes: true });
+    return entries
+      .filter(entry => entry.isDirectory() && entry.name.startsWith('soke-'))
+      .map(entry => entry.name)
+      .sort(); // 排序确保一致性
+  } catch (_) {
+    return [];
+  }
+}
+
 function syncSkillsToSokeclawWorkspace() {
   const packageRoot = path.join(__dirname, '..');
   const packagedSkillsDir = path.join(packageRoot, 'skills');
   if (!fs.existsSync(packagedSkillsDir)) return;
 
   const targetDirs = detectSokeclawWorkspaceSkillsDirs();
-  const skillNames = ['soke-shared', 'soke-exam'];
+  const skillNames = detectSkillNames(packagedSkillsDir);
 
   for (const targetDir of targetDirs) {
     try {
@@ -124,6 +142,76 @@ function upsertSkillRegistryEntry(registry, entry) {
   }
 
   registry.skills.push(entry);
+}
+
+/**
+ * 从 SKILL.md 文件中解析元数据
+ */
+function parseSkillMetadata(skillDir) {
+  const skillMdPath = path.join(skillDir, 'SKILL.md');
+  if (!fs.existsSync(skillMdPath)) {
+    return null;
+  }
+
+  try {
+    const content = fs.readFileSync(skillMdPath, 'utf8');
+
+    // 解析 frontmatter (YAML)
+    const frontmatterMatch = content.match(/^---\n([\s\S]*?)\n---/);
+    if (!frontmatterMatch) return null;
+
+    const frontmatter = frontmatterMatch[1];
+    const metadata = {};
+
+    // 解析 name
+    const nameMatch = frontmatter.match(/^name:\s*(.+)$/m);
+    if (nameMatch) metadata.name = nameMatch[1].trim();
+
+    // 解析 summary (用作 displayName)
+    const summaryMatch = frontmatter.match(/^summary:\s*(.+)$/m);
+    if (summaryMatch) metadata.summary = summaryMatch[1].trim();
+
+    // 解析 description
+    const descMatch = frontmatter.match(/^description:\s*["'](.+)["']$/m);
+    if (descMatch) {
+      metadata.description = descMatch[1].trim();
+    } else {
+      const descMatch2 = frontmatter.match(/^description:\s*(.+)$/m);
+      if (descMatch2) metadata.description = descMatch2[1].trim();
+    }
+
+    // 解析 version
+    const versionMatch = frontmatter.match(/^version:\s*(.+)$/m);
+    if (versionMatch) metadata.version = versionMatch[1].trim();
+
+    // 解析 metadata.requires.bins
+    const binsMatch = frontmatter.match(/bins:\s*\[(.+?)\]/);
+    if (binsMatch) {
+      metadata.bins = binsMatch[1].split(',').map(b => b.trim().replace(/['"]/g, ''));
+    }
+
+    return metadata;
+  } catch (_) {
+    return null;
+  }
+}
+
+/**
+ * 根据 skill 名称推断 emoji
+ */
+function inferSkillEmoji(skillName) {
+  const emojiMap = {
+    'soke-exam': '📝',
+    'soke-course': '📚',
+    'soke-shared': '🔧',
+    'soke-user': '👤',
+    'soke-contact': '📇',
+    'soke-department': '🏢',
+    'soke-approval': '✅',
+    'soke-attendance': '📅',
+    'soke-report': '📊'
+  };
+  return emojiMap[skillName] || '📦';
 }
 
 function syncSkillsToWorkclawRegistry() {
@@ -165,48 +253,50 @@ function syncSkillsToWorkclawRegistry() {
       ? existingSkills[0].source.type
       : 'local';
 
-  const skillNames = ['soke-shared', 'soke-exam'];
+  // 自动检测所有 skills
+  const skillNames = detectSkillNames(packagedSkillsDir);
+
+  // 复制所有 skills
   for (const skillName of skillNames) {
     const src = path.join(packagedSkillsDir, skillName);
     const dest = path.join(workclawSkillInstallDir, skillName);
     if (fs.existsSync(src)) copyDirRecursive(src, dest);
   }
 
-  upsertSkillRegistryEntry(registry, {
-    id: 'skill:soke-exam',
-    name: 'soke-exam',
-    displayName: '授客考试管理',
-    description: '授客考试管理：查询考试、考试分类、考试用户成绩、考试详情。',
-    source: { type: defaultSourceType, slug: '', url: '' },
-    install: {
-      path: path.join(workclawSkillInstallDir, 'soke-exam'),
-      installedAt: '',
-      updatedAt: '',
-      version: '1.0.0'
-    },
-    state: { enabled: true, health: 'ok', lastError: '' },
-    runtime: { supported: ['openclaw'], enabled: ['openclaw'], primary: 'openclaw' },
-    security: { riskLevel: 'normal', requiresApproval: false },
-    metadata: { emoji: '📝', homepage: '', requires: { bins: ['soke-cli'] } }
-  });
+  // 自动注册所有 skills
+  for (const skillName of skillNames) {
+    const skillDir = path.join(packagedSkillsDir, skillName);
+    const metadata = parseSkillMetadata(skillDir);
 
-  upsertSkillRegistryEntry(registry, {
-    id: 'skill:soke-shared',
-    name: 'soke-shared',
-    displayName: 'soke-shared 共享规则',
-    description: '授客CLI共享基础：配置、登录、权限管理、错误处理、安全规则。',
-    source: { type: defaultSourceType, slug: '', url: '' },
-    install: {
-      path: path.join(workclawSkillInstallDir, 'soke-shared'),
-      installedAt: '',
-      updatedAt: '',
-      version: '1.0.0'
-    },
-    state: { enabled: true, health: 'ok', lastError: '' },
-    runtime: { supported: ['openclaw'], enabled: ['openclaw'], primary: 'openclaw' },
-    security: { riskLevel: 'normal', requiresApproval: false },
-    metadata: { emoji: '🔧', homepage: '', requires: {} }
-  });
+    if (!metadata || !metadata.name) {
+      console.warn(`警告: 无法解析 ${skillName} 的元数据，跳过注册`);
+      continue;
+    }
+
+    const displayName = metadata.summary || metadata.name;
+    const description = metadata.description || `${displayName} - 授客AI CLI工具`;
+    const version = metadata.version || '1.0.0';
+    const emoji = inferSkillEmoji(skillName);
+    const requires = metadata.bins ? { bins: metadata.bins } : {};
+
+    upsertSkillRegistryEntry(registry, {
+      id: `skill:${skillName}`,
+      name: skillName,
+      displayName: displayName,
+      description: description,
+      source: { type: defaultSourceType, slug: '', url: '' },
+      install: {
+        path: path.join(workclawSkillInstallDir, skillName),
+        installedAt: '',
+        updatedAt: '',
+        version: version
+      },
+      state: { enabled: true, health: 'ok', lastError: '' },
+      runtime: { supported: ['openclaw'], enabled: ['openclaw'], primary: 'openclaw' },
+      security: { riskLevel: 'normal', requiresApproval: false },
+      metadata: { emoji: emoji, homepage: '', requires: requires }
+    });
+  }
 
   try {
     fs.writeFileSync(registryPath, JSON.stringify(registry, null, 2));
