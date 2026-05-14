@@ -1,0 +1,645 @@
+- generic [ref=e2]:
+  - generic [ref=e6]:
+    - generic [ref=e7]: 服务端API
+    - list [ref=e8]:
+      - listitem [ref=e9]:
+        - link "API总览" [ref=e10] [cursor=pointer]:
+          - /url: overview.html
+      - listitem [ref=e11]:
+        - link "如何调用API" [ref=e12] [cursor=pointer]:
+          - /url: howapi.html
+      - listitem [ref=e13]:
+        - link "免登方案" [ref=e14] [cursor=pointer]:
+          - /url: loginv2.html
+      - listitem [ref=e15]:
+        - link "扫码分享" [ref=e16] [cursor=pointer]:
+          - /url: share.html
+      - listitem [ref=e17]:
+        - link "加解密算法" [ref=e18] [cursor=pointer]:
+          - /url: encrypt.html
+      - listitem [ref=e19]:
+        - link "获取凭证" [ref=e20] [cursor=pointer]:
+          - /url: token.html
+      - listitem [ref=e21]:
+        - generic [ref=e22]:
+          - link "企业" [ref=e23] [cursor=pointer]:
+            - /url: company.html
+          - list [ref=e24]:
+            - listitem [ref=e25]:
+              - link "创建企业" [ref=e26] [cursor=pointer]:
+                - /url: company.html#create
+            - listitem [ref=e27]:
+              - link "企业下单" [ref=e28] [cursor=pointer]:
+                - /url: company.html#create_order
+            - listitem [ref=e29]:
+              - link "企业取消订单" [ref=e30] [cursor=pointer]:
+                - /url: company.html#cancel_order
+            - listitem [ref=e31]:
+              - link "企业修改logo" [ref=e32] [cursor=pointer]:
+                - /url: company.html#update_logo
+            - listitem [ref=e33]:
+              - link "企业管理员列表" [ref=e34] [cursor=pointer]:
+                - /url: company.html#company_user_list
+      - listitem [ref=e35]:
+        - generic [ref=e36]:
+          - link "通讯录" [ref=e37] [cursor=pointer]:
+            - /url: user_dept.html
+          - list [ref=e38]:
+            - listitem [ref=e39]:
+              - link "获取部门列表" [ref=e40] [cursor=pointer]:
+                - /url: user_dept.html#dept_list
+            - listitem [ref=e41]:
+              - link "获取部门详情" [ref=e42] [cursor=pointer]:
+                - /url: user_dept.html#dept_info
+            - listitem [ref=e43]:
+              - link "获取用户列表" [ref=e44] [cursor=pointer]:
+                - /url: user_dept.html#user_list
+            - listitem [ref=e45]:
+              - link "获取用户详情" [ref=e46] [cursor=pointer]:
+                - /url: user_dept.html#user_info
+            - listitem [ref=e47]:
+              - link "获取讲师列表" [ref=e48] [cursor=pointer]:
+                - /url: user_dept.html#lector_list
+            - listitem [ref=e49]:
+              - link "创建部门" [ref=e50] [cursor=pointer]:
+                - /url: user_dept.html#create_dept
+            - listitem [ref=e51]:
+              - link "更新部门" [ref=e52] [cursor=pointer]:
+                - /url: user_dept.html#update_dept
+            - listitem [ref=e53]:
+              - link "删除部门" [ref=e54] [cursor=pointer]:
+                - /url: user_dept.html#delete_dept
+            - listitem [ref=e55]:
+              - link "创建用户" [ref=e56] [cursor=pointer]:
+                - /url: user_dept.html#create_user
+            - listitem [ref=e57]:
+              - link "编辑用户" [ref=e58] [cursor=pointer]:
+                - /url: user_dept.html#update_user
+            - listitem [ref=e59]:
+              - link "删除用户" [ref=e60] [cursor=pointer]:
+                - /url: user_dept.html#delete_user
+            - listitem [ref=e61]:
+              - link "根据名称搜索部门" [ref=e62] [cursor=pointer]:
+                - /url: user_dept.html#search_dept_by_name
+            - listitem [ref=e63]:
+              - link "根据名称搜索用户" [ref=e64] [cursor=pointer]:
+                - /url: user_dept.html#search_user_by_name
+      - listitem [ref=e65]:
+        - generic [ref=e66]:
+          - link "学习档案" [ref=e67] [cursor=pointer]:
+            - /url: ""
+          - list [ref=e68]:
+            - listitem [ref=e69]:
+              - link "查看学员学习档案" [ref=e70] [cursor=pointer]:
+                - /url: learning_profile.html#learning_profile_list
+      - listitem [ref=e71]:
+        - generic [ref=e72]:
+          - link "用户组" [ref=e73] [cursor=pointer]:
+            - /url: group.html
+          - list [ref=e74]:
+            - listitem [ref=e75]:
+              - link "获取用户组列表" [ref=e76] [cursor=pointer]:
+                - /url: group.html#list
+            - listitem [ref=e77]:
+              - link "获取用户组里用户列表" [ref=e78] [cursor=pointer]:
+                - /url: group.html#user_list
+      - listitem [ref=e79]:
+        - generic [ref=e80]:
+          - link "标签" [ref=e81] [cursor=pointer]:
+            - /url: tags.html
+          - list [ref=e82]:
+            - listitem [ref=e83]:
+              - link "获取标签列表" [ref=e84] [cursor=pointer]:
+                - /url: tags.html#list
+            - listitem [ref=e85]:
+              - link "标签创建" [ref=e86] [cursor=pointer]:
+                - /url: tags.html#create
+            - listitem [ref=e87]:
+              - link "标签更新" [ref=e88] [cursor=pointer]:
+                - /url: tags.html#update
+            - listitem [ref=e89]:
+              - link "标签删除" [ref=e90] [cursor=pointer]:
+                - /url: tags.html#delete
+            - listitem [ref=e91]:
+              - link "标签值创建" [ref=e92] [cursor=pointer]:
+                - /url: tags.html#value_create
+            - listitem [ref=e93]:
+              - link "标签值更新" [ref=e94] [cursor=pointer]:
+                - /url: tags.html#value_update
+            - listitem [ref=e95]:
+              - link "标签值删除" [ref=e96] [cursor=pointer]:
+                - /url: tags.html#value_delete
+            - listitem [ref=e97]:
+              - link "更新用户标签" [ref=e98] [cursor=pointer]:
+                - /url: tags.html#user_update
+      - listitem [ref=e99]:
+        - generic [ref=e100]:
+          - link "素材库" [ref=e101] [cursor=pointer]:
+            - /url: file.html
+          - list [ref=e102]:
+            - listitem [ref=e103]:
+              - link "获取素材库分类列表" [ref=e104] [cursor=pointer]:
+                - /url: file.html#category
+            - listitem [ref=e105]:
+              - link "获取素材库列表" [ref=e106] [cursor=pointer]:
+                - /url: file.html#list
+            - listitem [ref=e107]:
+              - link "创建素材库" [ref=e108] [cursor=pointer]:
+                - /url: file.html#create
+            - listitem [ref=e109]:
+              - link "更新素材库" [ref=e110] [cursor=pointer]:
+                - /url: file.html#update
+      - listitem [ref=e111]:
+        - generic [ref=e112]:
+          - link "作业" [ref=e113] [cursor=pointer]:
+            - /url: clock.html
+          - list [ref=e114]:
+            - listitem [ref=e115]:
+              - link "获取作业列表" [ref=e116] [cursor=pointer]:
+                - /url: clock.html#learning_list
+            - listitem [ref=e117]:
+              - link "获取作业学员提交列表" [ref=e118] [cursor=pointer]:
+                - /url: clock.html#log_list
+            - listitem [ref=e119]:
+              - link "获取作业学员提交作业素材" [ref=e120] [cursor=pointer]:
+                - /url: clock.html#lsesson_list
+      - listitem [ref=e121]:
+        - generic [ref=e122]:
+          - link "课程" [ref=e123] [cursor=pointer]:
+            - /url: course.html
+          - list [ref=e124]:
+            - listitem [ref=e125]:
+              - link "课程分类列表" [ref=e126] [cursor=pointer]:
+                - /url: course.html#category
+            - listitem [ref=e127]:
+              - link "课程列表" [ref=e128] [cursor=pointer]:
+                - /url: course.html#course
+            - listitem [ref=e129]:
+              - link "课程详情" [ref=e130] [cursor=pointer]:
+                - /url: course.html#info
+            - listitem [ref=e131]:
+              - link "课程课件列表" [ref=e132] [cursor=pointer]:
+                - /url: course.html#lesson
+            - listitem [ref=e133]:
+              - link "课程人脸列表" [ref=e134] [cursor=pointer]:
+                - /url: course.html#face
+            - listitem [ref=e135]:
+              - link "课程课件人脸列表" [ref=e136] [cursor=pointer]:
+                - /url: course.html#lesson_face
+            - listitem [ref=e137]:
+              - link "获取课程学员学习列表" [ref=e138] [cursor=pointer]:
+                - /url: course.html#user
+            - listitem [ref=e139]:
+              - link "获取课程课件学习列表" [ref=e140] [cursor=pointer]:
+                - /url: course.html#lesson_user
+            - listitem [ref=e141]:
+              - link "获取课程学员学习详情" [ref=e142] [cursor=pointer]:
+                - /url: course.html#course_user_info
+            - listitem [ref=e143]:
+              - link "创建课程" [ref=e144] [cursor=pointer]:
+                - /url: course.html#create
+      - listitem [ref=e145]:
+        - generic [ref=e146]:
+          - link "考试" [ref=e147] [cursor=pointer]:
+            - /url: exam.html
+          - list [ref=e148]:
+            - listitem [ref=e149]:
+              - link "考试分类列表" [ref=e150] [cursor=pointer]:
+                - /url: exam.html#category
+            - listitem [ref=e151]:
+              - link "考试列表" [ref=e152] [cursor=pointer]:
+                - /url: exam.html#exam
+            - listitem [ref=e153]:
+              - link "获取考试学员考试结果列表" [ref=e154] [cursor=pointer]:
+                - /url: exam.html#user
+            - listitem [ref=e155]:
+              - link "获取考试学员详情" [ref=e156] [cursor=pointer]:
+                - /url: exam.html#user_info
+      - listitem [ref=e157]:
+        - generic [ref=e158]:
+          - link "证书" [ref=e159] [cursor=pointer]:
+            - /url: certificate.html
+          - list [ref=e160]:
+            - listitem [ref=e161]:
+              - link "获取证书分类列表" [ref=e162] [cursor=pointer]:
+                - /url: certificate.html#category
+            - listitem [ref=e163]:
+              - link "获取证书列表" [ref=e164] [cursor=pointer]:
+                - /url: certificate.html#list
+            - listitem [ref=e165]:
+              - link "获取证书用户列表" [ref=e166] [cursor=pointer]:
+                - /url: certificate.html#user
+      - listitem [ref=e167]:
+        - generic [ref=e168]:
+          - link "学分" [ref=e169] [cursor=pointer]:
+            - /url: credit.html
+          - list [ref=e170]:
+            - listitem [ref=e171]:
+              - link "获取学分明细" [ref=e172] [cursor=pointer]:
+                - /url: credit.html#list
+      - listitem [ref=e173]:
+        - generic [ref=e174]:
+          - link "积分" [ref=e175] [cursor=pointer]:
+            - /url: point.html
+          - list [ref=e176]:
+            - listitem [ref=e177]:
+              - link "获取积分明细" [ref=e178] [cursor=pointer]:
+                - /url: point.html#list
+            - listitem [ref=e179]:
+              - link "获取个人积分详情" [ref=e180] [cursor=pointer]:
+                - /url: point.html#user_info
+            - listitem [ref=e181]:
+              - link "获取积分消费订单详情" [ref=e182] [cursor=pointer]:
+                - /url: point.html#user_consume
+      - listitem [ref=e183]:
+        - generic [ref=e184]:
+          - link "学习地图" [ref=e185] [cursor=pointer]:
+            - /url: learnmap.html
+          - list [ref=e186]:
+            - listitem [ref=e187]:
+              - link "获取学习地图分类列表" [ref=e188] [cursor=pointer]:
+                - /url: learnmap.html#category
+            - listitem [ref=e189]:
+              - link "获取学习地图列表" [ref=e190] [cursor=pointer]:
+                - /url: learnmap.html#learnmap
+            - listitem [ref=e191]:
+              - link "获取学习地图阶段列表" [ref=e192] [cursor=pointer]:
+                - /url: learnmap.html#stage
+            - listitem [ref=e193]:
+              - link "获取学习地图阶段内容列表" [ref=e194] [cursor=pointer]:
+                - /url: learnmap.html#item
+            - listitem [ref=e195]:
+              - link "获取学习地图学员学习结果列表" [ref=e196] [cursor=pointer]:
+                - /url: learnmap.html#user
+            - listitem [ref=e197]:
+              - link "获取学习地图阶段学员学习结果列表" [ref=e198] [cursor=pointer]:
+                - /url: learnmap.html#stage_user
+            - listitem [ref=e199]:
+              - link "获取学习地图阶段内容学员学习结果列表" [ref=e200] [cursor=pointer]:
+                - /url: learnmap.html#item_user
+            - listitem [ref=e201]:
+              - link "获取学习地图学员学习结果详情" [ref=e202] [cursor=pointer]:
+                - /url: learnmap.html#user_info
+            - listitem [ref=e203]:
+              - link "创建学习地图" [ref=e204] [cursor=pointer]:
+                - /url: learnmap.html#create
+            - listitem [ref=e205]:
+              - link "学习地图指派" [ref=e206] [cursor=pointer]:
+                - /url: learnmap.html#assign
+      - listitem [ref=e207]:
+        - generic [ref=e208]:
+          - link "培训班" [ref=e209] [cursor=pointer]:
+            - /url: trainingClass.html
+          - list [ref=e210]:
+            - listitem [ref=e211]:
+              - link "获取培训班分类列表" [ref=e212] [cursor=pointer]:
+                - /url: trainingClass.html#category
+            - listitem [ref=e213]:
+              - link "获取培训班列表" [ref=e214] [cursor=pointer]:
+                - /url: trainingClass.html#list
+            - listitem [ref=e215]:
+              - link "获取培训班详情" [ref=e216] [cursor=pointer]:
+                - /url: trainingClass.html#info
+      - listitem [ref=e217]:
+        - generic [ref=e218]:
+          - link "线下培训" [ref=e219] [cursor=pointer]:
+            - /url: training.html
+          - list [ref=e220]:
+            - listitem [ref=e221]:
+              - link "获取线下培训分类列表" [ref=e222] [cursor=pointer]:
+                - /url: training.html#category
+            - listitem [ref=e223]:
+              - link "获取线下培训列表" [ref=e224] [cursor=pointer]:
+                - /url: training.html#training
+            - listitem [ref=e225]:
+              - link "获取线下培训报名学员列表" [ref=e226] [cursor=pointer]:
+                - /url: training.html#user
+            - listitem [ref=e227]:
+              - link "获取线下培训报名学员详情" [ref=e228] [cursor=pointer]:
+                - /url: training.html#user_info
+            - listitem [ref=e229]:
+              - link "创建线下培训" [ref=e230] [cursor=pointer]:
+                - /url: training.html#create
+            - listitem [ref=e231]:
+              - link "线下培训指派" [ref=e232] [cursor=pointer]:
+                - /url: training.html#assign
+      - listitem [ref=e233]:
+        - generic [ref=e234]:
+          - link "新闻" [ref=e235] [cursor=pointer]:
+            - /url: news.html
+          - list [ref=e236]:
+            - listitem [ref=e237]:
+              - link "获取新闻分类列表" [ref=e238] [cursor=pointer]:
+                - /url: news.html#category
+            - listitem [ref=e239]:
+              - link "获取新闻列表" [ref=e240] [cursor=pointer]:
+                - /url: news.html#list
+            - listitem [ref=e241]:
+              - link "获取新闻详情" [ref=e242] [cursor=pointer]:
+                - /url: news.html#info
+      - listitem [ref=e243]:
+        - generic [ref=e244]:
+          - link "职位" [ref=e245] [cursor=pointer]:
+            - /url: position.html
+          - list [ref=e246]:
+            - listitem [ref=e247]:
+              - link "获取职位列表" [ref=e248] [cursor=pointer]:
+                - /url: position.html#list
+            - listitem [ref=e249]:
+              - link "获取职位详情" [ref=e250] [cursor=pointer]:
+                - /url: position.html#info
+            - listitem [ref=e251]:
+              - link "创建职位" [ref=e252] [cursor=pointer]:
+                - /url: position.html#create
+            - listitem [ref=e253]:
+              - link "修改职位" [ref=e254] [cursor=pointer]:
+                - /url: position.html#update
+            - listitem [ref=e255]:
+              - link "删除职位" [ref=e256] [cursor=pointer]:
+                - /url: position.html#delete
+      - listitem [ref=e257]:
+        - generic [ref=e258]:
+          - link "消息和事件通知" [ref=e259] [cursor=pointer]:
+            - /url: event.html
+          - list [ref=e260]:
+            - listitem [ref=e261]:
+              - link "机制总览" [ref=e262] [cursor=pointer]:
+                - /url: event.html#summary
+            - listitem [ref=e263]:
+              - link "消息通知" [ref=e264] [cursor=pointer]:
+                - /url: event.html#message
+            - listitem [ref=e265]:
+              - link "待办事件" [ref=e266] [cursor=pointer]:
+                - /url: event.html#todo
+            - listitem [ref=e267]:
+              - link "课程状态事件" [ref=e268] [cursor=pointer]:
+                - /url: event.html#course
+            - listitem [ref=e269]:
+              - link "课件状态事件" [ref=e270] [cursor=pointer]:
+                - /url: event.html#course_lesson
+            - listitem [ref=e271]:
+              - link "学习地图状态事件" [ref=e272] [cursor=pointer]:
+                - /url: event.html#learningmap
+            - listitem [ref=e273]:
+              - link "线下培训状态事件" [ref=e274] [cursor=pointer]:
+                - /url: event.html#training
+            - listitem [ref=e275]:
+              - link "考试状态事件" [ref=e276] [cursor=pointer]:
+                - /url: event.html#exam
+            - listitem [ref=e277]:
+              - link "学员课程学习事件" [ref=e278] [cursor=pointer]:
+                - /url: event.html#course-learn
+            - listitem [ref=e279]:
+              - link "学员学习地图学习事件" [ref=e280] [cursor=pointer]:
+                - /url: event.html#learningmap-learn
+            - listitem [ref=e281]:
+              - link "学员线下培训参与事件" [ref=e282] [cursor=pointer]:
+                - /url: event.html#training-learn
+            - listitem [ref=e283]:
+              - link "学员考试参与事件" [ref=e284] [cursor=pointer]:
+                - /url: event.html#exam-learn
+            - listitem [ref=e285]:
+              - link "学员培训统计更新事件" [ref=e286] [cursor=pointer]:
+                - /url: event.html#train
+  - generic [ref=e287]:
+    - banner [ref=e288]:
+      - link "授客学堂" [ref=e290] [cursor=pointer]:
+        - /url: ../index.html
+        - img [ref=e291]
+        - heading "授客学堂" [level=6] [ref=e292]
+      - generic [ref=e293]:
+        - generic [ref=e294]: 
+        - textbox "搜索" [ref=e295]
+      - navigation [ref=e296]:
+        - list [ref=e297]:
+          - listitem [ref=e298] [cursor=pointer]:
+            - link "开发文档" [ref=e299]:
+              - /url: beforestart.html
+    - generic [ref=e300]:
+      - generic [ref=e301]:
+        - paragraph [ref=e302]
+        - heading "查看学员学习档案" [level=1] [ref=e303]
+        - paragraph [ref=e304]:
+          - strong [ref=e305]: 请求方式
+          - text: ：GET（HTTPS）
+          - strong [ref=e306]: 请求地址
+          - text: ：
+          - code [ref=e307]: https://oapi.soke.cn/dataCenter/learningProfile/list
+          - strong [ref=e308]: Query参数说明
+          - text: ：
+        - table [ref=e309]:
+          - rowgroup [ref=e310]:
+            - row "参数 类型 必须 说明" [ref=e311]:
+              - columnheader "参数" [ref=e312]:
+                - strong [ref=e313]: 参数
+              - columnheader "类型" [ref=e314]:
+                - strong [ref=e315]: 类型
+              - columnheader "必须" [ref=e316]:
+                - strong [ref=e317]: 必须
+              - columnheader "说明" [ref=e318]:
+                - strong [ref=e319]: 说明
+          - rowgroup [ref=e320]:
+            - row "access_token String 是 应用access_token，2小时有效期" [ref=e321]:
+              - cell "access_token" [ref=e322]
+              - cell "String" [ref=e323]
+              - cell "是" [ref=e324]
+              - cell "应用access_token，2小时有效期" [ref=e325]
+            - row "dept_user_ids Array 否 学员ID列表" [ref=e326]:
+              - cell "dept_user_ids" [ref=e327]
+              - cell "Array" [ref=e328]
+              - cell "否" [ref=e329]
+              - cell "学员ID列表" [ref=e330]
+            - row "dept_ids Array 否 部门ID列表" [ref=e331]:
+              - cell "dept_ids" [ref=e332]
+              - cell "Array" [ref=e333]
+              - cell "否" [ref=e334]
+              - cell "部门ID列表" [ref=e335]
+            - row "is_new String 否 是否新员工：0-否，1-是" [ref=e336]:
+              - cell "is_new" [ref=e337]
+              - cell "String" [ref=e338]
+              - cell "否" [ref=e339]
+              - cell "是否新员工：0-否，1-是" [ref=e340]
+            - row "offset Int 否 偏移量，默认从0开始" [ref=e341]:
+              - cell "offset" [ref=e342]
+              - cell "Int" [ref=e343]
+              - cell "否" [ref=e344]
+              - cell "偏移量，默认从0开始" [ref=e345]
+            - row "page_size Int 否 每页条数，最大100，默认10" [ref=e346]:
+              - cell "page_size" [ref=e347]
+              - cell "Int" [ref=e348]
+              - cell "否" [ref=e349]
+              - cell "每页条数，最大100，默认10" [ref=e350]
+        - paragraph [ref=e351]:
+          - strong [ref=e352]: 返回结果
+          - text: ：
+        - code [ref=e354]: "{ \"code\": \"200\", \"status\": \"ok\", \"message\": \"success\", \"data\": [ { \"id\": \"xxx\", \"company_id\": \"xxx\", \"center\": \"xxx\", \"dept_user_name\": \"xxx\", \"dept_user_id\": \"xxx\", \"dept_names\": \"xxx\", \"position\": \"xxx\", \"job_number\": \"xxx\", \"is_leave\": \"xxx\", \"avatar\": \"xxx\", \"avatar_color\": \"xxx\", \"is_delete\": \"xxx\", \"hired_date\": \"xxx\", \"is_new\": \"xxx\", \"optional_learning\": \"xxx\", \"optional_finished\": \"xxx\", \"required_learning\": \"xxx\", \"required_finished\": \"xxx\", \"not_attempt\": \"xxx\", \"passed\": \"xxx\", \"notpassed\": \"xxx\", \"reviewing\": \"xxx\", \"learn_time\": \"xxx\", \"certificate_number\": \"xxx\", \"points\": \"xxx\", \"credits\": \"xxx\", \"training_not_attempt\": \"xxx\", \"training_finished\": \"xxx\", \"class_length\": \"xxx\", \"leaning_map_attempt\": \"xxx\", \"learning_map_finished\": \"xxx\", \"training_class_attempt\": \"xxx\", \"training_class_finished\": \"xxx\", \"live_learn_time\": \"xxx\", \"external_training_time\": \"xxx\", \"knowledge_number\": \"xxx\", \"evaluation_score\": \"xxx\" } ] }"
+        - paragraph [ref=e355]:
+          - strong [ref=e356]: 参数说明
+          - text: ：
+        - table [ref=e357]:
+          - rowgroup [ref=e358]:
+            - row "参数 类型 说明" [ref=e359]:
+              - columnheader "参数" [ref=e360]:
+                - strong [ref=e361]: 参数
+              - columnheader "类型" [ref=e362]:
+                - strong [ref=e363]: 类型
+              - columnheader "说明" [ref=e364]:
+                - strong [ref=e365]: 说明
+          - rowgroup [ref=e366]:
+            - row "data Array 返回的学员学习档案列表" [ref=e367]:
+              - cell "data" [ref=e368]
+              - cell "Array" [ref=e369]
+              - cell "返回的学员学习档案列表" [ref=e370]
+            - row "id String 档案记录ID" [ref=e371]:
+              - cell "id" [ref=e372]
+              - cell "String" [ref=e373]
+              - cell "档案记录ID" [ref=e374]
+            - row "company_id String 所属企业ID" [ref=e375]:
+              - cell "company_id" [ref=e376]
+              - cell "String" [ref=e377]
+              - cell "所属企业ID" [ref=e378]
+            - row "center String 数据中心标识" [ref=e379]:
+              - cell "center" [ref=e380]
+              - cell "String" [ref=e381]
+              - cell "数据中心标识" [ref=e382]
+            - row "dept_user_name String 学员姓名" [ref=e383]:
+              - cell "dept_user_name" [ref=e384]
+              - cell "String" [ref=e385]
+              - cell "学员姓名" [ref=e386]
+            - row "dept_user_id String 学员ID" [ref=e387]:
+              - cell "dept_user_id" [ref=e388]
+              - cell "String" [ref=e389]
+              - cell "学员ID" [ref=e390]
+            - row "dept_names String 所属部门名称" [ref=e391]:
+              - cell "dept_names" [ref=e392]
+              - cell "String" [ref=e393]
+              - cell "所属部门名称" [ref=e394]
+            - row "position String 职位" [ref=e395]:
+              - cell "position" [ref=e396]
+              - cell "String" [ref=e397]
+              - cell "职位" [ref=e398]
+            - row "job_number String 工号" [ref=e399]:
+              - cell "job_number" [ref=e400]
+              - cell "String" [ref=e401]
+              - cell "工号" [ref=e402]
+            - row "is_leave String 是否离职：0-在职，1-离职" [ref=e403]:
+              - cell "is_leave" [ref=e404]
+              - cell "String" [ref=e405]
+              - cell "是否离职：0-在职，1-离职" [ref=e406]
+            - row "avatar String 头像URL" [ref=e407]:
+              - cell "avatar" [ref=e408]
+              - cell "String" [ref=e409]
+              - cell "头像URL" [ref=e410]
+            - row "avatar_color String 头像颜色（无头像时显示）" [ref=e411]:
+              - cell "avatar_color" [ref=e412]
+              - cell "String" [ref=e413]
+              - cell "头像颜色（无头像时显示）" [ref=e414]
+            - row "is_delete String 是否删除：0-未删除，1-已删除" [ref=e415]:
+              - cell "is_delete" [ref=e416]
+              - cell "String" [ref=e417]
+              - cell "是否删除：0-未删除，1-已删除" [ref=e418]
+            - row "hired_date String 入职日期，格式：YYYY-MM-DD" [ref=e419]:
+              - cell "hired_date" [ref=e420]
+              - cell "String" [ref=e421]
+              - cell "入职日期，格式：YYYY-MM-DD" [ref=e422]
+            - row "is_new String 是否新员工：0-否，1-是" [ref=e423]:
+              - cell "is_new" [ref=e424]
+              - cell "String" [ref=e425]
+              - cell "是否新员工：0-否，1-是" [ref=e426]
+            - row "optional_learning String 选修课程学习数" [ref=e427]:
+              - cell "optional_learning" [ref=e428]
+              - cell "String" [ref=e429]
+              - cell "选修课程学习数" [ref=e430]
+            - row "optional_finished String 选修课程完成数" [ref=e431]:
+              - cell "optional_finished" [ref=e432]
+              - cell "String" [ref=e433]
+              - cell "选修课程完成数" [ref=e434]
+            - row "required_learning String 必修课程学习数" [ref=e435]:
+              - cell "required_learning" [ref=e436]
+              - cell "String" [ref=e437]
+              - cell "必修课程学习数" [ref=e438]
+            - row "required_finished String 必修课程完成数" [ref=e439]:
+              - cell "required_finished" [ref=e440]
+              - cell "String" [ref=e441]
+              - cell "必修课程完成数" [ref=e442]
+            - row "not_attempt String 未开始考试数" [ref=e443]:
+              - cell "not_attempt" [ref=e444]
+              - cell "String" [ref=e445]
+              - cell "未开始考试数" [ref=e446]
+            - row "passed String 考试通过数" [ref=e447]:
+              - cell "passed" [ref=e448]
+              - cell "String" [ref=e449]
+              - cell "考试通过数" [ref=e450]
+            - row "notpassed String 考试未通过数" [ref=e451]:
+              - cell "notpassed" [ref=e452]
+              - cell "String" [ref=e453]
+              - cell "考试未通过数" [ref=e454]
+            - row "reviewing String 考试批阅中数" [ref=e455]:
+              - cell "reviewing" [ref=e456]
+              - cell "String" [ref=e457]
+              - cell "考试批阅中数" [ref=e458]
+            - row "learn_time String 学习时长（秒）" [ref=e459]:
+              - cell "learn_time" [ref=e460]
+              - cell "String" [ref=e461]
+              - cell "学习时长（秒）" [ref=e462]
+            - row "certificate_number String 获得证书数" [ref=e463]:
+              - cell "certificate_number" [ref=e464]
+              - cell "String" [ref=e465]
+              - cell "获得证书数" [ref=e466]
+            - row "points String 积分" [ref=e467]:
+              - cell "points" [ref=e468]
+              - cell "String" [ref=e469]
+              - cell "积分" [ref=e470]
+            - row "credits String 学分" [ref=e471]:
+              - cell "credits" [ref=e472]
+              - cell "String" [ref=e473]
+              - cell "学分" [ref=e474]
+            - row "training_not_attempt String 未开始培训数" [ref=e475]:
+              - cell "training_not_attempt" [ref=e476]
+              - cell "String" [ref=e477]
+              - cell "未开始培训数" [ref=e478]
+            - row "training_finished String 完成培训数" [ref=e479]:
+              - cell "training_finished" [ref=e480]
+              - cell "String" [ref=e481]
+              - cell "完成培训数" [ref=e482]
+            - row "class_length String 培训课时（秒）" [ref=e483]:
+              - cell "class_length" [ref=e484]
+              - cell "String" [ref=e485]
+              - cell "培训课时（秒）" [ref=e486]
+            - row "leaning_map_attempt String 开始学习地图数" [ref=e487]:
+              - cell "leaning_map_attempt" [ref=e488]
+              - cell "String" [ref=e489]
+              - cell "开始学习地图数" [ref=e490]
+            - row "learning_map_finished String 完成学习地图数" [ref=e491]:
+              - cell "learning_map_finished" [ref=e492]
+              - cell "String" [ref=e493]
+              - cell "完成学习地图数" [ref=e494]
+            - row "training_class_attempt String 开始培训班数" [ref=e495]:
+              - cell "training_class_attempt" [ref=e496]
+              - cell "String" [ref=e497]
+              - cell "开始培训班数" [ref=e498]
+            - row "training_class_finished String 完成培训班数" [ref=e499]:
+              - cell "training_class_finished" [ref=e500]
+              - cell "String" [ref=e501]
+              - cell "完成培训班数" [ref=e502]
+            - row "live_learn_time String 直播学习时长（秒）" [ref=e503]:
+              - cell "live_learn_time" [ref=e504]
+              - cell "String" [ref=e505]
+              - cell "直播学习时长（秒）" [ref=e506]
+            - row "external_training_time String 外部培训时长（秒）" [ref=e507]:
+              - cell "external_training_time" [ref=e508]
+              - cell "String" [ref=e509]
+              - cell "外部培训时长（秒）" [ref=e510]
+            - row "knowledge_number String 知识数量" [ref=e511]:
+              - cell "knowledge_number" [ref=e512]
+              - cell "String" [ref=e513]
+              - cell "知识数量" [ref=e514]
+            - row "evaluation_score String 评估分数" [ref=e515]:
+              - cell "evaluation_score" [ref=e516]
+              - cell "String" [ref=e517]
+              - cell "评估分数" [ref=e518]
+      - generic [ref=e519]:
+        - link "通讯录" [ref=e521] [cursor=pointer]:
+          - /url: user_dept.html
+        - link "用户组" [ref=e523] [cursor=pointer]:
+          - /url: group.html

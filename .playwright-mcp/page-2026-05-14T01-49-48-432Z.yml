@@ -1,0 +1,1483 @@
+- generic [ref=e2]:
+  - generic [ref=e6]:
+    - generic [ref=e7]: 服务端API
+    - list [ref=e8]:
+      - listitem [ref=e9]:
+        - link "API总览" [ref=e10] [cursor=pointer]:
+          - /url: overview.html
+      - listitem [ref=e11]:
+        - link "如何调用API" [ref=e12] [cursor=pointer]:
+          - /url: howapi.html
+      - listitem [ref=e13]:
+        - link "免登方案" [ref=e14] [cursor=pointer]:
+          - /url: loginv2.html
+      - listitem [ref=e15]:
+        - link "扫码分享" [ref=e16] [cursor=pointer]:
+          - /url: share.html
+      - listitem [ref=e17]:
+        - link "加解密算法" [ref=e18] [cursor=pointer]:
+          - /url: encrypt.html
+      - listitem [ref=e19]:
+        - link "获取凭证" [ref=e20] [cursor=pointer]:
+          - /url: token.html
+      - listitem [ref=e21]:
+        - generic [ref=e22]:
+          - link "企业" [ref=e23] [cursor=pointer]:
+            - /url: company.html
+          - list [ref=e24]:
+            - listitem [ref=e25]:
+              - link "创建企业" [ref=e26] [cursor=pointer]:
+                - /url: company.html#create
+            - listitem [ref=e27]:
+              - link "企业下单" [ref=e28] [cursor=pointer]:
+                - /url: company.html#create_order
+            - listitem [ref=e29]:
+              - link "企业取消订单" [ref=e30] [cursor=pointer]:
+                - /url: company.html#cancel_order
+            - listitem [ref=e31]:
+              - link "企业修改logo" [ref=e32] [cursor=pointer]:
+                - /url: company.html#update_logo
+            - listitem [ref=e33]:
+              - link "企业管理员列表" [ref=e34] [cursor=pointer]:
+                - /url: company.html#company_user_list
+      - listitem [ref=e35]:
+        - generic [ref=e36]:
+          - link "通讯录" [ref=e37] [cursor=pointer]:
+            - /url: ""
+          - list [ref=e38]:
+            - listitem [ref=e39]:
+              - link "获取部门列表" [ref=e40] [cursor=pointer]:
+                - /url: user_dept.html#dept_list
+            - listitem [ref=e41]:
+              - link "获取部门详情" [ref=e42] [cursor=pointer]:
+                - /url: user_dept.html#dept_info
+            - listitem [ref=e43]:
+              - link "获取用户列表" [ref=e44] [cursor=pointer]:
+                - /url: user_dept.html#user_list
+            - listitem [ref=e45]:
+              - link "获取用户详情" [ref=e46] [cursor=pointer]:
+                - /url: user_dept.html#user_info
+            - listitem [ref=e47]:
+              - link "获取讲师列表" [ref=e48] [cursor=pointer]:
+                - /url: user_dept.html#lector_list
+            - listitem [ref=e49]:
+              - link "创建部门" [ref=e50] [cursor=pointer]:
+                - /url: user_dept.html#create_dept
+            - listitem [ref=e51]:
+              - link "更新部门" [ref=e52] [cursor=pointer]:
+                - /url: user_dept.html#update_dept
+            - listitem [ref=e53]:
+              - link "删除部门" [ref=e54] [cursor=pointer]:
+                - /url: user_dept.html#delete_dept
+            - listitem [ref=e55]:
+              - link "创建用户" [ref=e56] [cursor=pointer]:
+                - /url: user_dept.html#create_user
+            - listitem [ref=e57]:
+              - link "编辑用户" [ref=e58] [cursor=pointer]:
+                - /url: user_dept.html#update_user
+            - listitem [ref=e59]:
+              - link "删除用户" [ref=e60] [cursor=pointer]:
+                - /url: user_dept.html#delete_user
+            - listitem [ref=e61]:
+              - link "根据名称搜索部门" [ref=e62] [cursor=pointer]:
+                - /url: user_dept.html#search_dept_by_name
+            - listitem [ref=e63]:
+              - link "根据名称搜索用户" [ref=e64] [cursor=pointer]:
+                - /url: user_dept.html#search_user_by_name
+      - listitem [ref=e65]:
+        - generic [ref=e66]:
+          - link "学习档案" [ref=e67] [cursor=pointer]:
+            - /url: learning_profile.html
+          - list [ref=e68]:
+            - listitem [ref=e69]:
+              - link "查看学员学习档案" [ref=e70] [cursor=pointer]:
+                - /url: learning_profile.html#learning_profile_list
+      - listitem [ref=e71]:
+        - generic [ref=e72]:
+          - link "用户组" [ref=e73] [cursor=pointer]:
+            - /url: group.html
+          - list [ref=e74]:
+            - listitem [ref=e75]:
+              - link "获取用户组列表" [ref=e76] [cursor=pointer]:
+                - /url: group.html#list
+            - listitem [ref=e77]:
+              - link "获取用户组里用户列表" [ref=e78] [cursor=pointer]:
+                - /url: group.html#user_list
+      - listitem [ref=e79]:
+        - generic [ref=e80]:
+          - link "标签" [ref=e81] [cursor=pointer]:
+            - /url: tags.html
+          - list [ref=e82]:
+            - listitem [ref=e83]:
+              - link "获取标签列表" [ref=e84] [cursor=pointer]:
+                - /url: tags.html#list
+            - listitem [ref=e85]:
+              - link "标签创建" [ref=e86] [cursor=pointer]:
+                - /url: tags.html#create
+            - listitem [ref=e87]:
+              - link "标签更新" [ref=e88] [cursor=pointer]:
+                - /url: tags.html#update
+            - listitem [ref=e89]:
+              - link "标签删除" [ref=e90] [cursor=pointer]:
+                - /url: tags.html#delete
+            - listitem [ref=e91]:
+              - link "标签值创建" [ref=e92] [cursor=pointer]:
+                - /url: tags.html#value_create
+            - listitem [ref=e93]:
+              - link "标签值更新" [ref=e94] [cursor=pointer]:
+                - /url: tags.html#value_update
+            - listitem [ref=e95]:
+              - link "标签值删除" [ref=e96] [cursor=pointer]:
+                - /url: tags.html#value_delete
+            - listitem [ref=e97]:
+              - link "更新用户标签" [ref=e98] [cursor=pointer]:
+                - /url: tags.html#user_update
+      - listitem [ref=e99]:
+        - generic [ref=e100]:
+          - link "素材库" [ref=e101] [cursor=pointer]:
+            - /url: file.html
+          - list [ref=e102]:
+            - listitem [ref=e103]:
+              - link "获取素材库分类列表" [ref=e104] [cursor=pointer]:
+                - /url: file.html#category
+            - listitem [ref=e105]:
+              - link "获取素材库列表" [ref=e106] [cursor=pointer]:
+                - /url: file.html#list
+            - listitem [ref=e107]:
+              - link "创建素材库" [ref=e108] [cursor=pointer]:
+                - /url: file.html#create
+            - listitem [ref=e109]:
+              - link "更新素材库" [ref=e110] [cursor=pointer]:
+                - /url: file.html#update
+      - listitem [ref=e111]:
+        - generic [ref=e112]:
+          - link "作业" [ref=e113] [cursor=pointer]:
+            - /url: clock.html
+          - list [ref=e114]:
+            - listitem [ref=e115]:
+              - link "获取作业列表" [ref=e116] [cursor=pointer]:
+                - /url: clock.html#learning_list
+            - listitem [ref=e117]:
+              - link "获取作业学员提交列表" [ref=e118] [cursor=pointer]:
+                - /url: clock.html#log_list
+            - listitem [ref=e119]:
+              - link "获取作业学员提交作业素材" [ref=e120] [cursor=pointer]:
+                - /url: clock.html#lsesson_list
+      - listitem [ref=e121]:
+        - generic [ref=e122]:
+          - link "课程" [ref=e123] [cursor=pointer]:
+            - /url: course.html
+          - list [ref=e124]:
+            - listitem [ref=e125]:
+              - link "课程分类列表" [ref=e126] [cursor=pointer]:
+                - /url: course.html#category
+            - listitem [ref=e127]:
+              - link "课程列表" [ref=e128] [cursor=pointer]:
+                - /url: course.html#course
+            - listitem [ref=e129]:
+              - link "课程详情" [ref=e130] [cursor=pointer]:
+                - /url: course.html#info
+            - listitem [ref=e131]:
+              - link "课程课件列表" [ref=e132] [cursor=pointer]:
+                - /url: course.html#lesson
+            - listitem [ref=e133]:
+              - link "课程人脸列表" [ref=e134] [cursor=pointer]:
+                - /url: course.html#face
+            - listitem [ref=e135]:
+              - link "课程课件人脸列表" [ref=e136] [cursor=pointer]:
+                - /url: course.html#lesson_face
+            - listitem [ref=e137]:
+              - link "获取课程学员学习列表" [ref=e138] [cursor=pointer]:
+                - /url: course.html#user
+            - listitem [ref=e139]:
+              - link "获取课程课件学习列表" [ref=e140] [cursor=pointer]:
+                - /url: course.html#lesson_user
+            - listitem [ref=e141]:
+              - link "获取课程学员学习详情" [ref=e142] [cursor=pointer]:
+                - /url: course.html#course_user_info
+            - listitem [ref=e143]:
+              - link "创建课程" [ref=e144] [cursor=pointer]:
+                - /url: course.html#create
+      - listitem [ref=e145]:
+        - generic [ref=e146]:
+          - link "考试" [ref=e147] [cursor=pointer]:
+            - /url: exam.html
+          - list [ref=e148]:
+            - listitem [ref=e149]:
+              - link "考试分类列表" [ref=e150] [cursor=pointer]:
+                - /url: exam.html#category
+            - listitem [ref=e151]:
+              - link "考试列表" [ref=e152] [cursor=pointer]:
+                - /url: exam.html#exam
+            - listitem [ref=e153]:
+              - link "获取考试学员考试结果列表" [ref=e154] [cursor=pointer]:
+                - /url: exam.html#user
+            - listitem [ref=e155]:
+              - link "获取考试学员详情" [ref=e156] [cursor=pointer]:
+                - /url: exam.html#user_info
+      - listitem [ref=e157]:
+        - generic [ref=e158]:
+          - link "证书" [ref=e159] [cursor=pointer]:
+            - /url: certificate.html
+          - list [ref=e160]:
+            - listitem [ref=e161]:
+              - link "获取证书分类列表" [ref=e162] [cursor=pointer]:
+                - /url: certificate.html#category
+            - listitem [ref=e163]:
+              - link "获取证书列表" [ref=e164] [cursor=pointer]:
+                - /url: certificate.html#list
+            - listitem [ref=e165]:
+              - link "获取证书用户列表" [ref=e166] [cursor=pointer]:
+                - /url: certificate.html#user
+      - listitem [ref=e167]:
+        - generic [ref=e168]:
+          - link "学分" [ref=e169] [cursor=pointer]:
+            - /url: credit.html
+          - list [ref=e170]:
+            - listitem [ref=e171]:
+              - link "获取学分明细" [ref=e172] [cursor=pointer]:
+                - /url: credit.html#list
+      - listitem [ref=e173]:
+        - generic [ref=e174]:
+          - link "积分" [ref=e175] [cursor=pointer]:
+            - /url: point.html
+          - list [ref=e176]:
+            - listitem [ref=e177]:
+              - link "获取积分明细" [ref=e178] [cursor=pointer]:
+                - /url: point.html#list
+            - listitem [ref=e179]:
+              - link "获取个人积分详情" [ref=e180] [cursor=pointer]:
+                - /url: point.html#user_info
+            - listitem [ref=e181]:
+              - link "获取积分消费订单详情" [ref=e182] [cursor=pointer]:
+                - /url: point.html#user_consume
+      - listitem [ref=e183]:
+        - generic [ref=e184]:
+          - link "学习地图" [ref=e185] [cursor=pointer]:
+            - /url: learnmap.html
+          - list [ref=e186]:
+            - listitem [ref=e187]:
+              - link "获取学习地图分类列表" [ref=e188] [cursor=pointer]:
+                - /url: learnmap.html#category
+            - listitem [ref=e189]:
+              - link "获取学习地图列表" [ref=e190] [cursor=pointer]:
+                - /url: learnmap.html#learnmap
+            - listitem [ref=e191]:
+              - link "获取学习地图阶段列表" [ref=e192] [cursor=pointer]:
+                - /url: learnmap.html#stage
+            - listitem [ref=e193]:
+              - link "获取学习地图阶段内容列表" [ref=e194] [cursor=pointer]:
+                - /url: learnmap.html#item
+            - listitem [ref=e195]:
+              - link "获取学习地图学员学习结果列表" [ref=e196] [cursor=pointer]:
+                - /url: learnmap.html#user
+            - listitem [ref=e197]:
+              - link "获取学习地图阶段学员学习结果列表" [ref=e198] [cursor=pointer]:
+                - /url: learnmap.html#stage_user
+            - listitem [ref=e199]:
+              - link "获取学习地图阶段内容学员学习结果列表" [ref=e200] [cursor=pointer]:
+                - /url: learnmap.html#item_user
+            - listitem [ref=e201]:
+              - link "获取学习地图学员学习结果详情" [ref=e202] [cursor=pointer]:
+                - /url: learnmap.html#user_info
+            - listitem [ref=e203]:
+              - link "创建学习地图" [ref=e204] [cursor=pointer]:
+                - /url: learnmap.html#create
+            - listitem [ref=e205]:
+              - link "学习地图指派" [ref=e206] [cursor=pointer]:
+                - /url: learnmap.html#assign
+      - listitem [ref=e207]:
+        - generic [ref=e208]:
+          - link "培训班" [ref=e209] [cursor=pointer]:
+            - /url: trainingClass.html
+          - list [ref=e210]:
+            - listitem [ref=e211]:
+              - link "获取培训班分类列表" [ref=e212] [cursor=pointer]:
+                - /url: trainingClass.html#category
+            - listitem [ref=e213]:
+              - link "获取培训班列表" [ref=e214] [cursor=pointer]:
+                - /url: trainingClass.html#list
+            - listitem [ref=e215]:
+              - link "获取培训班详情" [ref=e216] [cursor=pointer]:
+                - /url: trainingClass.html#info
+      - listitem [ref=e217]:
+        - generic [ref=e218]:
+          - link "线下培训" [ref=e219] [cursor=pointer]:
+            - /url: training.html
+          - list [ref=e220]:
+            - listitem [ref=e221]:
+              - link "获取线下培训分类列表" [ref=e222] [cursor=pointer]:
+                - /url: training.html#category
+            - listitem [ref=e223]:
+              - link "获取线下培训列表" [ref=e224] [cursor=pointer]:
+                - /url: training.html#training
+            - listitem [ref=e225]:
+              - link "获取线下培训报名学员列表" [ref=e226] [cursor=pointer]:
+                - /url: training.html#user
+            - listitem [ref=e227]:
+              - link "获取线下培训报名学员详情" [ref=e228] [cursor=pointer]:
+                - /url: training.html#user_info
+            - listitem [ref=e229]:
+              - link "创建线下培训" [ref=e230] [cursor=pointer]:
+                - /url: training.html#create
+            - listitem [ref=e231]:
+              - link "线下培训指派" [ref=e232] [cursor=pointer]:
+                - /url: training.html#assign
+      - listitem [ref=e233]:
+        - generic [ref=e234]:
+          - link "新闻" [ref=e235] [cursor=pointer]:
+            - /url: news.html
+          - list [ref=e236]:
+            - listitem [ref=e237]:
+              - link "获取新闻分类列表" [ref=e238] [cursor=pointer]:
+                - /url: news.html#category
+            - listitem [ref=e239]:
+              - link "获取新闻列表" [ref=e240] [cursor=pointer]:
+                - /url: news.html#list
+            - listitem [ref=e241]:
+              - link "获取新闻详情" [ref=e242] [cursor=pointer]:
+                - /url: news.html#info
+      - listitem [ref=e243]:
+        - generic [ref=e244]:
+          - link "职位" [ref=e245] [cursor=pointer]:
+            - /url: position.html
+          - list [ref=e246]:
+            - listitem [ref=e247]:
+              - link "获取职位列表" [ref=e248] [cursor=pointer]:
+                - /url: position.html#list
+            - listitem [ref=e249]:
+              - link "获取职位详情" [ref=e250] [cursor=pointer]:
+                - /url: position.html#info
+            - listitem [ref=e251]:
+              - link "创建职位" [ref=e252] [cursor=pointer]:
+                - /url: position.html#create
+            - listitem [ref=e253]:
+              - link "修改职位" [ref=e254] [cursor=pointer]:
+                - /url: position.html#update
+            - listitem [ref=e255]:
+              - link "删除职位" [ref=e256] [cursor=pointer]:
+                - /url: position.html#delete
+      - listitem [ref=e257]:
+        - generic [ref=e258]:
+          - link "消息和事件通知" [ref=e259] [cursor=pointer]:
+            - /url: event.html
+          - list [ref=e260]:
+            - listitem [ref=e261]:
+              - link "机制总览" [ref=e262] [cursor=pointer]:
+                - /url: event.html#summary
+            - listitem [ref=e263]:
+              - link "消息通知" [ref=e264] [cursor=pointer]:
+                - /url: event.html#message
+            - listitem [ref=e265]:
+              - link "待办事件" [ref=e266] [cursor=pointer]:
+                - /url: event.html#todo
+            - listitem [ref=e267]:
+              - link "课程状态事件" [ref=e268] [cursor=pointer]:
+                - /url: event.html#course
+            - listitem [ref=e269]:
+              - link "课件状态事件" [ref=e270] [cursor=pointer]:
+                - /url: event.html#course_lesson
+            - listitem [ref=e271]:
+              - link "学习地图状态事件" [ref=e272] [cursor=pointer]:
+                - /url: event.html#learningmap
+            - listitem [ref=e273]:
+              - link "线下培训状态事件" [ref=e274] [cursor=pointer]:
+                - /url: event.html#training
+            - listitem [ref=e275]:
+              - link "考试状态事件" [ref=e276] [cursor=pointer]:
+                - /url: event.html#exam
+            - listitem [ref=e277]:
+              - link "学员课程学习事件" [ref=e278] [cursor=pointer]:
+                - /url: event.html#course-learn
+            - listitem [ref=e279]:
+              - link "学员学习地图学习事件" [ref=e280] [cursor=pointer]:
+                - /url: event.html#learningmap-learn
+            - listitem [ref=e281]:
+              - link "学员线下培训参与事件" [ref=e282] [cursor=pointer]:
+                - /url: event.html#training-learn
+            - listitem [ref=e283]:
+              - link "学员考试参与事件" [ref=e284] [cursor=pointer]:
+                - /url: event.html#exam-learn
+            - listitem [ref=e285]:
+              - link "学员培训统计更新事件" [ref=e286] [cursor=pointer]:
+                - /url: event.html#train
+  - generic [ref=e287]:
+    - banner [ref=e288]:
+      - link "授客学堂" [ref=e290] [cursor=pointer]:
+        - /url: ../index.html
+        - img [ref=e291]
+        - heading "授客学堂" [level=6] [ref=e292]
+      - generic [ref=e293]:
+        - generic [ref=e294]: 
+        - textbox "搜索" [ref=e295]
+      - navigation [ref=e296]:
+        - list [ref=e297]:
+          - listitem [ref=e298] [cursor=pointer]:
+            - link "开发文档" [ref=e299]:
+              - /url: beforestart.html
+    - generic [ref=e300]:
+      - generic [ref=e301]:
+        - paragraph [ref=e302]
+        - heading "获取部门列表" [level=1] [ref=e303]
+        - paragraph [ref=e304]:
+          - strong [ref=e305]: 请求方式
+          - text: ：GET（HTTPS）
+          - strong [ref=e306]: 请求地址
+          - text: ：
+          - code [ref=e307]: https://oapi.soke.cn/oa/department/list
+          - strong [ref=e308]: Query参数说明
+          - text: ：
+        - table [ref=e309]:
+          - rowgroup [ref=e310]:
+            - row "参数 类型 必须 说明" [ref=e311]:
+              - columnheader "参数" [ref=e312]:
+                - strong [ref=e313]: 参数
+              - columnheader "类型" [ref=e314]:
+                - strong [ref=e315]: 类型
+              - columnheader "必须" [ref=e316]:
+                - strong [ref=e317]: 必须
+              - columnheader "说明" [ref=e318]:
+                - strong [ref=e319]: 说明
+          - rowgroup [ref=e320]:
+            - row "access_token String 是 应用access_token，2小时有效期" [ref=e321]:
+              - cell "access_token" [ref=e322]
+              - cell "String" [ref=e323]
+              - cell "是" [ref=e324]
+              - cell "应用access_token，2小时有效期" [ref=e325]
+            - row "parent_id String 是 部门上级ID，一级部门该值为1" [ref=e326]:
+              - cell "parent_id" [ref=e327]
+              - cell "String" [ref=e328]
+              - cell "是" [ref=e329]
+              - cell "部门上级ID，一级部门该值为1" [ref=e330]
+            - row "page Int 否 页码，默认从1开始" [ref=e331]:
+              - cell "page" [ref=e332]
+              - cell "Int" [ref=e333]
+              - cell "否" [ref=e334]
+              - cell "页码，默认从1开始" [ref=e335]
+            - row "page_size Int 否 每页条数，最大100，默认100" [ref=e336]:
+              - cell "page_size" [ref=e337]
+              - cell "Int" [ref=e338]
+              - cell "否" [ref=e339]
+              - cell "每页条数，最大100，默认100" [ref=e340]
+        - paragraph [ref=e341]:
+          - strong [ref=e342]: 返回结果
+          - text: ：
+        - code [ref=e344]: "{ \"code\": \"200\", \"status\": \"ok\", \"message\": \"success\", \"data\": { \"list\": [ { \"dept_id\": \"xxxx\", \"parent_id\": \"xxxx\", \"dept_name\": \"xxxx\", \"company_id\": \"xxxx\" }, { \"dept_id\": \"xxxx\", \"parent_id\": \"xxxx\", \"dept_name\": \"xxxx\", \"company_id\": \"xxxx\" } ], \"has_more\": 0 } }"
+        - paragraph [ref=e345]:
+          - strong [ref=e346]: 参数说明
+          - text: ：
+        - table [ref=e347]:
+          - rowgroup [ref=e348]:
+            - row "参数 类型 说明" [ref=e349]:
+              - columnheader "参数" [ref=e350]:
+                - strong [ref=e351]: 参数
+              - columnheader "类型" [ref=e352]:
+                - strong [ref=e353]: 类型
+              - columnheader "说明" [ref=e354]:
+                - strong [ref=e355]: 说明
+          - rowgroup [ref=e356]:
+            - row "data Array 返回的数据包" [ref=e357]:
+              - cell "data" [ref=e358]
+              - cell "Array" [ref=e359]
+              - cell "返回的数据包" [ref=e360]
+            - row "list Array 返回的数据部门列表" [ref=e361]:
+              - cell "list" [ref=e362]
+              - cell "Array" [ref=e363]
+              - cell "返回的数据部门列表" [ref=e364]
+            - row "dept_id String 部门ID，同company_id组织内唯一，最大长度36字符" [ref=e365]:
+              - cell "dept_id" [ref=e366]
+              - cell "String" [ref=e367]
+              - cell "部门ID，同company_id组织内唯一，最大长度36字符" [ref=e368]
+            - row "parent_id String 部门上级ID，一级部门该值为1，最大长度36字符" [ref=e369]:
+              - cell "parent_id" [ref=e370]
+              - cell "String" [ref=e371]
+              - cell "部门上级ID，一级部门该值为1，最大长度36字符" [ref=e372]
+            - row "dept_name String 部门名称，最大长度64字符" [ref=e373]:
+              - cell "dept_name" [ref=e374]
+              - cell "String" [ref=e375]
+              - cell "部门名称，最大长度64字符" [ref=e376]
+            - row "company_id String 所属企业ID，最大长度64字符" [ref=e377]:
+              - cell "company_id" [ref=e378]
+              - cell "String" [ref=e379]
+              - cell "所属企业ID，最大长度64字符" [ref=e380]
+            - row "has_more Int 是否还有数据没返回： 1 还有 0 没有" [ref=e381]:
+              - cell "has_more" [ref=e382]
+              - cell "Int" [ref=e383]
+              - cell "是否还有数据没返回： 1 还有 0 没有" [ref=e384]:
+                - text: 是否还有数据没返回：
+                - text: 1 还有
+                - text: 0 没有
+        - paragraph [ref=e385]
+        - heading "获取部门详情" [level=1] [ref=e386]
+        - paragraph [ref=e387]:
+          - strong [ref=e388]: 请求方式
+          - text: ：GET（HTTPS）
+          - strong [ref=e389]: 请求地址
+          - text: ：
+          - code [ref=e390]: https://oapi.soke.cn/oa/department/info
+          - strong [ref=e391]: Query参数说明
+          - text: ：
+        - table [ref=e392]:
+          - rowgroup [ref=e393]:
+            - row "参数 类型 必须 说明" [ref=e394]:
+              - columnheader "参数" [ref=e395]:
+                - strong [ref=e396]: 参数
+              - columnheader "类型" [ref=e397]:
+                - strong [ref=e398]: 类型
+              - columnheader "必须" [ref=e399]:
+                - strong [ref=e400]: 必须
+              - columnheader "说明" [ref=e401]:
+                - strong [ref=e402]: 说明
+          - rowgroup [ref=e403]:
+            - row "access_token String 是 应用access_token，2小时有效期" [ref=e404]:
+              - cell "access_token" [ref=e405]
+              - cell "String" [ref=e406]
+              - cell "是" [ref=e407]
+              - cell "应用access_token，2小时有效期" [ref=e408]
+            - row "dept_id String 是 部门ID" [ref=e409]:
+              - cell "dept_id" [ref=e410]
+              - cell "String" [ref=e411]
+              - cell "是" [ref=e412]
+              - cell "部门ID" [ref=e413]
+        - paragraph [ref=e414]:
+          - strong [ref=e415]: 返回结果
+          - text: ：
+        - code [ref=e417]: "{ \"code\": \"200\", \"status\": \"ok\", \"message\": \"success\", \"data\": { \"dept_id\": \"XXXX\", \"parent_id\": \"XXXX\", \"dept_name\": \"XXXX\", \"company_id\": \"XXXX\" } }"
+        - paragraph [ref=e418]:
+          - strong [ref=e419]: 参数说明
+          - text: ：
+        - table [ref=e420]:
+          - rowgroup [ref=e421]:
+            - row "参数 类型 说明" [ref=e422]:
+              - columnheader "参数" [ref=e423]:
+                - strong [ref=e424]: 参数
+              - columnheader "类型" [ref=e425]:
+                - strong [ref=e426]: 类型
+              - columnheader "说明" [ref=e427]:
+                - strong [ref=e428]: 说明
+          - rowgroup [ref=e429]:
+            - row "data> Array 返回的数据包" [ref=e430]:
+              - cell "data>" [ref=e431]
+              - cell "Array" [ref=e432]
+              - cell "返回的数据包" [ref=e433]
+            - row "dept_id String 部门ID，同company_id组织内唯一，最大长度36字符" [ref=e434]:
+              - cell "dept_id" [ref=e435]
+              - cell "String" [ref=e436]
+              - cell "部门ID，同company_id组织内唯一，最大长度36字符" [ref=e437]
+            - row "parent_id String 部门上级ID，一级部门该值为1，最大长度36字符" [ref=e438]:
+              - cell "parent_id" [ref=e439]
+              - cell "String" [ref=e440]
+              - cell "部门上级ID，一级部门该值为1，最大长度36字符" [ref=e441]
+            - row "dept_name String 部门名称，最大长度64字符" [ref=e442]:
+              - cell "dept_name" [ref=e443]
+              - cell "String" [ref=e444]
+              - cell "部门名称，最大长度64字符" [ref=e445]
+            - row "company_id String 所属企业ID，最大长度64字符" [ref=e446]:
+              - cell "company_id" [ref=e447]
+              - cell "String" [ref=e448]
+              - cell "所属企业ID，最大长度64字符" [ref=e449]
+        - paragraph [ref=e450]
+        - heading "获取用户列表" [level=1] [ref=e451]
+        - paragraph [ref=e452]:
+          - strong [ref=e453]: 请求方式
+          - text: ：GET（HTTPS）
+          - strong [ref=e454]: 请求地址
+          - text: ：
+          - code [ref=e455]: https://oapi.soke.cn/oa/departmentUser/list
+          - strong [ref=e456]: Query参数说明
+          - text: ：
+        - table [ref=e457]:
+          - rowgroup [ref=e458]:
+            - row "参数 类型 必须 说明" [ref=e459]:
+              - columnheader "参数" [ref=e460]:
+                - strong [ref=e461]: 参数
+              - columnheader "类型" [ref=e462]:
+                - strong [ref=e463]: 类型
+              - columnheader "必须" [ref=e464]:
+                - strong [ref=e465]: 必须
+              - columnheader "说明" [ref=e466]:
+                - strong [ref=e467]: 说明
+          - rowgroup [ref=e468]:
+            - row "access_token String 是 应用access_token，2小时有效期" [ref=e469]:
+              - cell "access_token" [ref=e470]
+              - cell "String" [ref=e471]
+              - cell "是" [ref=e472]
+              - cell "应用access_token，2小时有效期" [ref=e473]
+            - row "dept_id String 是 需要获取用户的部门ID" [ref=e474]:
+              - cell "dept_id" [ref=e475]
+              - cell "String" [ref=e476]
+              - cell "是" [ref=e477]
+              - cell "需要获取用户的部门ID" [ref=e478]
+            - row "page Int 否 页码，默认从1开始" [ref=e479]:
+              - cell "page" [ref=e480]
+              - cell "Int" [ref=e481]
+              - cell "否" [ref=e482]
+              - cell "页码，默认从1开始" [ref=e483]
+            - row "page_size Int 否 每页条数，最大100，默认100" [ref=e484]:
+              - cell "page_size" [ref=e485]
+              - cell "Int" [ref=e486]
+              - cell "否" [ref=e487]
+              - cell "每页条数，最大100，默认100" [ref=e488]
+        - paragraph [ref=e489]:
+          - strong [ref=e490]: 返回结果
+          - text: ：
+        - code [ref=e492]: "{ \"code\": \"200\", \"status\": \"ok\", \"message\": \"success\", \"data\": { \"list\": [ { \"dept_user_id\": \"xxxx\", \"dept_user_name\": \"xxxx\", \"company_id\": \"xxxx\", \"email\": \"\", \"mobile\": \"1xx00000000\", }, { \"dept_user_id\": \"xxxx\", \"dept_user_name\": \"xxxx\", \"company_id\": \"xxxx\", \"email\": \"\", \"mobile\": \"1xx00000000\", } ], \"has_more\": 1 } }"
+        - paragraph [ref=e493]:
+          - strong [ref=e494]: 参数说明
+          - text: ：
+        - table [ref=e495]:
+          - rowgroup [ref=e496]:
+            - row "参数 类型 说明" [ref=e497]:
+              - columnheader "参数" [ref=e498]:
+                - strong [ref=e499]: 参数
+              - columnheader "类型" [ref=e500]:
+                - strong [ref=e501]: 类型
+              - columnheader "说明" [ref=e502]:
+                - strong [ref=e503]: 说明
+          - rowgroup [ref=e504]:
+            - row "data Array 返回的数据包" [ref=e505]:
+              - cell "data" [ref=e506]
+              - cell "Array" [ref=e507]
+              - cell "返回的数据包" [ref=e508]
+            - row "list Array 返回的用户列表" [ref=e509]:
+              - cell "list" [ref=e510]
+              - cell "Array" [ref=e511]
+              - cell "返回的用户列表" [ref=e512]
+            - row "dept_user_id String 用户ID，同company_id组织内唯一，最大长度64字符" [ref=e513]:
+              - cell "dept_user_id" [ref=e514]
+              - cell "String" [ref=e515]
+              - cell "用户ID，同company_id组织内唯一，最大长度64字符" [ref=e516]
+            - row "dept_user_name String 用姓名，最大长度100字符" [ref=e517]:
+              - cell "dept_user_name" [ref=e518]
+              - cell "String" [ref=e519]
+              - cell "用姓名，最大长度100字符" [ref=e520]
+            - row "company_id String 所属企业ID，最大长度64字符" [ref=e521]:
+              - cell "company_id" [ref=e522]
+              - cell "String" [ref=e523]
+              - cell "所属企业ID，最大长度64字符" [ref=e524]
+            - row "email String 邮箱" [ref=e525]:
+              - cell "email" [ref=e526]
+              - cell "String" [ref=e527]
+              - cell "邮箱" [ref=e528]
+            - row "mobile String 手机号" [ref=e529]:
+              - cell "mobile" [ref=e530]
+              - cell "String" [ref=e531]
+              - cell "手机号" [ref=e532]
+            - row "has_more Int 是否还有数据没返回： 1 还有 0 没有" [ref=e533]:
+              - cell "has_more" [ref=e534]
+              - cell "Int" [ref=e535]
+              - cell "是否还有数据没返回： 1 还有 0 没有" [ref=e536]:
+                - text: 是否还有数据没返回：
+                - text: 1 还有
+                - text: 0 没有
+        - paragraph [ref=e537]
+        - heading "获取用户详情" [level=1] [ref=e538]
+        - paragraph [ref=e539]:
+          - strong [ref=e540]: 请求方式
+          - text: ：GET（HTTPS）
+          - strong [ref=e541]: 请求地址
+          - text: ：
+          - code [ref=e542]: https://oapi.soke.cn/oa/departmentUser/info
+          - strong [ref=e543]: Query参数说明
+          - text: ：
+        - table [ref=e544]:
+          - rowgroup [ref=e545]:
+            - row "参数 类型 必须 说明" [ref=e546]:
+              - columnheader "参数" [ref=e547]:
+                - strong [ref=e548]: 参数
+              - columnheader "类型" [ref=e549]:
+                - strong [ref=e550]: 类型
+              - columnheader "必须" [ref=e551]:
+                - strong [ref=e552]: 必须
+              - columnheader "说明" [ref=e553]:
+                - strong [ref=e554]: 说明
+          - rowgroup [ref=e555]:
+            - row "access_token String 是 应用access_token，2小时有效期" [ref=e556]:
+              - cell "access_token" [ref=e557]
+              - cell "String" [ref=e558]
+              - cell "是" [ref=e559]
+              - cell "应用access_token，2小时有效期" [ref=e560]
+            - row "dept_user_id String 是 工号，用户在企业内唯一标识" [ref=e561]:
+              - cell "dept_user_id" [ref=e562]
+              - cell "String" [ref=e563]
+              - cell "是" [ref=e564]
+              - cell "工号，用户在企业内唯一标识" [ref=e565]
+        - paragraph [ref=e566]:
+          - strong [ref=e567]: 返回结果
+          - text: ：
+        - code [ref=e569]: "{ \"code\": \"200\", \"status\": \"ok\", \"message\": \"success\", \"data\": { \"dept_user_id\": \"XXXX\", \"dept_user_name\": \"XXXX\", \"avatar\": \"XXXX\", \"position\": \"XXXX\", \"dept_ids\": [ \"XXXX\" ], \"company_id\": \"XXXX\" } }"
+        - paragraph [ref=e570]:
+          - strong [ref=e571]: 参数说明
+          - text: ：
+        - table [ref=e572]:
+          - rowgroup [ref=e573]:
+            - row "参数 类型 说明" [ref=e574]:
+              - columnheader "参数" [ref=e575]:
+                - strong [ref=e576]: 参数
+              - columnheader "类型" [ref=e577]:
+                - strong [ref=e578]: 类型
+              - columnheader "说明" [ref=e579]:
+                - strong [ref=e580]: 说明
+          - rowgroup [ref=e581]:
+            - row "data> Array 返回的数据包" [ref=e582]:
+              - cell "data>" [ref=e583]
+              - cell "Array" [ref=e584]
+              - cell "返回的数据包" [ref=e585]
+            - row "dept_user_id String 用户ID，同company_id组织内唯一，最大长度64字符" [ref=e586]:
+              - cell "dept_user_id" [ref=e587]
+              - cell "String" [ref=e588]
+              - cell "用户ID，同company_id组织内唯一，最大长度64字符" [ref=e589]
+            - row "dept_user_name String 姓名，最大长度100字符" [ref=e590]:
+              - cell "dept_user_name" [ref=e591]
+              - cell "String" [ref=e592]
+              - cell "姓名，最大长度100字符" [ref=e593]
+            - row "avatar String 头像，可为空字符串，最大长度255字符" [ref=e594]:
+              - cell "avatar" [ref=e595]
+              - cell "String" [ref=e596]
+              - cell "头像，可为空字符串，最大长度255字符" [ref=e597]
+            - row "position String 职位，最大长度50字符" [ref=e598]:
+              - cell "position" [ref=e599]
+              - cell "String" [ref=e600]
+              - cell "职位，最大长度50字符" [ref=e601]
+            - row "dept_ids Array 该用户所属部门ID列表" [ref=e602]:
+              - cell "dept_ids" [ref=e603]
+              - cell "Array" [ref=e604]
+              - cell "该用户所属部门ID列表" [ref=e605]
+            - row "company_id String 所属企业ID" [ref=e606]:
+              - cell "company_id" [ref=e607]
+              - cell "String" [ref=e608]
+              - cell "所属企业ID" [ref=e609]
+        - paragraph [ref=e610]
+        - heading "获取讲师列表" [level=1] [ref=e611]
+        - paragraph [ref=e612]:
+          - strong [ref=e613]: 请求方式
+          - text: ：GET（HTTPS）
+          - strong [ref=e614]: 请求地址
+          - text: ：
+          - code [ref=e615]: https://oapi.soke.cn/lector/lector/list
+          - strong [ref=e616]: Query参数说明
+          - text: ：
+        - table [ref=e617]:
+          - rowgroup [ref=e618]:
+            - row "参数 类型 必须 说明" [ref=e619]:
+              - columnheader "参数" [ref=e620]:
+                - strong [ref=e621]: 参数
+              - columnheader "类型" [ref=e622]:
+                - strong [ref=e623]: 类型
+              - columnheader "必须" [ref=e624]:
+                - strong [ref=e625]: 必须
+              - columnheader "说明" [ref=e626]:
+                - strong [ref=e627]: 说明
+          - rowgroup [ref=e628]:
+            - row "access_token String 是 应用access_token，2小时有效期" [ref=e629]:
+              - cell "access_token" [ref=e630]
+              - cell "String" [ref=e631]
+              - cell "是" [ref=e632]
+              - cell "应用access_token，2小时有效期" [ref=e633]
+            - row "page Int 否 页码，默认从1开始" [ref=e634]:
+              - cell "page" [ref=e635]
+              - cell "Int" [ref=e636]
+              - cell "否" [ref=e637]
+              - cell "页码，默认从1开始" [ref=e638]
+            - row "page_size Int 否 每页条数，最大100，最大100" [ref=e639]:
+              - cell "page_size" [ref=e640]
+              - cell "Int" [ref=e641]
+              - cell "否" [ref=e642]
+              - cell "每页条数，最大100，最大100" [ref=e643]
+        - paragraph [ref=e644]:
+          - strong [ref=e645]: 返回结果
+          - text: ：
+        - code [ref=e647]: "{ \"code\": \"200\", \"status\": \"ok\", \"message\": \"success\", \"data\": { \"list\": [ ], \"has_more\": 1 } }"
+        - paragraph [ref=e648]:
+          - strong [ref=e649]: 参数说明
+          - text: ：
+        - table [ref=e650]:
+          - rowgroup [ref=e651]:
+            - row "参数 类型 说明" [ref=e652]:
+              - columnheader "参数" [ref=e653]:
+                - strong [ref=e654]: 参数
+              - columnheader "类型" [ref=e655]:
+                - strong [ref=e656]: 类型
+              - columnheader "说明" [ref=e657]:
+                - strong [ref=e658]: 说明
+          - rowgroup [ref=e659]:
+            - row "data Array 返回的数据包" [ref=e660]:
+              - cell "data" [ref=e661]
+              - cell "Array" [ref=e662]
+              - cell "返回的数据包" [ref=e663]
+            - row "list Array 返回的用户列表" [ref=e664]:
+              - cell "list" [ref=e665]
+              - cell "Array" [ref=e666]
+              - cell "返回的用户列表" [ref=e667]
+            - row "lector_id String 讲师ID，最大长度36字符" [ref=e668]:
+              - cell "lector_id" [ref=e669]
+              - cell "String" [ref=e670]
+              - cell "讲师ID，最大长度36字符" [ref=e671]
+            - row "title String 讲师姓名，最大长度100字符" [ref=e672]:
+              - cell "title" [ref=e673]
+              - cell "String" [ref=e674]
+              - cell "讲师姓名，最大长度100字符" [ref=e675]
+            - row "contact_information String 讲师联系方式，最大长度200字符" [ref=e676]:
+              - cell "contact_information" [ref=e677]
+              - cell "String" [ref=e678]
+              - cell "讲师联系方式，最大长度200字符" [ref=e679]
+            - row "is_in Int 讲师来源： 0 外部 1 内部" [ref=e680]:
+              - cell "is_in" [ref=e681]
+              - cell "Int" [ref=e682]
+              - cell "讲师来源： 0 外部 1 内部" [ref=e683]:
+                - text: 讲师来源：
+                - text: 0 外部
+                - text: 1 内部
+            - row "employer String 讲师所在单位，最大长度200字符" [ref=e684]:
+              - cell "employer" [ref=e685]
+              - cell "String" [ref=e686]
+              - cell "讲师所在单位，最大长度200字符" [ref=e687]
+            - row "grade_title String 讲师级别，最大长度100字符" [ref=e688]:
+              - cell "grade_title" [ref=e689]
+              - cell "String" [ref=e690]
+              - cell "讲师级别，最大长度100字符" [ref=e691]
+            - row "area Array 讲师擅长领域，最大长度300字符" [ref=e692]:
+              - cell "area" [ref=e693]
+              - cell "Array" [ref=e694]
+              - cell "讲师擅长领域，最大长度300字符" [ref=e695]
+            - row "experience Array 讲师授课经历，最大长度65535字符" [ref=e696]:
+              - cell "experience" [ref=e697]
+              - cell "Array" [ref=e698]
+              - cell "讲师授课经历，最大长度65535字符" [ref=e699]
+            - row "lector_score Decimal(3,2) 讲师评分" [ref=e700]:
+              - cell "lector_score" [ref=e701]
+              - cell "Decimal(3,2)" [ref=e702]
+              - cell "讲师评分" [ref=e703]
+            - row "course_total_score Decimal(10,2) 线上课总评分" [ref=e704]:
+              - cell "course_total_score" [ref=e705]
+              - cell "Decimal(10,2)" [ref=e706]
+              - cell "线上课总评分" [ref=e707]
+            - row "course_learn_num Int 线上课学习人数，最大位数10" [ref=e708]:
+              - cell "course_learn_num" [ref=e709]
+              - cell "Int" [ref=e710]
+              - cell "线上课学习人数，最大位数10" [ref=e711]
+            - row "course_score Decimal(3,2) 线上课平均分" [ref=e712]:
+              - cell "course_score" [ref=e713]
+              - cell "Decimal(3,2)" [ref=e714]
+              - cell "线上课平均分" [ref=e715]
+            - row "training_total_score Decimal(10,2) 线下培训课总评分" [ref=e716]:
+              - cell "training_total_score" [ref=e717]
+              - cell "Decimal(10,2)" [ref=e718]
+              - cell "线下培训课总评分" [ref=e719]
+            - row "training_learn_num Int 线下培训课学习人数，最大位数10" [ref=e720]:
+              - cell "training_learn_num" [ref=e721]
+              - cell "Int" [ref=e722]
+              - cell "线下培训课学习人数，最大位数10" [ref=e723]
+            - row "training_score Decimal(3,2) 线下培训课平均分，最大位数10" [ref=e724]:
+              - cell "training_score" [ref=e725]
+              - cell "Decimal(3,2)" [ref=e726]
+              - cell "线下培训课平均分，最大位数10" [ref=e727]
+            - row "course_num Int 线上课数量，最大位数10" [ref=e728]:
+              - cell "course_num" [ref=e729]
+              - cell "Int" [ref=e730]
+              - cell "线上课数量，最大位数10" [ref=e731]
+            - row "training_num Int 线下课数量，最大位数10" [ref=e732]:
+              - cell "training_num" [ref=e733]
+              - cell "Int" [ref=e734]
+              - cell "线下课数量，最大位数10" [ref=e735]
+            - row "exam_num Int 考试数量，最大位数10" [ref=e736]:
+              - cell "exam_num" [ref=e737]
+              - cell "Int" [ref=e738]
+              - cell "考试数量，最大位数10" [ref=e739]
+            - row "live_num Int 直播课数量，最大位数10" [ref=e740]:
+              - cell "live_num" [ref=e741]
+              - cell "Int" [ref=e742]
+              - cell "直播课数量，最大位数10" [ref=e743]
+            - row "has_more Int 是否还有数据没返回： 1 还有 0 没有" [ref=e744]:
+              - cell "has_more" [ref=e745]
+              - cell "Int" [ref=e746]
+              - cell "是否还有数据没返回： 1 还有 0 没有" [ref=e747]:
+                - text: 是否还有数据没返回：
+                - text: 1 还有
+                - text: 0 没有
+        - paragraph [ref=e748]
+        - heading "创建部门" [level=1] [ref=e749]
+        - paragraph [ref=e750]:
+          - strong [ref=e751]: 请求方式
+          - text: ：POST（HTTPS）
+          - strong [ref=e752]: 请求地址
+          - text: ：
+          - code [ref=e753]: https://oapi.soke.cn/oa/department/create
+          - strong [ref=e754]: Query参数说明
+          - text: ：
+        - table [ref=e755]:
+          - rowgroup [ref=e756]:
+            - row "参数 类型 必须 说明" [ref=e757]:
+              - columnheader "参数" [ref=e758]:
+                - strong [ref=e759]: 参数
+              - columnheader "类型" [ref=e760]:
+                - strong [ref=e761]: 类型
+              - columnheader "必须" [ref=e762]:
+                - strong [ref=e763]: 必须
+              - columnheader "说明" [ref=e764]:
+                - strong [ref=e765]: 说明
+          - rowgroup [ref=e766]:
+            - row "access_token String 是 应用access_token，2小时有效期" [ref=e767]:
+              - cell "access_token" [ref=e768]
+              - cell "String" [ref=e769]
+              - cell "是" [ref=e770]
+              - cell "应用access_token，2小时有效期" [ref=e771]
+            - row "dept_id String 否 部门ID，1-36位字符串，同一组织内dept_id不能重复，不传则系统自动生成，创建成功后不能修改" [ref=e772]:
+              - cell "dept_id" [ref=e773]
+              - cell "String" [ref=e774]
+              - cell "否" [ref=e775]
+              - cell "部门ID，1-36位字符串，同一组织内dept_id不能重复，不传则系统自动生成，创建成功后不能修改" [ref=e776]
+            - row "dept_name String 是 部门名称，长度限制为1~64个字符，不允许包含字符‘-’‘，’以及‘,’" [ref=e777]:
+              - cell "dept_name" [ref=e778]
+              - cell "String" [ref=e779]
+              - cell "是" [ref=e780]
+              - cell "部门名称，长度限制为1~64个字符，不允许包含字符‘-’‘，’以及‘,’" [ref=e781]
+            - row "parent_id String 是 父部门ID，跟部门ID为1" [ref=e782]:
+              - cell "parent_id" [ref=e783]
+              - cell "String" [ref=e784]
+              - cell "是" [ref=e785]
+              - cell "父部门ID，跟部门ID为1" [ref=e786]
+            - row "weight Int 否 排序值（正序）" [ref=e787]:
+              - cell "weight" [ref=e788]
+              - cell "Int" [ref=e789]
+              - cell "否" [ref=e790]
+              - cell "排序值（正序）" [ref=e791]
+        - paragraph [ref=e792]:
+          - strong [ref=e793]: 成功返回结果
+          - text: ：
+        - code [ref=e795]: "{ \"code\": \"200\", \"status\": \"ok\", \"message\": \"success\", \"data\": { \"dept_id\":\"376053D7-73B6-44FE-8EF2-4A27E5CC81C6\" //创建成功的部门ID } }"
+        - paragraph [ref=e796]
+        - heading "更新部门" [level=1] [ref=e797]
+        - paragraph [ref=e798]:
+          - strong [ref=e799]: 请求方式
+          - text: ：POST（HTTPS）
+          - strong [ref=e800]: 请求地址
+          - text: ：
+          - code [ref=e801]: https://oapi.soke.cn/oa/department/update
+          - strong [ref=e802]: Query参数说明
+          - text: ：
+        - table [ref=e803]:
+          - rowgroup [ref=e804]:
+            - row "参数 类型 必须 说明" [ref=e805]:
+              - columnheader "参数" [ref=e806]:
+                - strong [ref=e807]: 参数
+              - columnheader "类型" [ref=e808]:
+                - strong [ref=e809]: 类型
+              - columnheader "必须" [ref=e810]:
+                - strong [ref=e811]: 必须
+              - columnheader "说明" [ref=e812]:
+                - strong [ref=e813]: 说明
+          - rowgroup [ref=e814]:
+            - row "access_token String 是 应用access_token，2小时有效期" [ref=e815]:
+              - cell "access_token" [ref=e816]
+              - cell "String" [ref=e817]
+              - cell "是" [ref=e818]
+              - cell "应用access_token，2小时有效期" [ref=e819]
+            - row "dept_id String 是 要更新的部门ID" [ref=e820]:
+              - cell "dept_id" [ref=e821]
+              - cell "String" [ref=e822]
+              - cell "是" [ref=e823]
+              - cell "要更新的部门ID" [ref=e824]
+            - row "dept_name String 否 部门名称，长度限制为1~64个字符，不允许包含字符‘-’‘，’以及‘,’" [ref=e825]:
+              - cell "dept_name" [ref=e826]
+              - cell "String" [ref=e827]
+              - cell "否" [ref=e828]
+              - cell "部门名称，长度限制为1~64个字符，不允许包含字符‘-’‘，’以及‘,’" [ref=e829]
+            - row "parent_id String 否 父部门ID，跟部门ID为1" [ref=e830]:
+              - cell "parent_id" [ref=e831]
+              - cell "String" [ref=e832]
+              - cell "否" [ref=e833]
+              - cell "父部门ID，跟部门ID为1" [ref=e834]
+            - row "weight Int 否 排序值（正序）" [ref=e835]:
+              - cell "weight" [ref=e836]
+              - cell "Int" [ref=e837]
+              - cell "否" [ref=e838]
+              - cell "排序值（正序）" [ref=e839]
+        - paragraph [ref=e840]:
+          - strong [ref=e841]: 成功返回结果
+          - text: ：
+        - code [ref=e843]: "{ \"code\": \"200\", \"status\": \"ok\", \"message\": \"success\", \"data\": [] }"
+        - paragraph [ref=e844]
+        - heading "删除部门" [level=1] [ref=e845]
+        - paragraph [ref=e846]:
+          - strong [ref=e847]: 请求方式
+          - text: ：POST（HTTPS）
+          - strong [ref=e848]: 请求地址
+          - text: ：
+          - code [ref=e849]: https://oapi.soke.cn/oa/department/delete
+          - strong [ref=e850]: Query参数说明
+          - text: ：
+        - table [ref=e851]:
+          - rowgroup [ref=e852]:
+            - row "参数 类型 必须 说明" [ref=e853]:
+              - columnheader "参数" [ref=e854]:
+                - strong [ref=e855]: 参数
+              - columnheader "类型" [ref=e856]:
+                - strong [ref=e857]: 类型
+              - columnheader "必须" [ref=e858]:
+                - strong [ref=e859]: 必须
+              - columnheader "说明" [ref=e860]:
+                - strong [ref=e861]: 说明
+          - rowgroup [ref=e862]:
+            - row "access_token String 是 应用access_token，2小时有效期" [ref=e863]:
+              - cell "access_token" [ref=e864]
+              - cell "String" [ref=e865]
+              - cell "是" [ref=e866]
+              - cell "应用access_token，2小时有效期" [ref=e867]
+            - row "dept_id String 是 要删除的部门ID" [ref=e868]:
+              - cell "dept_id" [ref=e869]
+              - cell "String" [ref=e870]
+              - cell "是" [ref=e871]
+              - cell "要删除的部门ID" [ref=e872]
+        - paragraph [ref=e873]:
+          - strong [ref=e874]: 成功返回结果
+          - text: ：
+        - code [ref=e876]: "{ \"code\": \"200\", \"status\": \"ok\", \"message\": \"success\", \"data\": [] }"
+        - paragraph [ref=e877]
+        - heading "创建用户" [level=1] [ref=e878]
+        - paragraph [ref=e879]:
+          - strong [ref=e880]: 请求方式
+          - text: ：POST（HTTPS）
+          - strong [ref=e881]: 请求地址
+          - text: ：
+          - code [ref=e882]: https://oapi.soke.cn/oa/departmentUser/create
+          - strong [ref=e883]: Query参数说明
+          - text: ：
+        - table [ref=e884]:
+          - rowgroup [ref=e885]:
+            - row "参数 类型 必须 说明" [ref=e886]:
+              - columnheader "参数" [ref=e887]:
+                - strong [ref=e888]: 参数
+              - columnheader "类型" [ref=e889]:
+                - strong [ref=e890]: 类型
+              - columnheader "必须" [ref=e891]:
+                - strong [ref=e892]: 必须
+              - columnheader "说明" [ref=e893]:
+                - strong [ref=e894]: 说明
+          - rowgroup [ref=e895]:
+            - row "access_token String 是 应用access_token，2小时有效期" [ref=e896]:
+              - cell "access_token" [ref=e897]
+              - cell "String" [ref=e898]
+              - cell "是" [ref=e899]
+              - cell "应用access_token，2小时有效期" [ref=e900]
+            - row "dept_user_id String 否 学员唯一标识ID，1-64位字符串，同一组织内dept_user_id不能重复，不传则系统自动生成" [ref=e901]:
+              - cell "dept_user_id" [ref=e902]
+              - cell "String" [ref=e903]
+              - cell "否" [ref=e904]
+              - cell "学员唯一标识ID，1-64位字符串，同一组织内dept_user_id不能重复，不传则系统自动生成" [ref=e905]
+            - row "union_id String 否 全平台内学员唯一标识ID，1-64位字符串，不传则系统自动生成" [ref=e906]:
+              - cell "union_id" [ref=e907]
+              - cell "String" [ref=e908]
+              - cell "否" [ref=e909]
+              - cell "全平台内学员唯一标识ID，1-64位字符串，不传则系统自动生成" [ref=e910]
+            - row "dept_user_name String 是 用户名称，长度限制为1~64个字符，不允许包含字符‘-’‘，’以及‘,’" [ref=e911]:
+              - cell "dept_user_name" [ref=e912]
+              - cell "String" [ref=e913]
+              - cell "是" [ref=e914]
+              - cell "用户名称，长度限制为1~64个字符，不允许包含字符‘-’‘，’以及‘,’" [ref=e915]
+            - row "avatar String 否 用户头像，传入一个可以在线浏览的url地址" [ref=e916]:
+              - cell "avatar" [ref=e917]
+              - cell "String" [ref=e918]
+              - cell "否" [ref=e919]
+              - cell "用户头像，传入一个可以在线浏览的url地址" [ref=e920]
+            - row "position String 否 职位" [ref=e921]:
+              - cell "position" [ref=e922]
+              - cell "String" [ref=e923]
+              - cell "否" [ref=e924]
+              - cell "职位" [ref=e925]
+            - row "position_rank String 否 职级" [ref=e926]:
+              - cell "position_rank" [ref=e927]
+              - cell "String" [ref=e928]
+              - cell "否" [ref=e929]
+              - cell "职级" [ref=e930]
+            - row "mobile Int 否 手机号" [ref=e931]:
+              - cell "mobile" [ref=e932]
+              - cell "Int" [ref=e933]
+              - cell "否" [ref=e934]
+              - cell "手机号" [ref=e935]
+            - row "country_code String 否 国际区码，00开头，如0086" [ref=e936]:
+              - cell "country_code" [ref=e937]
+              - cell "String" [ref=e938]
+              - cell "否" [ref=e939]
+              - cell "国际区码，00开头，如0086" [ref=e940]
+            - row "email String 否 邮箱" [ref=e941]:
+              - cell "email" [ref=e942]
+              - cell "String" [ref=e943]
+              - cell "否" [ref=e944]
+              - cell "邮箱" [ref=e945]
+            - row "job_number String 否 工号" [ref=e946]:
+              - cell "job_number" [ref=e947]
+              - cell "String" [ref=e948]
+              - cell "否" [ref=e949]
+              - cell "工号" [ref=e950]
+            - row "hired_date String 否 入职时间，格式：YYYY-mm-dd" [ref=e951]:
+              - cell "hired_date" [ref=e952]
+              - cell "String" [ref=e953]
+              - cell "否" [ref=e954]
+              - cell "入职时间，格式：YYYY-mm-dd" [ref=e955]
+            - row "is_new Int 否 是否标记为新员工，默认：0 0 否 1 是" [ref=e956]:
+              - cell "is_new" [ref=e957]
+              - cell "Int" [ref=e958]
+              - cell "否" [ref=e959]
+              - cell "是否标记为新员工，默认：0 0 否 1 是" [ref=e960]:
+                - text: 是否标记为新员工，默认：0
+                - text: 0 否
+                - text: 1 是
+            - row "dept_ids String 否 用户所在部门ID英文逗号隔开的字符串，不传则 默认：1" [ref=e961]:
+              - cell "dept_ids" [ref=e962]
+              - cell "String" [ref=e963]
+              - cell "否" [ref=e964]
+              - cell "用户所在部门ID英文逗号隔开的字符串，不传则 默认：1" [ref=e965]:
+                - text: 用户所在部门ID英文逗号隔开的字符串，不传则
+                - text: 默认：1
+            - row "leader_dept_ids String 否 用户是部门主管的部门ID英文逗号隔开的字符串" [ref=e966]:
+              - cell "leader_dept_ids" [ref=e967]
+              - cell "String" [ref=e968]
+              - cell "否" [ref=e969]
+              - cell "用户是部门主管的部门ID英文逗号隔开的字符串" [ref=e970]
+        - paragraph [ref=e971]:
+          - strong [ref=e972]: 成功返回结果
+          - text: ：
+        - code [ref=e974]: "{ \"code\": \"200\", \"status\": \"ok\", \"message\": \"success\", \"data\": { \"dept_user_id\":\"376053D7-73B6-44FE-8EF2-4A27E5CC81C6\" //创建成功的用ID } }"
+        - paragraph [ref=e975]
+        - heading "编辑用户" [level=1] [ref=e976]
+        - paragraph [ref=e977]:
+          - strong [ref=e978]: 请求方式
+          - text: ：POST（HTTPS）
+          - strong [ref=e979]: 请求地址
+          - text: ：
+          - code [ref=e980]: https://oapi.soke.cn/oa/departmentUser/update
+          - strong [ref=e981]: Query参数说明
+          - text: ：
+        - table [ref=e982]:
+          - rowgroup [ref=e983]:
+            - row "参数 类型 必须 说明" [ref=e984]:
+              - columnheader "参数" [ref=e985]:
+                - strong [ref=e986]: 参数
+              - columnheader "类型" [ref=e987]:
+                - strong [ref=e988]: 类型
+              - columnheader "必须" [ref=e989]:
+                - strong [ref=e990]: 必须
+              - columnheader "说明" [ref=e991]:
+                - strong [ref=e992]: 说明
+          - rowgroup [ref=e993]:
+            - row "access_token String 是 应用access_token，2小时有效期" [ref=e994]:
+              - cell "access_token" [ref=e995]
+              - cell "String" [ref=e996]
+              - cell "是" [ref=e997]
+              - cell "应用access_token，2小时有效期" [ref=e998]
+            - row "dept_user_id String 是 要更新的学员ID" [ref=e999]:
+              - cell "dept_user_id" [ref=e1000]
+              - cell "String" [ref=e1001]
+              - cell "是" [ref=e1002]
+              - cell "要更新的学员ID" [ref=e1003]
+            - row "dept_user_name String 否 用户名称，长度限制为1~64个字符，不允许包含字符‘-’‘，’以及‘,’" [ref=e1004]:
+              - cell "dept_user_name" [ref=e1005]
+              - cell "String" [ref=e1006]
+              - cell "否" [ref=e1007]
+              - cell "用户名称，长度限制为1~64个字符，不允许包含字符‘-’‘，’以及‘,’" [ref=e1008]
+            - row "avatar String 否 用户头像，传入一个可以在线浏览的url地址" [ref=e1009]:
+              - cell "avatar" [ref=e1010]
+              - cell "String" [ref=e1011]
+              - cell "否" [ref=e1012]
+              - cell "用户头像，传入一个可以在线浏览的url地址" [ref=e1013]
+            - row "position String 否 职位" [ref=e1014]:
+              - cell "position" [ref=e1015]
+              - cell "String" [ref=e1016]
+              - cell "否" [ref=e1017]
+              - cell "职位" [ref=e1018]
+            - row "position_rank String 否 职级" [ref=e1019]:
+              - cell "position_rank" [ref=e1020]
+              - cell "String" [ref=e1021]
+              - cell "否" [ref=e1022]
+              - cell "职级" [ref=e1023]
+            - row "mobile Int 否 手机号" [ref=e1024]:
+              - cell "mobile" [ref=e1025]
+              - cell "Int" [ref=e1026]
+              - cell "否" [ref=e1027]
+              - cell "手机号" [ref=e1028]
+            - row "country_code String 否 国际区码，00开头，如0086" [ref=e1029]:
+              - cell "country_code" [ref=e1030]
+              - cell "String" [ref=e1031]
+              - cell "否" [ref=e1032]
+              - cell "国际区码，00开头，如0086" [ref=e1033]
+            - row "email String 否 邮箱" [ref=e1034]:
+              - cell "email" [ref=e1035]
+              - cell "String" [ref=e1036]
+              - cell "否" [ref=e1037]
+              - cell "邮箱" [ref=e1038]
+            - row "job_number String 否 工号" [ref=e1039]:
+              - cell "job_number" [ref=e1040]
+              - cell "String" [ref=e1041]
+              - cell "否" [ref=e1042]
+              - cell "工号" [ref=e1043]
+            - row "hired_date String 否 入职时间，格式：YYYY-mm-dd" [ref=e1044]:
+              - cell "hired_date" [ref=e1045]
+              - cell "String" [ref=e1046]
+              - cell "否" [ref=e1047]
+              - cell "入职时间，格式：YYYY-mm-dd" [ref=e1048]
+            - row "is_new Int 否 是否标记为新员工，默认：0 0 否 1 是" [ref=e1049]:
+              - cell "is_new" [ref=e1050]
+              - cell "Int" [ref=e1051]
+              - cell "否" [ref=e1052]
+              - cell "是否标记为新员工，默认：0 0 否 1 是" [ref=e1053]:
+                - text: 是否标记为新员工，默认：0
+                - text: 0 否
+                - text: 1 是
+            - row "dept_ids String 否 用户所在部门ID英文逗号隔开的字符串，跟部门ID为1" [ref=e1054]:
+              - cell "dept_ids" [ref=e1055]
+              - cell "String" [ref=e1056]
+              - cell "否" [ref=e1057]
+              - cell "用户所在部门ID英文逗号隔开的字符串，跟部门ID为1" [ref=e1058]
+            - row "leader_dept_ids String 否 用户是部门主管的部门ID英文逗号隔开的字符串" [ref=e1059]:
+              - cell "leader_dept_ids" [ref=e1060]
+              - cell "String" [ref=e1061]
+              - cell "否" [ref=e1062]
+              - cell "用户是部门主管的部门ID英文逗号隔开的字符串" [ref=e1063]
+        - paragraph [ref=e1064]:
+          - strong [ref=e1065]: 成功返回结果
+          - text: ：
+        - code [ref=e1067]: "{ \"code\": \"200\", \"status\": \"ok\", \"message\": \"success\", \"data\": [] }"
+        - paragraph [ref=e1068]
+        - heading "删除用户" [level=1] [ref=e1069]
+        - paragraph [ref=e1070]:
+          - strong [ref=e1071]: 请求方式
+          - text: ：POST（HTTPS）
+          - strong [ref=e1072]: 请求地址
+          - text: ：
+          - code [ref=e1073]: https://oapi.soke.cn/oa/departmentUser/delete
+          - strong [ref=e1074]: Query参数说明
+          - text: ：
+        - table [ref=e1075]:
+          - rowgroup [ref=e1076]:
+            - row "参数 类型 必须 说明" [ref=e1077]:
+              - columnheader "参数" [ref=e1078]:
+                - strong [ref=e1079]: 参数
+              - columnheader "类型" [ref=e1080]:
+                - strong [ref=e1081]: 类型
+              - columnheader "必须" [ref=e1082]:
+                - strong [ref=e1083]: 必须
+              - columnheader "说明" [ref=e1084]:
+                - strong [ref=e1085]: 说明
+          - rowgroup [ref=e1086]:
+            - row "access_token String 是 应用access_token，2小时有效期" [ref=e1087]:
+              - cell "access_token" [ref=e1088]
+              - cell "String" [ref=e1089]
+              - cell "是" [ref=e1090]
+              - cell "应用access_token，2小时有效期" [ref=e1091]
+            - row "dept_user_id String 是 要删除的学员ID" [ref=e1092]:
+              - cell "dept_user_id" [ref=e1093]
+              - cell "String" [ref=e1094]
+              - cell "是" [ref=e1095]
+              - cell "要删除的学员ID" [ref=e1096]
+        - paragraph [ref=e1097]:
+          - strong [ref=e1098]: 成功返回结果
+          - text: ：
+        - code [ref=e1100]: "{ \"code\": \"200\", \"status\": \"ok\", \"message\": \"success\", \"data\": [] }"
+        - paragraph [ref=e1101]
+        - heading "根据名称搜索部门" [level=1] [ref=e1102]
+        - paragraph [ref=e1103]:
+          - strong [ref=e1104]: 请求方式
+          - text: ：POST（HTTPS）
+          - strong [ref=e1105]: 请求地址
+          - text: ：
+          - code [ref=e1106]: https://oapi.soke.cn/oa/department/searchDepartmentByName
+          - strong [ref=e1107]: Query参数说明
+          - text: ：
+        - table [ref=e1108]:
+          - rowgroup [ref=e1109]:
+            - row "参数 类型 必须 说明" [ref=e1110]:
+              - columnheader "参数" [ref=e1111]:
+                - strong [ref=e1112]: 参数
+              - columnheader "类型" [ref=e1113]:
+                - strong [ref=e1114]: 类型
+              - columnheader "必须" [ref=e1115]:
+                - strong [ref=e1116]: 必须
+              - columnheader "说明" [ref=e1117]:
+                - strong [ref=e1118]: 说明
+          - rowgroup [ref=e1119]:
+            - row "access_token String 是 应用access_token，2小时有效期" [ref=e1120]:
+              - cell "access_token" [ref=e1121]
+              - cell "String" [ref=e1122]
+              - cell "是" [ref=e1123]
+              - cell "应用access_token，2小时有效期" [ref=e1124]
+            - row "name String 是 部门名称（支持模糊搜索）" [ref=e1125]:
+              - cell "name" [ref=e1126]
+              - cell "String" [ref=e1127]
+              - cell "是" [ref=e1128]
+              - cell "部门名称（支持模糊搜索）" [ref=e1129]
+            - row "page Int 否 页码，默认从1开始" [ref=e1130]:
+              - cell "page" [ref=e1131]
+              - cell "Int" [ref=e1132]
+              - cell "否" [ref=e1133]
+              - cell "页码，默认从1开始" [ref=e1134]
+            - row "page_size Int 否 每页条数，最大100，默认100" [ref=e1135]:
+              - cell "page_size" [ref=e1136]
+              - cell "Int" [ref=e1137]
+              - cell "否" [ref=e1138]
+              - cell "每页条数，最大100，默认100" [ref=e1139]
+        - paragraph [ref=e1140]:
+          - strong [ref=e1141]: 返回结果
+          - text: ：
+        - code [ref=e1143]: "{ \"code\": \"200\", \"status\": \"ok\", \"message\": \"success\", \"data\": { \"list\": [ { \"dept_id\": \"355746834\", \"parent_id\": \"1\", \"dept_name\": \"北京人社华北测试\" }, { \"dept_id\": \"619807495\", \"parent_id\": \"619810519\", \"dept_name\": \"测试1\" } ], \"count\": { \"value\": 9, \"relation\": \"eq\" } }, \"request_id\": \"36fa3575-f814-4ef5-a1f3-4a7a3a69d7cb\" }"
+        - paragraph [ref=e1144]:
+          - strong [ref=e1145]: 参数说明
+          - text: ：
+        - table [ref=e1146]:
+          - rowgroup [ref=e1147]:
+            - row "参数 类型 说明" [ref=e1148]:
+              - columnheader "参数" [ref=e1149]:
+                - strong [ref=e1150]: 参数
+              - columnheader "类型" [ref=e1151]:
+                - strong [ref=e1152]: 类型
+              - columnheader "说明" [ref=e1153]:
+                - strong [ref=e1154]: 说明
+          - rowgroup [ref=e1155]:
+            - row "data Object 返回的数据包" [ref=e1156]:
+              - cell "data" [ref=e1157]
+              - cell "Object" [ref=e1158]
+              - cell "返回的数据包" [ref=e1159]
+            - row "list Array 返回的部门列表" [ref=e1160]:
+              - cell "list" [ref=e1161]
+              - cell "Array" [ref=e1162]
+              - cell "返回的部门列表" [ref=e1163]
+            - row "dept_id String 部门ID，同company_id组织内唯一" [ref=e1164]:
+              - cell "dept_id" [ref=e1165]
+              - cell "String" [ref=e1166]
+              - cell "部门ID，同company_id组织内唯一" [ref=e1167]
+            - row "parent_id String 部门上级ID，一级部门该值为1" [ref=e1168]:
+              - cell "parent_id" [ref=e1169]
+              - cell "String" [ref=e1170]
+              - cell "部门上级ID，一级部门该值为1" [ref=e1171]
+            - row "dept_name String 部门名称" [ref=e1172]:
+              - cell "dept_name" [ref=e1173]
+              - cell "String" [ref=e1174]
+              - cell "部门名称" [ref=e1175]
+            - row "count Object 符合条件的总记录数对象" [ref=e1176]:
+              - cell "count" [ref=e1177]
+              - cell "Object" [ref=e1178]
+              - cell "符合条件的总记录数对象" [ref=e1179]
+            - row "value Int 总记录数" [ref=e1180]:
+              - cell "value" [ref=e1181]
+              - cell "Int" [ref=e1182]
+              - cell "总记录数" [ref=e1183]
+            - row "relation String 关系类型，eq表示精确计数" [ref=e1184]:
+              - cell "relation" [ref=e1185]
+              - cell "String" [ref=e1186]
+              - cell "关系类型，eq表示精确计数" [ref=e1187]
+            - row "request_id String 请求唯一标识" [ref=e1188]:
+              - cell "request_id" [ref=e1189]
+              - cell "String" [ref=e1190]
+              - cell "请求唯一标识" [ref=e1191]
+        - paragraph [ref=e1192]
+        - heading "根据名称搜索用户" [level=1] [ref=e1193]
+        - paragraph [ref=e1194]:
+          - strong [ref=e1195]: 请求方式
+          - text: ：POST（HTTPS）
+          - strong [ref=e1196]: 请求地址
+          - text: ：
+          - code [ref=e1197]: https://oapi.soke.cn/oa/departmentUser/searchDepartmentUserByName
+          - strong [ref=e1198]: Query参数说明
+          - text: ：
+        - table [ref=e1199]:
+          - rowgroup [ref=e1200]:
+            - row "参数 类型 必须 说明" [ref=e1201]:
+              - columnheader "参数" [ref=e1202]:
+                - strong [ref=e1203]: 参数
+              - columnheader "类型" [ref=e1204]:
+                - strong [ref=e1205]: 类型
+              - columnheader "必须" [ref=e1206]:
+                - strong [ref=e1207]: 必须
+              - columnheader "说明" [ref=e1208]:
+                - strong [ref=e1209]: 说明
+          - rowgroup [ref=e1210]:
+            - row "access_token String 是 应用access_token，2小时有效期" [ref=e1211]:
+              - cell "access_token" [ref=e1212]
+              - cell "String" [ref=e1213]
+              - cell "是" [ref=e1214]
+              - cell "应用access_token，2小时有效期" [ref=e1215]
+            - row "name String 是 用户名称（支持模糊搜索）" [ref=e1216]:
+              - cell "name" [ref=e1217]
+              - cell "String" [ref=e1218]
+              - cell "是" [ref=e1219]
+              - cell "用户名称（支持模糊搜索）" [ref=e1220]
+            - row "page Int 否 页码，默认从1开始" [ref=e1221]:
+              - cell "page" [ref=e1222]
+              - cell "Int" [ref=e1223]
+              - cell "否" [ref=e1224]
+              - cell "页码，默认从1开始" [ref=e1225]
+            - row "page_size Int 否 每页条数，最大100，默认100" [ref=e1226]:
+              - cell "page_size" [ref=e1227]
+              - cell "Int" [ref=e1228]
+              - cell "否" [ref=e1229]
+              - cell "每页条数，最大100，默认100" [ref=e1230]
+        - paragraph [ref=e1231]:
+          - strong [ref=e1232]: 返回结果
+          - text: ：
+        - code [ref=e1234]: "{ \"code\": \"200\", \"status\": \"ok\", \"message\": \"success\", \"data\": { \"list\": [ { \"dept_user_id\": \"xxxx\", \"dept_user_name\": \"xxxxxx\", \"avatar\": \"xxxxxxxx\", \"position\": \"xxxxxx\", \"dept_ids\": [], \"company_id\": \"xxxxxxxx\" } ], \"count\": { \"value\": 1, \"relation\": \"eq\" } }, \"request_id\": \"xxxxxxx\" }"
+        - paragraph [ref=e1235]:
+          - strong [ref=e1236]: 参数说明
+          - text: ：
+        - table [ref=e1237]:
+          - rowgroup [ref=e1238]:
+            - row "参数 类型 说明" [ref=e1239]:
+              - columnheader "参数" [ref=e1240]:
+                - strong [ref=e1241]: 参数
+              - columnheader "类型" [ref=e1242]:
+                - strong [ref=e1243]: 类型
+              - columnheader "说明" [ref=e1244]:
+                - strong [ref=e1245]: 说明
+          - rowgroup [ref=e1246]:
+            - row "data Object 返回的数据包" [ref=e1247]:
+              - cell "data" [ref=e1248]
+              - cell "Object" [ref=e1249]
+              - cell "返回的数据包" [ref=e1250]
+            - row "list Array 返回的用户列表" [ref=e1251]:
+              - cell "list" [ref=e1252]
+              - cell "Array" [ref=e1253]
+              - cell "返回的用户列表" [ref=e1254]
+            - row "dept_user_id String 用户ID，同company_id组织内唯一" [ref=e1255]:
+              - cell "dept_user_id" [ref=e1256]
+              - cell "String" [ref=e1257]
+              - cell "用户ID，同company_id组织内唯一" [ref=e1258]
+            - row "dept_user_name String 用户姓名" [ref=e1259]:
+              - cell "dept_user_name" [ref=e1260]
+              - cell "String" [ref=e1261]
+              - cell "用户姓名" [ref=e1262]
+            - row "avatar String 头像URL" [ref=e1263]:
+              - cell "avatar" [ref=e1264]
+              - cell "String" [ref=e1265]
+              - cell "头像URL" [ref=e1266]
+            - row "position String 职位" [ref=e1267]:
+              - cell "position" [ref=e1268]
+              - cell "String" [ref=e1269]
+              - cell "职位" [ref=e1270]
+            - row "dept_ids Array 该用户所属部门ID列表" [ref=e1271]:
+              - cell "dept_ids" [ref=e1272]
+              - cell "Array" [ref=e1273]
+              - cell "该用户所属部门ID列表" [ref=e1274]
+            - row "company_id String 所属企业ID" [ref=e1275]:
+              - cell "company_id" [ref=e1276]
+              - cell "String" [ref=e1277]
+              - cell "所属企业ID" [ref=e1278]
+            - row "count Object 符合条件的总记录数对象" [ref=e1279]:
+              - cell "count" [ref=e1280]
+              - cell "Object" [ref=e1281]
+              - cell "符合条件的总记录数对象" [ref=e1282]
+            - row "value Int 总记录数" [ref=e1283]:
+              - cell "value" [ref=e1284]
+              - cell "Int" [ref=e1285]
+              - cell "总记录数" [ref=e1286]
+            - row "relation String 关系类型，eq表示精确计数" [ref=e1287]:
+              - cell "relation" [ref=e1288]
+              - cell "String" [ref=e1289]
+              - cell "关系类型，eq表示精确计数" [ref=e1290]
+            - row "request_id String 请求唯一标识" [ref=e1291]:
+              - cell "request_id" [ref=e1292]
+              - cell "String" [ref=e1293]
+              - cell "请求唯一标识" [ref=e1294]
+      - generic [ref=e1295]:
+        - link "企业" [ref=e1297] [cursor=pointer]:
+          - /url: company.html
+        - link "学习档案" [ref=e1299] [cursor=pointer]:
+          - /url: learning_profile.html
