@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"context"
-	"fmt"
 	"os"
 
 	"codeup.aliyun.com/5edbc121d1d1abe63b55f1c7/soke/soke-cli/cmd/api"
@@ -36,6 +35,8 @@ var rootCmd = &cobra.Command{
 	   soke-cli auth login
 	   soke-cli api GET /users/me
 	   soke-cli calendar list`,
+	SilenceErrors: true, // 禁用 Cobra 自动打印错误
+	SilenceUsage:  false, // 保留 Usage 输出
 	PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
 		// 在每次命令执行前检查更新（同步执行，使用缓存快速返回）
 		version.CheckForUpdates()
@@ -55,7 +56,7 @@ var rootCmd = &cobra.Command{
 		}
 
 		if err := authpkg.CheckAuth(ctx, commandName); err != nil {
-			// 格式化错误输出
+			// 打印格式化的错误信息
 			errors.PrintHuman(os.Stderr, err)
 			return err
 		}
@@ -66,7 +67,7 @@ var rootCmd = &cobra.Command{
 
 func Execute() {
 	if err := rootCmd.Execute(); err != nil {
-		fmt.Fprintln(os.Stderr, err)
+		// 错误已经在 PersistentPreRunE 中打印过了，这里只需要退出
 		os.Exit(1)
 	}
 }
