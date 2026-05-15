@@ -800,7 +800,9 @@ func (p *OAuthProvider) Login(ctx context.Context, force bool) (*TokenData, erro
 
 		// 保存选择的应用信息到配置
 		cfg.AppID = reqBody.AppID
+		cfg.AppKey = reqBody.AppKey
 		cfg.AppSecret = appData.AppSecret
+		cfg.APIBaseURL = OpenDevURL
 
 		if saveErr := core.SaveConfig(cfg); saveErr != nil {
 			w.WriteHeader(http.StatusInternalServerError)

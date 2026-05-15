@@ -83,7 +83,6 @@ func (tm *TokenManager) fetchAccessToken(ctx context.Context) (string, error) {
 	params.Set("corpid", tm.corpID)
 
 	reqURL := fmt.Sprintf("%s/service/corp/gettoken?%s", tm.baseURL, params.Encode())
-
 	req, err := http.NewRequestWithContext(ctx, "GET", reqURL, nil)
 	if err != nil {
 		return "", fmt.Errorf("create request failed: %w", err)

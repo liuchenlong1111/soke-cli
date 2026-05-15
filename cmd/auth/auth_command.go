@@ -24,6 +24,7 @@ import (
 	"time"
 
 	authpkg "codeup.aliyun.com/5edbc121d1d1abe63b55f1c7/soke/soke-cli/cmd/user_auth"
+	authguard "codeup.aliyun.com/5edbc121d1d1abe63b55f1c7/soke/soke-cli/internal/auth"
 	"codeup.aliyun.com/5edbc121d1d1abe63b55f1c7/soke/soke-cli/internal/core"
 	apperrors "codeup.aliyun.com/5edbc121d1d1abe63b55f1c7/soke/soke-cli/internal/errors"
 	"github.com/DingTalk-Real-AI/dingtalk-workspace-cli/pkg/config"
@@ -105,6 +106,9 @@ func newAuthLoginCommand() *cobra.Command {
 				if err != nil {
 					return apperrors.NewAuth(fmt.Sprintf(" login failed: %v", err))
 				}
+
+				// 登录成功后，清除配置缓存，强制重新加载
+				authguard.ResetConfigCache()
 			}
 
 			clearCompatCache()
@@ -167,6 +171,9 @@ func newAuthLogoutCommand() *cobra.Command {
 			if err := clearCliConfig(); err != nil {
 				_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "警告: 清除配置文件失败: %v\n", err)
 			}
+
+			// 重置配置缓存
+			authguard.ResetConfigCache()
 
 			// Clean up associated client secret and app token from keychain
 			if storedClientID != "" {
