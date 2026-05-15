@@ -103,10 +103,10 @@ func LoadAndValidateConfig(ctx context.Context) (*core.CliConfig, error) {
 	if err != nil {
 		if os.IsNotExist(err) {
 			return nil, errors.NewAuth(
-				"配置文件不存在，请先执行 soke-cli config init",
-				errors.WithReason("config_not_found"),
-				errors.WithHint("运行 'soke-cli config init' 初始化配置"),
-				errors.WithActions("soke-cli config init"),
+				"未登录授权，请先执行 soke-cli auth login",
+				errors.WithReason("not_authenticated"),
+				errors.WithHint("运行 'soke-cli auth login' 完成登录授权后重试"),
+				errors.WithActions("soke-cli auth login"),
 			)
 		}
 		return nil, errors.NewInternal("加载配置失败: " + err.Error())
