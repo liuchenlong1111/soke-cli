@@ -47,6 +47,8 @@ soke-cli config init
 ## 5. 提交代码与发布
 开发并测试满意后，将代码推送到远程仓库：
 ```bash
+git add .
+git commit -m "Add your skill"
 git push origin my-cli-<你的名字>
 ```
 最后，通知维护人员打包发版到 NPM 和 GitHub，然后分发到所有客户。
