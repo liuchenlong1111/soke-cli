@@ -17,7 +17,7 @@ git checkout my-cli-<你的名字>
 ## 2. 安装客户端与初始化配置
 下载安装好 SokeClaw，并全局注册 Skill 供 Agent 调用：
 ```bash
-npm install -g @sokeai/sokeai@latest
+npm install -g @sokeai/cli@latest
 npx skills add liuchenlong1111/soke-cli -y -g
 ```
 
