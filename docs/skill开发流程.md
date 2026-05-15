@@ -11,13 +11,13 @@ git checkout master
 git fetch origin master
 git merge origin/master
 git branch my-cli-<你的名字>
-git checkout -b my-cli-<你的名字>
+git checkout my-cli-<你的名字>
 ```
 
 ## 2. 安装客户端与初始化配置
 下载安装好 SokeClaw，并全局注册 Skill 供 Agent 调用：
 ```bash
-npm install -g @sokeai/soke-claw@latest
+npm install -g @sokeai/sokeai@latest
 npx skills add liuchenlong1111/soke-cli -y -g
 ```
 
