@@ -10,7 +10,8 @@ const (
 
 // CliConfig 配置结构
 type CliConfig struct {
-    AppID        string
+    AppID         string
+    AppKey        string
     AppSecret    string
     APIBaseURL   string
     UserToken    string

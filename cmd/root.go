@@ -44,11 +44,14 @@ var rootCmd = &cobra.Command{
 		// 在发起任何 API 请求之前进行检查，提供 fail-fast 机制
 		ctx := context.Background()
 
-		// 获取根命令名称（第一级命令）
+		// 获取顶层命令名称（第一级命令）
+		// 例如：soke-cli course +list-courses -> "course"
+		//      soke-cli auth login -> "auth"
 		commandName := cmd.Name()
-		if cmd.Parent() != nil && cmd.Parent().Name() != "soke-cli" {
-			// 如果有父命令且父命令不是根命令，使用父命令名称
-			commandName = cmd.Parent().Name()
+		current := cmd
+		for current.Parent() != nil && current.Parent().Name() != "soke-cli" {
+			current = current.Parent()
+			commandName = current.Name()
 		}
 
 		if err := authpkg.CheckAuth(ctx, commandName); err != nil {

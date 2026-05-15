@@ -1,27 +1,11 @@
-// Copyright 2026 Alibaba Group
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
 package errors
 
 import (
-	"bytes"
 	"encoding/json"
-	stderrors "errors"
+	"errors"
 	"fmt"
 	"io"
 	"strings"
-
-	"github.com/DingTalk-Real-AI/dingtalk-workspace-cli/pkg/config"
 )
 
 // Category represents a stable error class with a documented exit code.
@@ -35,7 +19,7 @@ const (
 	CategoryInternal   Category = "internal"
 )
 
-// Error is the structured repository-local error model for the Go rewrite.
+// Error is the structured error model for soke-cli.
 type Error struct {
 	Category   Category
 	Message    string
@@ -65,10 +49,6 @@ func (e *Error) Unwrap() error {
 type Option func(*Error)
 
 // ExitCode returns the documented process exit code for the error category.
-// exit=4 is reserved exclusively for PATError (see internal/errors/pat.go
-// ExitCodePermission and the exit-code table in docs/reference.md);
-// Discovery therefore uses 6 so hosts can tell "catalog lookup broke"
-// apart from "PAT permission insufficient".
 func (e *Error) ExitCode() int {
 	switch e.Category {
 	case CategoryAPI:
@@ -151,9 +131,6 @@ func WithRPCCode(code int) Option {
 
 // WithRPCData records the original JSON-RPC error data payload.
 func WithRPCData(data json.RawMessage) Option {
-	if len(bytes.TrimSpace(data)) == 0 {
-		return func(*Error) {} // no-op, consistent with other Options
-	}
 	return func(err *Error) {
 		err.RPCData = data
 	}
@@ -205,28 +182,18 @@ func NewInternal(message string, opts ...Option) error {
 }
 
 // ExitCoder is implemented by errors that provide their own exit code.
-// Edition-specific error types (e.g. PATError, CLIError) implement this
-// so the framework can resolve exit codes without importing edition packages.
 type ExitCoder interface {
 	ExitCode() int
-}
-
-// RawStderrError is implemented by errors that must output raw content
-// directly to stderr, bypassing all CLI formatting (e.g. "Error:" prefix).
-// PAT authorization errors use this to pass JSON through to the desktop runtime.
-type RawStderrError interface {
-	error
-	RawStderr() string
 }
 
 // ExitCode maps any error to a stable exit code.
 func ExitCode(err error) int {
 	var typed *Error
-	if stderrors.As(err, &typed) {
+	if errors.As(err, &typed) {
 		return typed.ExitCode()
 	}
 	var ec ExitCoder
-	if stderrors.As(err, &ec) {
+	if errors.As(err, &ec) {
 		return ec.ExitCode()
 	}
 	return 5
@@ -241,7 +208,7 @@ func PrintJSON(w io.Writer, err error) error {
 	}
 
 	var typed *Error
-	if stderrors.As(err, &typed) {
+	if errors.As(err, &typed) {
 		if typed.Reason != "" {
 			errorPayload["reason"] = typed.Reason
 		}
@@ -272,134 +239,37 @@ func PrintJSON(w io.Writer, err error) error {
 				errorPayload["rpc_data"] = parsed
 			}
 		}
-		if !typed.ServerDiag.IsEmpty() {
-			if typed.ServerDiag.TraceID != "" {
-				errorPayload["trace_id"] = typed.ServerDiag.TraceID
-			}
-			if typed.ServerDiag.ServerErrorCode != "" {
-				errorPayload["server_error_code"] = typed.ServerDiag.ServerErrorCode
-				// Add user-friendly hint for specific server error codes
-				switch typed.ServerDiag.ServerErrorCode {
-				case "TOKEN_VERIFIED_FAILED", "CLI_ORG_NOT_AUTHORIZED":
-					errorPayload["friendly_hint"] = "该组织尚未开启 CLI 数据访问权限，请联系组织主管理员开启。"
-					errorPayload["action_url"] = config.GetDeveloperSettingsURL()
-				}
-			}
-			if typed.ServerDiag.TechnicalDetail != "" {
-				errorPayload["technical_detail"] = typed.ServerDiag.TechnicalDetail
-			}
-		}
-		if typed.Cause != nil {
-			errorPayload["cause"] = typed.Cause.Error()
-		}
-	}
-	payload := map[string]any{"error": errorPayload}
-
-	data, marshalErr := json.MarshalIndent(payload, "", "  ")
-	if marshalErr != nil {
-		_, writeErr := fmt.Fprintf(w, "{\"error\":{\"code\":5,\"category\":\"internal\",\"message\":\"failed to encode error output\"}}\n")
-		return writeErr
 	}
 
-	_, writeErr := fmt.Fprintln(w, string(data))
-	return writeErr
+	enc := json.NewEncoder(w)
+	enc.SetIndent("", "  ")
+	return enc.Encode(errorPayload)
 }
 
-// Verbosity controls how much detail PrintHuman includes.
-type Verbosity int
-
-const (
-	// VerbosityNormal shows essential info: error, hint, actions, trace_id, server_code.
-	VerbosityNormal Verbosity = 0
-	// VerbosityVerbose adds technical_detail, snapshot, execution context.
-	VerbosityVerbose Verbosity = 1
-	// VerbosityDebug adds all internal diagnostics (category, operation, reason, rpc_code).
-	VerbosityDebug Verbosity = 2
-)
-
-// PrintHuman writes a concise human-readable error rendering at normal verbosity.
+// PrintHuman writes a human-readable error message to stderr.
 func PrintHuman(w io.Writer, err error) error {
-	return PrintHumanAt(w, err, VerbosityNormal)
-}
-
-// PrintHumanAt writes a human-readable error rendering at the given verbosity level.
-func PrintHumanAt(w io.Writer, err error, v Verbosity) error {
 	if err == nil {
 		return nil
 	}
 
+	lines := []string{fmt.Sprintf("Error: %s", err.Error())}
+
 	var typed *Error
-	if !stderrors.As(err, &typed) {
-		_, writeErr := fmt.Fprintf(w, "Error: %s\n", err.Error())
-		return writeErr
-	}
-
-	// Line 1: Error summary
-	lines := []string{
-		fmt.Sprintf("Error: [%s] %s", strings.ToUpper(string(typed.Category)), typed.Message),
-	}
-
-	// Always shown: hint, actions, retryable
-	if typed.Hint != "" {
-		lines = append(lines, fmt.Sprintf("Hint: %s", typed.Hint))
-	}
-
-	// Add user-friendly hint for specific server error codes
-	switch typed.ServerDiag.ServerErrorCode {
-	case "TOKEN_VERIFIED_FAILED", "CLI_ORG_NOT_AUTHORIZED":
-		lines = append(lines, "Hint: 该组织尚未开启 CLI 数据访问权限，请联系组织主管理员开启。")
-		lines = append(lines, "Action: 开启地址: "+config.GetDeveloperSettingsURL())
-	}
-
-	if len(typed.Actions) > 0 {
-		for _, action := range typed.Actions {
-			if strings.TrimSpace(action) == "" {
-				continue
+	if errors.As(err, &typed) {
+		// Always show hint and actions when present
+		if typed.Hint != "" {
+			lines = append(lines, fmt.Sprintf("Hint: %s", typed.Hint))
+		}
+		if len(typed.Actions) > 0 {
+			for _, action := range typed.Actions {
+				if strings.TrimSpace(action) == "" {
+					continue
+				}
+				lines = append(lines, fmt.Sprintf("Action: %s", action))
 			}
-			lines = append(lines, fmt.Sprintf("Action: %s", action))
 		}
-	}
-	if typed.Retryable {
-		lines = append(lines, "Retryable: true")
-	}
-
-	// Always shown when present: Trace ID, Server Code
-	if typed.ServerDiag.TraceID != "" {
-		lines = append(lines, fmt.Sprintf("Trace ID: %s", typed.ServerDiag.TraceID))
-	}
-	if typed.ServerDiag.ServerErrorCode != "" {
-		lines = append(lines, fmt.Sprintf("Server Code: %s", typed.ServerDiag.ServerErrorCode))
-	}
-
-	// Verbose+: technical detail, snapshot, reason, server key
-	if v >= VerbosityVerbose {
-		if typed.ServerDiag.TechnicalDetail != "" {
-			lines = append(lines, fmt.Sprintf("Detail: %s", typed.ServerDiag.TechnicalDetail))
-		}
-		if typed.Reason != "" {
-			lines = append(lines, fmt.Sprintf("Reason: %s", typed.Reason))
-		}
-		if typed.ServerKey != "" {
-			lines = append(lines, fmt.Sprintf("Server: %s", typed.ServerKey))
-		}
-		if typed.Snapshot != "" {
-			lines = append(lines, fmt.Sprintf("Snapshot: %s", typed.Snapshot))
-		}
-		if typed.Cause != nil {
-			lines = append(lines, fmt.Sprintf("Cause: %s", typed.Cause.Error()))
-		}
-	}
-
-	// Debug: all internal diagnostics
-	if v >= VerbosityDebug {
-		if typed.Operation != "" {
-			lines = append(lines, fmt.Sprintf("Operation: %s", typed.Operation))
-		}
-		if typed.RPCCode != 0 {
-			lines = append(lines, fmt.Sprintf("RPC Code: %d", typed.RPCCode))
-		}
-		if len(typed.RPCData) > 0 {
-			lines = append(lines, fmt.Sprintf("RPC Data: %s", string(typed.RPCData)))
+		if typed.Retryable {
+			lines = append(lines, "Retryable: true")
 		}
 	}
 
@@ -409,7 +279,7 @@ func PrintHumanAt(w io.Writer, err error, v Verbosity) error {
 
 func category(err error) string {
 	var typed *Error
-	if stderrors.As(err, &typed) {
+	if errors.As(err, &typed) {
 		return string(typed.Category)
 	}
 	return string(CategoryInternal)

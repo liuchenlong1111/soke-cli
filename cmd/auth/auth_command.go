@@ -107,10 +107,8 @@ func newAuthLoginCommand() *cobra.Command {
 					return apperrors.NewAuth(fmt.Sprintf(" login failed: %v", err))
 				}
 
-				// 更新 token 缓存
-				if tokenData != nil && tokenData.AccessToken != "" {
-					authguard.UpdateCachedToken(tokenData.AccessToken)
-				}
+				// 登录成功后，清除配置缓存，强制重新加载
+				authguard.ResetConfigCache()
 			}
 
 			clearCompatCache()
@@ -174,8 +172,8 @@ func newAuthLogoutCommand() *cobra.Command {
 				_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "警告: 清除配置文件失败: %v\n", err)
 			}
 
-			// 重置 token 缓存
-			authguard.ResetTokenCache()
+			// 重置配置缓存
+			authguard.ResetConfigCache()
 
 			// Clean up associated client secret and app token from keychain
 			if storedClientID != "" {
