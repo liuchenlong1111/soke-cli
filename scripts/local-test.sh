@@ -111,50 +111,25 @@ echo ""
 echo -e "${YELLOW}[3.5/4] 分发 Skills 到本地 Agent...${NC}"
 if [ "$SKIP_GLOBAL" = false ]; then
     echo -e "  执行 scripts/install.js 同步 Skills..."
-    # 注入特殊环境变量或者直接调用 node 执行
-    # 我们只想要触发 syncSkillsToSokeclawWorkspace 和 syncSkillsToWorkclawRegistry
-    # 但原 install.js 会尝试下载二进制文件，所以我们新建一个临时脚本或修改调用方式
     
-    # 为了安全起见，这里直接使用 node 运行一小段脚本引入 install.js 中的逻辑
+    # 使用 node 调用 install.js 中导出的同步函数
     cat > ./scripts/sync-skills-local.js << 'EOF'
-const fs = require('fs');
-const path = require('path');
-const installCode = fs.readFileSync(path.join(__dirname, 'install.js'), 'utf8');
+const install = require('./install.js');
 
-// 提取需要的函数
-const syncFn1Match = installCode.match(/function syncSkillsToSokeclawWorkspace\(\) \{[\s\S]*?\n\}/);
-const syncFn2Match = installCode.match(/function syncSkillsToWorkclawRegistry\(\) \{[\s\S]*?\n\}/);
-
-// 我们更推荐直接利用已经写好的 js 模块（如果它是通过 module.exports 导出的）
-// 但因为 install.js 是直接执行的脚本，我们通过简单的 node 脚本手动拷贝
-const os = require('os');
-function copyDirRecursive(srcDir, destDir) {
-  if (!fs.existsSync(srcDir)) return;
-  if (!fs.existsSync(destDir)) fs.mkdirSync(destDir, { recursive: true });
-  const entries = fs.readdirSync(srcDir, { withFileTypes: true });
-  for (const entry of entries) {
-    const srcPath = path.join(srcDir, entry.name);
-    const destPath = path.join(destDir, entry.name);
-    if (entry.isDirectory()) { copyDirRecursive(srcPath, destPath); continue; }
-    fs.copyFileSync(srcPath, destPath);
-  }
+try {
+  console.log("  同步到 Sokeclaw Workspace...");
+  install.syncSkillsToSokeclawWorkspace();
+  console.log("  ✓ Sokeclaw Workspace 同步成功");
+} catch (e) {
+  console.error("  ✗ Sokeclaw Workspace 同步失败:", e.message);
 }
 
-const homeDir = os.homedir();
-const defaultSokeclawDir = path.join(homeDir, '.sokeclaw', 'openai-agents', 'workspaces', 'main', 'skills');
-const packageRoot = path.join(__dirname, '..');
-const packagedSkillsDir = path.join(packageRoot, 'skills');
-
-if (fs.existsSync(packagedSkillsDir)) {
-  const skillNames = fs.readdirSync(packagedSkillsDir).filter(n => n.startsWith('soke-'));
-  if (fs.existsSync(defaultSokeclawDir)) {
-    for (const skillName of skillNames) {
-      const src = path.join(packagedSkillsDir, skillName);
-      const dest = path.join(defaultSokeclawDir, skillName);
-      copyDirRecursive(src, dest);
-      console.log(`  ✓ 同步 ${skillName} 到 ${dest}`);
-    }
-  }
+try {
+  console.log("  同步到 Workclaw Registry...");
+  install.syncSkillsToWorkclawRegistry();
+  console.log("  ✓ Workclaw Registry 同步成功");
+} catch (e) {
+  console.error("  ✗ Workclaw Registry 同步失败:", e.message);
 }
 EOF
     node ./scripts/sync-skills-local.js

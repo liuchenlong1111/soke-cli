@@ -491,43 +491,50 @@ function downloadFile(url, dest) {
 }
 
 // 执行下载
-downloadFile(downloadURL, binaryPath)
-  .then(() => {
-    // 设置可执行权限（非 Windows 平台）
-    if (platform !== 'win32') {
-      try {
-        fs.chmodSync(binaryPath, 0o755);
-        console.log('已设置可执行权限');
-      } catch (err) {
-        console.error('设置可执行权限失败:', err.message);
-        process.exit(1);
+if (require.main === module) {
+  downloadFile(downloadURL, binaryPath)
+    .then(() => {
+      // 设置可执行权限（非 Windows 平台）
+      if (platform !== 'win32') {
+        try {
+          fs.chmodSync(binaryPath, 0o755);
+          console.log('已设置可执行权限');
+        } catch (err) {
+          console.error('设置可执行权限失败:', err.message);
+          process.exit(1);
+        }
       }
-    }
 
-    try {
-      syncSkillsToSokeclawWorkspace();
-    } catch (_) {}
+      try {
+        syncSkillsToSokeclawWorkspace();
+      } catch (_) {}
 
-    try {
-      syncSkillsToWorkclawRegistry();
-    } catch (_) {}
+      try {
+        syncSkillsToWorkclawRegistry();
+      } catch (_) {}
 
-    return maybeAssistGuiPath();
-  })
-  .then(() => {
-    console.log('soke-cli 安装成功!');
-    console.log(`二进制文件位置: ${binaryPath}`);
-    console.log('\n使用方法:');
-    console.log('  soke-cli --help');
-    console.log('  soke-cli config init');
-    console.log('  soke-cli auth login');
-  })
-  .catch((err) => {
-    console.error('\n安装失败:', err.message);
-    console.error('\n可能的原因:');
-    console.error('1. 网络连接问题');
-    console.error('2. GitHub Releases 中不存在该版本的二进制文件');
-    console.error('3. 不支持当前平台');
-    console.error('\n请访问 https://github.com/sokeai/soke-cli/releases 手动下载');
-    process.exit(1);
-  });
+      return maybeAssistGuiPath();
+    })
+    .then(() => {
+      console.log('soke-cli 安装成功!');
+      console.log(`二进制文件位置: ${binaryPath}`);
+      console.log('\n使用方法:');
+      console.log('  soke-cli --help');
+      console.log('  soke-cli config init');
+      console.log('  soke-cli auth login');
+    })
+    .catch((err) => {
+      console.error('\n安装失败:', err.message);
+      console.error('\n可能的原因:');
+      console.error('1. 网络连接问题');
+      console.error('2. GitHub Releases 中不存在该版本的二进制文件');
+      console.error('3. 不支持当前平台');
+      console.error('\n请访问 https://github.com/sokeai/soke-cli/releases 手动下载');
+      process.exit(1);
+    });
+}
+
+module.exports = {
+  syncSkillsToSokeclawWorkspace,
+  syncSkillsToWorkclawRegistry
+};
